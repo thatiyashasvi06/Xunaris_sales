@@ -129,8 +129,11 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/recruitment', recruitmentRoutes);
 
-// Client-Side Routing Fallback (serves React frontend for all non-API paths)
-app.get('*', (req, res, next) => {
+// Client-Side Routing Fallback (serves React frontend for all non-API paths, compatible with Express v5)
+app.use((req, res, next) => {
+  if (req.method !== 'GET') {
+    return next();
+  }
   if (req.path.startsWith('/api') || req.path.startsWith('/api-docs') || req.path.startsWith('/swagger')) {
     return next();
   }
