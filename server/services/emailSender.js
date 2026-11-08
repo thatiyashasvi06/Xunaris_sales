@@ -698,52 +698,121 @@ export const sendRealEmail = async ({
       message: 'Failed to find an authorized sender account in the CRM.'
     };
   }
-    // ─── RESEND HTTPS API PATH (bypasses Render Free Tier SMTP port blocking) ───
+  // If RESEND_API_KEY is set OR we detect Render environment with no SMTP possible,
+  // use the Resend HTTPS API on port 443 instead of SMTP on port 465/587
   const useResendApi = hasResendApiKey();
   const onRender = isRenderEnvironment();
 
-  if (useResendApi || onRender) {
+  if (useResendApi || (onRender && !useResendApi)) {
     if (!useResendApi && onRender) {
+      // On Render but no Resend API key — cannot send
+      console.warn(`[emailSender] Render Free Tier blocks SMTP ports (465/587). RESEND_API_KEY not configured.`);
       return {
-        success: false, mode: 'render_blocked', sender: account.email,
-        senderDisplayName: account.display_name, recipient: targetRecipient,
+        success: false,
+        mode: 'render_blocked',
+        sender: account.email,
+        senderDisplayName: account.display_name,
+        recipient: targetRecipient,
         deliveryStatus: 'Halted',
         error: 'Halted: Render Free Tier blocks outbound SMTP ports (465/587). To send directly from Render, add a free RESEND_API_KEY in Render Environment Variables, or use the "Send via Gmail Web / Outlook" button below.',
         message: 'Render Free Tier blocks SMTP. Add RESEND_API_KEY to Environment Variables.'
       };
     }
 
+    // Sanitize HTML for API delivery
+    let apiHtml = html;
+    if (apiHtml && typeof apiHtml === 'string') {
+      // 1. Strip CSS comment wrappers in <style> blocks
+      apiHtml = apiHtml.replace(/<style\b([^>]*)>([\s\S]*?)<\/style>/gi, (match, attrs, css) => {
+        const cleanedCss = css.replace(/<!--/g, '').replace(/-->/g, '').trim();
+        return `<style${attrs}>\n${cleanedCss}\n</style>`;
+      });
+
+      // 2. Convert relative image src URLs to absolute so Gmail can load them
+      //    e.g. src="/hyra-full-logo.png" → src="https://xunaris-sales.onrender.com/hyra-full-logo.png"
+      const appBaseUrl = process.env.RENDER_EXTERNAL_URL
+        ? process.env.RENDER_EXTERNAL_URL.replace(/\/$/, '')
+        : (process.env.APP_BASE_URL || 'https://xunaris-sales.onrender.com');
+
+      apiHtml = apiHtml.replace(/(<img[^>]+src=["'])(\/)([^"']*["'])/gi, (match, prefix, slash, rest) => {
+        return `${prefix}${appBaseUrl}/${rest}`;
+      });
+    }
+
+    // Build clean plain text
+    let cleanText = text;
+    if (cleanText && (cleanText.includes('<!DOCTYPE') || cleanText.includes('<html') || cleanText.includes('<table') || cleanText.includes('<style'))) {
+      cleanText = cleanText
+        .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+        .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+    if (!cleanText && apiHtml) {
+      cleanText = apiHtml
+        .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+        .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    // Determine the "from" address for Resend
+    // If using Resend's free tier without a verified domain, must use: "Name <onboarding@resend.dev>"
+    // If you've verified your domain in Resend, use your real email
     const resendFrom = process.env.RESEND_VERIFIED_DOMAIN
       ? `"${account.display_name}" <${account.email}>`
       : `"${account.display_name}" <onboarding@resend.dev>`;
 
     try {
       const resendResult = await sendViaResendApi({
-        from: resendFrom, to: targetRecipient,
+        from: resendFrom,
+        to: targetRecipient,
         subject: subject || 'Xunaris CRM Message',
-        html: html || `<p>${text || ''}</p>`,
-        text: text || subject || 'Executive Message from Xunaris',
+        html: apiHtml || `<p>${cleanText || ''}</p>`,
+        text: cleanText || subject || 'Executive Message from Xunaris',
         replyTo: account.email
       });
 
+      console.log(`[emailSender:Resend Success] Dispatched email from ${account.email} to ${targetRecipient} via Resend HTTPS API!`);
       return {
-        success: true, mode: 'resend_api', messageId: resendResult.messageId,
-        previewUrl: null, sender: account.email,
-        senderDisplayName: account.display_name, recipient: targetRecipient,
+        success: true,
+        mode: 'resend_api',
+        messageId: resendResult.messageId,
+        previewUrl: null,
+        sender: account.email,
+        senderDisplayName: account.display_name,
+        recipient: targetRecipient,
         deliveryStatus: 'Delivered',
-        message: `Email delivered to ${targetRecipient} via Resend HTTPS API from ${account.email}!`
+        message: `Email successfully delivered to ${targetRecipient} via Resend HTTPS API from ${account.email}!`
       };
     } catch (resendErr) {
+      console.error(`[emailSender:Resend Failure] ${resendErr.message}`);
+      // If on Render, don't fall back to SMTP (it will also fail)
       if (onRender) {
         return {
-          success: false, mode: 'resend_failed', sender: account.email,
-          recipient: targetRecipient, deliveryStatus: 'Failed',
-          error: `Resend API failed: ${resendErr.message}`,
+          success: false,
+          mode: 'resend_failed',
+          sender: account.email,
+          senderDisplayName: account.display_name,
+          recipient: targetRecipient,
+          deliveryStatus: 'Failed',
+          error: `Resend API delivery failed: ${resendErr.message}`,
           message: `Resend HTTPS API failed: ${resendErr.message}`
         };
       }
+      // Not on Render — fall through to SMTP below
+      console.log('[emailSender] Resend failed, falling back to SMTP...');
     }
   }
+
+  // ─── STANDARD SMTP PATH (works on VPS, local, non-Render hosts) ───
   // Requirement 7: Enforce authentication check - DO NOT pretend if not authorized
   const transporter = createTransporterForAccount(account);
   if (!transporter || account.is_verified !== 1) {
