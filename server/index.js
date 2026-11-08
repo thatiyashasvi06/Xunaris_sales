@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 import db from './db/database.js';
@@ -31,19 +32,24 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const distPath = path.join(__dirname, '../dist');
 
 // Middleware
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Serve static frontend assets if build exists
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+}
+
 // Swagger UI Interactive API Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/swagger', (req, res) => res.redirect('/api-docs'));
 
-// Friendly Root Status Page
-app.get('/', (req, res) => {
-  res.send(`
+// Status Page HTML Generator
+const renderStatusPage = () => `
     <!DOCTYPE html>
     <html>
     <head>
@@ -79,11 +85,24 @@ app.get('/', (req, res) => {
         </ul>
 
         <a class="btn" href="/api-docs">Open Interactive Swagger UI &rarr;</a>
-        <a class="btn" style="background: #1e293b; margin-top: 10px;" href="http://localhost:3000">Open CRM Frontend App (Port 3000)</a>
+        <a class="btn" style="background: #1e293b; margin-top: 10px;" href="/">Open CRM Frontend App</a>
       </div>
     </body>
     </html>
-  `);
+`;
+
+// Dedicated API Status Route
+app.get('/api-status', (req, res) => {
+  res.send(renderStatusPage());
+});
+
+// Root Route: Serve Frontend index.html if available, otherwise API Status Page
+app.get('/', (req, res) => {
+  const indexHtml = path.join(distPath, 'index.html');
+  if (fs.existsSync(indexHtml)) {
+    return res.sendFile(indexHtml);
+  }
+  res.send(renderStatusPage());
 });
 
 // Health Check
@@ -109,6 +128,18 @@ app.use('/api/reports', reportsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/recruitment', recruitmentRoutes);
+
+// Client-Side Routing Fallback (serves React frontend for all non-API paths)
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/api-docs') || req.path.startsWith('/swagger')) {
+    return next();
+  }
+  const indexHtml = path.join(distPath, 'index.html');
+  if (fs.existsSync(indexHtml)) {
+    return res.sendFile(indexHtml);
+  }
+  next();
+});
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
