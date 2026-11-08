@@ -5,6 +5,7 @@ import path from 'path';
 import db from '../db/database.js';
 
 dotenv.config();
+
 /**
  * Detect if running on Render (free tier blocks SMTP ports 465/587)
  */
@@ -22,10 +23,13 @@ const hasResendApiKey = () => {
 /**
  * Send email via Resend HTTPS API (port 443 — works on Render Free Tier)
  * Resend free tier: 100 emails/day, 3,000 emails/month
+ * Sign up at https://resend.com and get an API key
  */
 const sendViaResendApi = async ({ from, to, subject, html, text, replyTo }) => {
   const apiKey = (process.env.RESEND_API_KEY || '').trim();
-  if (!apiKey) throw new Error('RESEND_API_KEY is not configured.');
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY is not configured.');
+  }
 
   const payload = {
     from: from || 'Xunaris CRM <onboarding@resend.dev>',
@@ -46,13 +50,19 @@ const sendViaResendApi = async ({ from, to, subject, html, text, replyTo }) => {
   });
 
   const data = await response.json();
+
   if (!response.ok) {
-    throw new Error(`Resend API error (${response.status}): ${data?.message || JSON.stringify(data)}`);
+    const errMsg = data?.message || data?.error?.message || JSON.stringify(data);
+    throw new Error(`Resend API error (${response.status}): ${errMsg}`);
   }
 
-  console.log(`[emailSender:Resend] Email sent via HTTPS API. ID: ${data.id}`);
-  return { messageId: data.id, previewUrl: null };
+  console.log(`[emailSender:Resend] Email sent successfully via HTTPS API. ID: ${data.id}`);
+  return {
+    messageId: data.id,
+    previewUrl: null
+  };
 };
+
 /**
  * Persist updated credentials securely to .env file so they survive restarts
  */
@@ -698,6 +708,8 @@ export const sendRealEmail = async ({
       message: 'Failed to find an authorized sender account in the CRM.'
     };
   }
+
+  // ─── RESEND HTTPS API PATH (bypasses Render Free Tier SMTP port blocking) ───
   // If RESEND_API_KEY is set OR we detect Render environment with no SMTP possible,
   // use the Resend HTTPS API on port 443 instead of SMTP on port 465/587
   const useResendApi = hasResendApiKey();
@@ -719,25 +731,42 @@ export const sendRealEmail = async ({
       };
     }
 
-    // Sanitize HTML for API delivery
+    // Sanitize HTML for API delivery (strip CSS comments, fix relative URLs, and inline base64 images)
     let apiHtml = html;
+    // Prepare an attachments array – will be used if we fall back to SMTP or if Resend supports attachments
+    const attachments = [];
     if (apiHtml && typeof apiHtml === 'string') {
-      // 1. Strip CSS comment wrappers in <style> blocks
+      // 1️⃣ Strip CSS comment wrappers in <style> blocks
       apiHtml = apiHtml.replace(/<style\b([^>]*)>([\s\S]*?)<\/style>/gi, (match, attrs, css) => {
         const cleanedCss = css.replace(/<!--/g, '').replace(/-->/g, '').trim();
         return `<style${attrs}>\n${cleanedCss}\n</style>`;
       });
 
-      // 2. Convert relative image src URLs to absolute so Gmail can load them
-      //    e.g. src="/hyra-full-logo.png" → src="https://xunaris-sales.onrender.com/hyra-full-logo.png"
+      // 2️⃣ Convert relative image src URLs to absolute URLs so external mail clients can load them
       const appBaseUrl = process.env.RENDER_EXTERNAL_URL
         ? process.env.RENDER_EXTERNAL_URL.replace(/\/$/, '')
         : (process.env.APP_BASE_URL || 'https://xunaris-sales.onrender.com');
-
       apiHtml = apiHtml.replace(/(<img[^>]+src=["'])(\/)([^"']*["'])/gi, (match, prefix, slash, rest) => {
         return `${prefix}${appBaseUrl}/${rest}`;
       });
+
+      // 3️⃣ Inline any base64‑encoded images as CID attachments (for Gmail/Outlook where external images may be blocked)
+      //    Detect <img src="data:image/png;base64,...."> patterns
+      apiHtml = apiHtml.replace(/<img([^>]+)src=["']data:([^;]+);base64,([^"']+)["']([^>]*)>/gi,
+        (fullMatch, beforeAttrs, mime, b64Data, afterAttrs) => {
+          const cid = `img_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+          attachments.push({
+            filename: `inline_${cid}.${mime.split('/')[1]}`,
+            content: Buffer.from(b64Data, 'base64'),
+            cid,
+            contentType: mime
+          });
+          // rewrite src to cid reference
+          return `<img${beforeAttrs}src="cid:${cid}"${afterAttrs}>`;
+        }
+      );
     }
+
 
     // Build clean plain text
     let cleanText = text;
@@ -813,6 +842,7 @@ export const sendRealEmail = async ({
   }
 
   // ─── STANDARD SMTP PATH (works on VPS, local, non-Render hosts) ───
+
   // Requirement 7: Enforce authentication check - DO NOT pretend if not authorized
   const transporter = createTransporterForAccount(account);
   if (!transporter || account.is_verified !== 1) {
@@ -898,88 +928,6 @@ export const sendRealEmail = async ({
         .trim();
     }
 
-    // 1. If Resend HTTP API is configured, dispatch via HTTPS Port 443 (100% reliable on Render Free Tier)
-    if (process.env.RESEND_API_KEY) {
-      try {
-        const resendFrom = process.env.RESEND_FROM || `${account.display_name} <onboarding@resend.dev>`;
-        const response = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.RESEND_API_KEY.trim()}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            from: resendFrom,
-            to: [targetRecipient],
-            subject: subject || 'Xunaris CRM Message',
-            html: finalHtml,
-            text: cleanText
-          })
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message || data.error || 'Resend API error');
-        }
-
-        console.log(`[emailSender:Resend API] Dispatched via HTTPS to ${targetRecipient}! ID: ${data.id}`);
-        return {
-          success: true,
-          mode: 'resend_https_api',
-          messageId: data.id,
-          sender: account.email,
-          senderDisplayName: account.display_name,
-          recipient: targetRecipient,
-          deliveryStatus: 'Delivered',
-          message: `Live email delivered via Resend HTTPS API to ${targetRecipient}!`
-        };
-      } catch (httpErr) {
-        console.error('[emailSender:Resend Error]:', httpErr.message);
-        throw httpErr;
-      }
-    }
-
-    // 2. If Brevo HTTP API is configured, dispatch via HTTPS Port 443
-    if (process.env.BREVO_API_KEY) {
-      try {
-        const brevoSenderEmail = process.env.BREVO_FROM || account.email;
-        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-          method: 'POST',
-          headers: {
-            'api-key': process.env.BREVO_API_KEY.trim(),
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            sender: { name: account.display_name, email: brevoSenderEmail },
-            to: [{ email: targetRecipient }],
-            subject: subject || 'Xunaris CRM Message',
-            htmlContent: finalHtml,
-            textContent: cleanText
-          })
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message || 'Brevo API error');
-        }
-
-        console.log(`[emailSender:Brevo API] Dispatched via HTTPS to ${targetRecipient}! ID: ${data.messageId}`);
-        return {
-          success: true,
-          mode: 'brevo_https_api',
-          messageId: data.messageId,
-          sender: account.email,
-          senderDisplayName: account.display_name,
-          recipient: targetRecipient,
-          deliveryStatus: 'Delivered',
-          message: `Live email delivered via Brevo HTTPS API to ${targetRecipient}!`
-        };
-      } catch (httpErr) {
-        console.error('[emailSender:Brevo Error]:', httpErr.message);
-        throw httpErr;
-      }
-    }
-
     const mailOptions = {
       from: senderFromHeader,
       to: targetRecipient,
@@ -1012,14 +960,6 @@ export const sendRealEmail = async ({
     };
   } catch (err) {
     console.error(`[emailSender:SMTP Failure] Delivery error from ${account.email} to ${targetRecipient}:`, err.message);
-    const isTimeout = err.message && (err.message.includes('timeout') || err.message.includes('ETIMEDOUT') || err.message.includes('ECONNRESET'));
-    const isRender = Boolean(process.env.RENDER);
-
-    let detailedError = `Mail server rejected delivery: ${err.message}`;
-    if (isTimeout && (isRender || process.env.NODE_ENV === 'production')) {
-      detailedError = `Render Free Tier blocks outbound SMTP ports (465/587). To send directly from Render, add a free RESEND_API_KEY in Render Environment Variables, or use the "Send via Gmail Web / Outlook" button below.`;
-    }
-
     return {
       success: false,
       mode: 'delivery_failed',
@@ -1027,8 +967,8 @@ export const sendRealEmail = async ({
       senderDisplayName: account.display_name,
       recipient: targetRecipient,
       deliveryStatus: 'Failed',
-      error: detailedError,
-      message: detailedError
+      error: `Mail server rejected delivery: ${err.message}`,
+      message: `SMTP delivery failed: ${err.message}`
     };
   }
 };
