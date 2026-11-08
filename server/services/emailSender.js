@@ -5,7 +5,54 @@ import path from 'path';
 import db from '../db/database.js';
 
 dotenv.config();
+/**
+ * Detect if running on Render (free tier blocks SMTP ports 465/587)
+ */
+const isRenderEnvironment = () => {
+  return Boolean(process.env.RENDER || process.env.RENDER_SERVICE_ID || process.env.RENDER_EXTERNAL_URL);
+};
 
+/**
+ * Check if Resend HTTPS API is configured (bypasses SMTP port blocking)
+ */
+const hasResendApiKey = () => {
+  return Boolean(process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim().length > 0);
+};
+
+/**
+ * Send email via Resend HTTPS API (port 443 — works on Render Free Tier)
+ * Resend free tier: 100 emails/day, 3,000 emails/month
+ */
+const sendViaResendApi = async ({ from, to, subject, html, text, replyTo }) => {
+  const apiKey = (process.env.RESEND_API_KEY || '').trim();
+  if (!apiKey) throw new Error('RESEND_API_KEY is not configured.');
+
+  const payload = {
+    from: from || 'Xunaris CRM <onboarding@resend.dev>',
+    to: Array.isArray(to) ? to : [to],
+    subject: subject || 'Xunaris CRM Message',
+    html: html || undefined,
+    text: text || undefined
+  };
+  if (replyTo) payload.reply_to = replyTo;
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(`Resend API error (${response.status}): ${data?.message || JSON.stringify(data)}`);
+  }
+
+  console.log(`[emailSender:Resend] Email sent via HTTPS API. ID: ${data.id}`);
+  return { messageId: data.id, previewUrl: null };
+};
 /**
  * Persist updated credentials securely to .env file so they survive restarts
  */
@@ -651,7 +698,52 @@ export const sendRealEmail = async ({
       message: 'Failed to find an authorized sender account in the CRM.'
     };
   }
+    // ─── RESEND HTTPS API PATH (bypasses Render Free Tier SMTP port blocking) ───
+  const useResendApi = hasResendApiKey();
+  const onRender = isRenderEnvironment();
 
+  if (useResendApi || onRender) {
+    if (!useResendApi && onRender) {
+      return {
+        success: false, mode: 'render_blocked', sender: account.email,
+        senderDisplayName: account.display_name, recipient: targetRecipient,
+        deliveryStatus: 'Halted',
+        error: 'Halted: Render Free Tier blocks outbound SMTP ports (465/587). To send directly from Render, add a free RESEND_API_KEY in Render Environment Variables, or use the "Send via Gmail Web / Outlook" button below.',
+        message: 'Render Free Tier blocks SMTP. Add RESEND_API_KEY to Environment Variables.'
+      };
+    }
+
+    const resendFrom = process.env.RESEND_VERIFIED_DOMAIN
+      ? `"${account.display_name}" <${account.email}>`
+      : `"${account.display_name}" <onboarding@resend.dev>`;
+
+    try {
+      const resendResult = await sendViaResendApi({
+        from: resendFrom, to: targetRecipient,
+        subject: subject || 'Xunaris CRM Message',
+        html: html || `<p>${text || ''}</p>`,
+        text: text || subject || 'Executive Message from Xunaris',
+        replyTo: account.email
+      });
+
+      return {
+        success: true, mode: 'resend_api', messageId: resendResult.messageId,
+        previewUrl: null, sender: account.email,
+        senderDisplayName: account.display_name, recipient: targetRecipient,
+        deliveryStatus: 'Delivered',
+        message: `Email delivered to ${targetRecipient} via Resend HTTPS API from ${account.email}!`
+      };
+    } catch (resendErr) {
+      if (onRender) {
+        return {
+          success: false, mode: 'resend_failed', sender: account.email,
+          recipient: targetRecipient, deliveryStatus: 'Failed',
+          error: `Resend API failed: ${resendErr.message}`,
+          message: `Resend HTTPS API failed: ${resendErr.message}`
+        };
+      }
+    }
+  }
   // Requirement 7: Enforce authentication check - DO NOT pretend if not authorized
   const transporter = createTransporterForAccount(account);
   if (!transporter || account.is_verified !== 1) {
