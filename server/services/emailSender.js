@@ -737,6 +737,88 @@ export const sendRealEmail = async ({
         .trim();
     }
 
+    // 1. If Resend HTTP API is configured, dispatch via HTTPS Port 443 (100% reliable on Render Free Tier)
+    if (process.env.RESEND_API_KEY) {
+      try {
+        const resendFrom = process.env.RESEND_FROM || `${account.display_name} <onboarding@resend.dev>`;
+        const response = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.RESEND_API_KEY.trim()}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: resendFrom,
+            to: [targetRecipient],
+            subject: subject || 'Xunaris CRM Message',
+            html: finalHtml,
+            text: cleanText
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || data.error || 'Resend API error');
+        }
+
+        console.log(`[emailSender:Resend API] Dispatched via HTTPS to ${targetRecipient}! ID: ${data.id}`);
+        return {
+          success: true,
+          mode: 'resend_https_api',
+          messageId: data.id,
+          sender: account.email,
+          senderDisplayName: account.display_name,
+          recipient: targetRecipient,
+          deliveryStatus: 'Delivered',
+          message: `Live email delivered via Resend HTTPS API to ${targetRecipient}!`
+        };
+      } catch (httpErr) {
+        console.error('[emailSender:Resend Error]:', httpErr.message);
+        throw httpErr;
+      }
+    }
+
+    // 2. If Brevo HTTP API is configured, dispatch via HTTPS Port 443
+    if (process.env.BREVO_API_KEY) {
+      try {
+        const brevoSenderEmail = process.env.BREVO_FROM || account.email;
+        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+          method: 'POST',
+          headers: {
+            'api-key': process.env.BREVO_API_KEY.trim(),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            sender: { name: account.display_name, email: brevoSenderEmail },
+            to: [{ email: targetRecipient }],
+            subject: subject || 'Xunaris CRM Message',
+            htmlContent: finalHtml,
+            textContent: cleanText
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || 'Brevo API error');
+        }
+
+        console.log(`[emailSender:Brevo API] Dispatched via HTTPS to ${targetRecipient}! ID: ${data.messageId}`);
+        return {
+          success: true,
+          mode: 'brevo_https_api',
+          messageId: data.messageId,
+          sender: account.email,
+          senderDisplayName: account.display_name,
+          recipient: targetRecipient,
+          deliveryStatus: 'Delivered',
+          message: `Live email delivered via Brevo HTTPS API to ${targetRecipient}!`
+        };
+      } catch (httpErr) {
+        console.error('[emailSender:Brevo Error]:', httpErr.message);
+        throw httpErr;
+      }
+    }
+
     const mailOptions = {
       from: senderFromHeader,
       to: targetRecipient,
@@ -769,6 +851,14 @@ export const sendRealEmail = async ({
     };
   } catch (err) {
     console.error(`[emailSender:SMTP Failure] Delivery error from ${account.email} to ${targetRecipient}:`, err.message);
+    const isTimeout = err.message && (err.message.includes('timeout') || err.message.includes('ETIMEDOUT') || err.message.includes('ECONNRESET'));
+    const isRender = Boolean(process.env.RENDER);
+
+    let detailedError = `Mail server rejected delivery: ${err.message}`;
+    if (isTimeout && (isRender || process.env.NODE_ENV === 'production')) {
+      detailedError = `Render Free Tier blocks outbound SMTP ports (465/587). To send directly from Render, add a free RESEND_API_KEY in Render Environment Variables, or use the "Send via Gmail Web / Outlook" button below.`;
+    }
+
     return {
       success: false,
       mode: 'delivery_failed',
@@ -776,8 +866,8 @@ export const sendRealEmail = async ({
       senderDisplayName: account.display_name,
       recipient: targetRecipient,
       deliveryStatus: 'Failed',
-      error: `Mail server rejected delivery: ${err.message}`,
-      message: `SMTP delivery failed: ${err.message}`
+      error: detailedError,
+      message: detailedError
     };
   }
 };
