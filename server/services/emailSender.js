@@ -21,6 +21,55 @@ const hasResendApiKey = () => {
 };
 
 /**
+ * Check if Brevo (Sendinblue) HTTPS API is configured (No DNS required!)
+ */
+const hasBrevoApiKey = () => {
+  return Boolean(process.env.BREVO_API_KEY && process.env.BREVO_API_KEY.trim().length > 0);
+};
+
+/**
+ * Send email via Brevo HTTPS API (port 443 - works on Render without DNS!)
+ * Free tier: 300 emails/day. Sender verified via single confirmation code.
+ */
+const sendViaBrevoApi = async ({ fromEmail, fromName, to, subject, html, text, replyTo }) => {
+  const apiKey = (process.env.BREVO_API_KEY || '').trim();
+  if (!apiKey) {
+    throw new Error('BREVO_API_KEY is not configured.');
+  }
+
+  const payload = {
+    sender: { name: fromName || 'HYRA Connect', email: fromEmail || 'sales@hyraconnect.com' },
+    to: (Array.isArray(to) ? to : [to]).map(e => (typeof e === 'string' ? { email: e } : e)),
+    subject: subject || 'HYRA Connect Message',
+    htmlContent: html || `<p>${text || ''}</p>`,
+    textContent: text || undefined
+  };
+  if (replyTo) payload.replyTo = { email: replyTo };
+
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'api-key': apiKey,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    const errMsg = data?.message || data?.error?.message || JSON.stringify(data);
+    throw new Error(`Brevo API error (${response.status}): ${errMsg}`);
+  }
+
+  console.log(`[emailSender:Brevo] Email sent successfully via HTTPS API. ID: ${data.messageId}`);
+  return {
+    messageId: data.messageId,
+    previewUrl: null
+  };
+};
+
+/**
  * Send email via Resend HTTPS API (port 443 — works on Render Free Tier)
  * Resend free tier: 100 emails/day, 3,000 emails/month
  * Sign up at https://resend.com and get an API key
@@ -709,16 +758,15 @@ export const sendRealEmail = async ({
     };
   }
 
-  // ─── RESEND HTTPS API PATH (bypasses Render Free Tier SMTP port blocking) ───
-  // If RESEND_API_KEY is set OR we detect Render environment with no SMTP possible,
-  // use the Resend HTTPS API on port 443 instead of SMTP on port 465/587
+  // ─── HTTPS API PATH (Brevo / Resend — bypasses Render Free Tier SMTP port blocking) ───
+  const useBrevoApi = hasBrevoApiKey();
   const useResendApi = hasResendApiKey();
   const onRender = isRenderEnvironment();
 
-  if (useResendApi || (onRender && !useResendApi)) {
-    if (!useResendApi && onRender) {
-      // On Render but no Resend API key — cannot send
-      console.warn(`[emailSender] Render Free Tier blocks SMTP ports (465/587). RESEND_API_KEY not configured.`);
+  if (useBrevoApi || useResendApi || (onRender && !useResendApi && !useBrevoApi)) {
+    if (!useBrevoApi && !useResendApi && onRender) {
+      // On Render but no API key configured
+      console.warn(`[emailSender] Render Free Tier blocks SMTP ports (465/587). No API key configured.`);
       return {
         success: false,
         mode: 'render_blocked',
@@ -726,8 +774,8 @@ export const sendRealEmail = async ({
         senderDisplayName: account.display_name,
         recipient: targetRecipient,
         deliveryStatus: 'Halted',
-        error: 'Halted: Render Free Tier blocks outbound SMTP ports (465/587). To send directly from Render, add a free RESEND_API_KEY in Render Environment Variables, or use the "Send via Gmail Web / Outlook" button below.',
-        message: 'Render Free Tier blocks SMTP. Add RESEND_API_KEY to Environment Variables.'
+        error: 'Halted: Render Free Tier blocks outbound SMTP ports (465/587). To send directly from Render, add a BREVO_API_KEY (No DNS required) or RESEND_API_KEY in Render Environment Variables.',
+        message: 'Render Free Tier blocks SMTP. Add BREVO_API_KEY or RESEND_API_KEY to Environment Variables.'
       };
     }
 
@@ -792,6 +840,49 @@ export const sendRealEmail = async ({
         .trim();
     }
 
+    // ─── 1. BREVO HTTPS API (Zero DNS required, sends to ANY recipient!) ───
+    if (useBrevoApi) {
+      try {
+        const brevoResult = await sendViaBrevoApi({
+          fromEmail: account.email || 'sales@hyraconnect.com',
+          fromName: account.display_name || 'HYRA Connect',
+          to: targetRecipient,
+          subject: subject || 'HYRA Connect Update',
+          html: apiHtml || `<p>${cleanText || ''}</p>`,
+          text: cleanText || subject || 'Executive Message from HYRA Connect',
+          replyTo: account.email
+        });
+
+        console.log(`[emailSender:Brevo Success] Dispatched email from ${account.email} to ${targetRecipient} via Brevo API!`);
+        return {
+          success: true,
+          mode: 'brevo_api',
+          messageId: brevoResult.messageId,
+          previewUrl: null,
+          sender: account.email,
+          senderDisplayName: account.display_name,
+          recipient: targetRecipient,
+          deliveryStatus: 'Delivered',
+          message: `Email successfully delivered to ${targetRecipient} via Brevo API from ${account.email}!`
+        };
+      } catch (brevoErr) {
+        console.error(`[emailSender:Brevo Failure] ${brevoErr.message}`);
+        if (!useResendApi && onRender) {
+          return {
+            success: false,
+            mode: 'brevo_failed',
+            sender: account.email,
+            senderDisplayName: account.display_name,
+            recipient: targetRecipient,
+            deliveryStatus: 'Failed',
+            error: `Brevo API delivery failed: ${brevoErr.message}`,
+            message: `Brevo API delivery failed: ${brevoErr.message}`
+          };
+        }
+      }
+    }
+
+    // ─── 2. RESEND HTTPS API ───
     // Determine the "from" address for Resend
     // If using Resend's free tier without a verified domain, must use: "Name <onboarding@resend.dev>"
     // If you've verified your domain in Resend, use your real email
