@@ -34,7 +34,7 @@ try {
       email = excluded.email,
       display_name = excluded.display_name
   `);
-
+  insertSenderAccount.run('acc_xunaris_info', 'Xunaris', 'info@xunaris.com', 'Xunaris Info', 'smtpout.secureserver.net', 465, 1);
   insertSenderAccount.run('acc_xunaris', 'Xunaris', 'sales@xunaris.com', 'Xunaris Sales', 'smtpout.secureserver.net', 465, 1);
   insertSenderAccount.run('acc_hyra', 'HYRA Connect', 'sales@hyraconnect.com', 'HYRA Connect Sales', 'smtpout.secureserver.net', 465, 1);
 
@@ -58,6 +58,7 @@ try {
           verification_status = 'Authorized',
           verification_error = NULL
       WHERE id = 'acc_xunaris'
+      WHERE id IN ('acc_xunaris', 'acc_xunaris_info')
     `).run(
       process.env.XUNARIS_SMTP_HOST || 'smtpout.secureserver.net',
       Number(process.env.XUNARIS_SMTP_PORT) || 465,
