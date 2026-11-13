@@ -194,7 +194,7 @@ export const getAllSenderAccounts = () => {
       let verStatus = acc.verification_status;
 
       // Overlay environment variables securely
-      if (acc.id === 'acc_xunaris' || acc.email === 'sales@xunaris.com') {
+      if (acc.id === 'acc_xunaris' || acc.id === 'acc_xunaris_info' || acc.email === 'sales@xunaris.com' || acc.email === 'info@xunaris.com') {
         if (process.env.XUNARIS_SMTP_HOST) host = process.env.XUNARIS_SMTP_HOST;
         if (process.env.XUNARIS_SMTP_PORT) port = Number(process.env.XUNARIS_SMTP_PORT);
         if (process.env.XUNARIS_SMTP_SECURE !== undefined) secure = process.env.XUNARIS_SMTP_SECURE !== 'false';
@@ -256,7 +256,7 @@ export const getSenderAccount = (identifier) => {
     // Securely overlay environment variables (only if .env has active credentials and not in sandbox)
     const isSandbox = account.smtp_host === 'smtp.ethereal.email';
     if (!isSandbox) {
-      if (account.id === 'acc_xunaris' || account.email === 'sales@xunaris.com') {
+      if (account.id === 'acc_xunaris' || account.id === 'acc_xunaris_info' || account.email === 'sales@xunaris.com' || account.email === 'info@xunaris.com') {
         if (process.env.XUNARIS_SMTP_PASS && process.env.XUNARIS_SMTP_PASS.trim().length > 0) {
           if (process.env.XUNARIS_SMTP_HOST) account.smtp_host = process.env.XUNARIS_SMTP_HOST;
           if (process.env.XUNARIS_SMTP_PORT) account.smtp_port = Number(process.env.XUNARIS_SMTP_PORT);
@@ -342,7 +342,7 @@ export const verifySenderAccountConnection = async (accountId) => {
   const secure = account.smtp_secure === 1 || port === 465;
 
   if (!user || !pass) {
-    const envVar = (account.id === 'acc_xunaris' || account.email === 'sales@xunaris.com') ? 'XUNARIS_SMTP_PASS' : 'HYRA_SMTP_PASS';
+    const envVar = (account.id === 'acc_xunaris' || account.id === 'acc_xunaris_info' || account.email === 'sales@xunaris.com' || account.email === 'info@xunaris.com') ? 'XUNARIS_SMTP_PASS' : 'HYRA_SMTP_PASS';
     throw new Error(`SMTP credentials are missing for ${account.email}. Please set ${envVar} in your .env file or enter the password in Admin Settings.`);
   }
 
@@ -604,7 +604,7 @@ export const createTransporterForAccount = (account) => {
 
   // 1. Check account-specific environment variables if missing in DB
   if (!user || !pass) {
-    if (account?.id === 'acc_xunaris' || account?.email === 'sales@xunaris.com') {
+    if (account?.id === 'acc_xunaris' || account?.id === 'acc_xunaris_info' || account?.email === 'sales@xunaris.com' || account?.email === 'info@xunaris.com') {
       if (process.env.XUNARIS_SMTP_USER && process.env.XUNARIS_SMTP_PASS) {
         user = process.env.XUNARIS_SMTP_USER;
         pass = process.env.XUNARIS_SMTP_PASS;
@@ -845,11 +845,11 @@ export const sendRealEmail = async ({
       try {
         const brevoResult = await sendViaBrevoApi({
           fromEmail: account.email || 'sales@hyraconnect.com',
-          fromName: account.display_name || 'HYRA Connect',
+          fromName: account.display_name || (account.email?.includes('xunaris') ? 'Xunaris' : 'HYRA Connect'),
           to: targetRecipient,
-          subject: subject || 'HYRA Connect Update',
+          subject: subject || (account.email?.includes('xunaris') ? 'Xunaris Update' : 'HYRA Connect Update'),
           html: apiHtml || `<p>${cleanText || ''}</p>`,
-          text: cleanText || subject || 'Executive Message from HYRA Connect',
+          text: cleanText || subject || (account.email?.includes('xunaris') ? 'Executive Message from Xunaris' : 'Executive Message from HYRA Connect'),
           replyTo: account.email
         });
 
