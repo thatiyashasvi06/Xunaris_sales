@@ -8,7 +8,18 @@ const CRMContext = createContext(null);
 export const CRMProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(() => storageService.getCurrentUser());
   const [activeNav, setActiveNav] = useState('dashboard');
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedInState] = useState(() => {
+  return sessionStorage.getItem('xun_crm_logged_in') === 'true';
+});
+
+const setIsLoggedIn = (status) => {
+  setIsLoggedInState(Boolean(status));
+  if (status) {
+    sessionStorage.setItem('xun_crm_logged_in', 'true');
+  } else {
+    sessionStorage.removeItem('xun_crm_logged_in');
+  }
+};
 
   // Dynamic Collections
   const [leads, setLeads] = useState(() => storageService.getLeads());
