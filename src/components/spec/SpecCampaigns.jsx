@@ -144,6 +144,17 @@ export const SpecCampaigns = () => {
       smtp_secure: 1
     },
     {
+      id: 'acc_xunaris_info',
+      email: 'info@xunaris.com',
+      display_name: 'Xunaris Info',
+      business_vertical: 'Xunaris',
+      is_verified: 1,
+      verification_status: 'Authorized',
+      smtp_host: 'smtpout.secureserver.net',
+      smtp_port: 465,
+      smtp_secure: 1
+    },
+    {
       id: 'acc_xunaris',
       email: 'sales@xunaris.com',
       display_name: 'Xunaris Sales',
@@ -3248,8 +3259,19 @@ export const SpecCampaigns = () => {
                       onChange={(e) => setSenderAccount(e.target.value)}
                       className="appearance-none bg-transparent text-xs text-slate-900 font-semibold cursor-pointer pr-7 focus:outline-hidden w-full font-sans"
                     >
-                      <option value="sales@hyraconnect.com">HYRA Connect Sales &lt;sales@hyraconnect.com&gt;</option>
-                      <option value="sales@xunaris.com">Xunaris Sales &lt;sales@xunaris.com&gt;</option>
+                      {senderAccounts && senderAccounts.length > 0 ? (
+                        senderAccounts.map(acc => (
+                          <option key={acc.id} value={acc.email}>
+                            {acc.display_name} &lt;{acc.email}&gt;
+                          </option>
+                        ))
+                      ) : (
+                        <>
+                          <option value="sales@hyraconnect.com">HYRA Connect Sales &lt;sales@hyraconnect.com&gt;</option>
+                          <option value="info@xunaris.com">Xunaris Info &lt;info@xunaris.com&gt;</option>
+                          <option value="sales@xunaris.com">Xunaris Sales &lt;sales@xunaris.com&gt;</option>
+                        </>
+                      )}
                     </select>
                     <ChevronDown className="w-4 h-4 text-slate-600 pointer-events-none absolute right-1" />
                   </div>
@@ -3304,8 +3326,19 @@ export const SpecCampaigns = () => {
                       onChange={(e) => setSenderAccount(e.target.value)}
                       className="appearance-none bg-transparent text-xs text-slate-900 font-semibold cursor-pointer pr-7 focus:outline-hidden w-full font-sans"
                     >
-                      <option value="sales@hyraconnect.com">HYRA Connect Sales &lt;sales@hyraconnect.com&gt;</option>
-                      <option value="sales@xunaris.com">Xunaris Sales &lt;sales@xunaris.com&gt;</option>
+                      {senderAccounts && senderAccounts.length > 0 ? (
+                        senderAccounts.map(acc => (
+                          <option key={acc.id} value={acc.email}>
+                            {acc.display_name} &lt;{acc.email}&gt;
+                          </option>
+                        ))
+                      ) : (
+                        <>
+                          <option value="sales@hyraconnect.com">HYRA Connect Sales &lt;sales@hyraconnect.com&gt;</option>
+                          <option value="info@xunaris.com">Xunaris Info &lt;info@xunaris.com&gt;</option>
+                          <option value="sales@xunaris.com">Xunaris Sales &lt;sales@xunaris.com&gt;</option>
+                        </>
+                      )}
                     </select>
                     <ChevronDown className="w-4 h-4 text-slate-600 pointer-events-none absolute right-1" />
                   </div>
