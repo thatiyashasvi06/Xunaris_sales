@@ -12,6 +12,7 @@ export const seedDatabase = () => {
   }
 
   console.log('[Seed] Seeding specification initial data...');
+  const withSample = process.env.SEED_SAMPLE_DATA === 'true';
 
   // No password is stored in source code. Set SEED_ADMIN_PASSWORD (min 12 chars) before the first start;
   // otherwise a random one is generated and printed once in the server log. Change it after first login.
@@ -91,6 +92,8 @@ export const seedDatabase = () => {
 
   hyraServices.forEach(s => insertService.run(`srv_hyra_${s.code.toLowerCase()}`, 'HYRA', s.code, s.label));
 
+  // Sample companies, leads, deals, activities, campaigns and recruitment records are only created on request
+  if (withSample) {
   // 3. Seed Companies & Contacts
   const insertCompany = db.prepare(`
     INSERT INTO companies (id, name, normalized_name, website, normalized_domain, industry, city, country, business_unit, account_owner, status, notes)
@@ -381,6 +384,7 @@ export const seedDatabase = () => {
     5
   );
 
+  }
   // 8. Seed Automation Rules
   const insertRule = db.prepare(`
     INSERT INTO automation_rules (id, rule_name, trigger_event, recipient_type, enabled, description)
@@ -414,6 +418,7 @@ export const seedDatabase = () => {
     'Creates delivery handoff task when deal stage is transitioned to Won.'
   );
 
+  if (withSample) {
   // 9. Seed Recruitment Module
   db.prepare(`
     INSERT INTO recruitment_partners (id, name, website, contact_name, contact_email, phone, status, payroll_model, notes)
@@ -461,6 +466,7 @@ export const seedDatabase = () => {
     'Shortlisted'
   );
 
+  }
   console.log('[Seed] Database initialization completed successfully!');
 };
 

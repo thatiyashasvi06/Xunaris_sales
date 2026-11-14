@@ -71,32 +71,6 @@ export const SpecSidebar = () => {
           );
         })}
 
-        {/* Developer & Backend Swagger API Section */}
-        <div className="pt-5 px-3 pb-1.5 text-[10px] font-bold tracking-wider text-emerald-400/90 uppercase flex items-center justify-between">
-          <span>DEVELOPER & BACKEND</span>
-          <span className="text-[9px] bg-emerald-400/15 text-emerald-300 border border-emerald-400/30 px-1.5 py-0.2 rounded font-mono">PORT 5000</span>
-        </div>
-        {(() => {
-          const isActive = activeNav === 'swagger';
-          return (
-            <button
-              onClick={() => setActiveNav('swagger')}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                isActive
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold shadow-md shadow-emerald-900/30'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-              }`}
-            >
-              <div className="flex items-center gap-2.5 truncate">
-                <Terminal className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span className="truncate">Swagger REST API</span>
-              </div>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 shrink-0 ml-1">
-                LIVE
-              </span>
-            </button>
-          );
-        })()}
       </nav>
 
       {/* Role Indicator & Sign Out Footer */}

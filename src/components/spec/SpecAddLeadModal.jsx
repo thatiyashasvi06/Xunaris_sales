@@ -793,10 +793,6 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
             {/* MANUAL BUTTONS: Save Lead, Save & Add Another, Cancel     */}
             {/* ========================================================= */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-100">
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-mono">
-                <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-                <span>Backend pipeline: validate &rarr; match &rarr; create &rarr; assign &rarr; task &rarr; notify</span>
-              </div>
 
               <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-end">
                 {/* Cancel Button */}

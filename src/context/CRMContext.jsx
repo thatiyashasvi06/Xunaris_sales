@@ -50,10 +50,10 @@ const setIsLoggedIn = (status) => {
           apiClient.getContacts(),
           apiClient.getActivities(),
           apiClient.getUsers(),
-          apiClient.getAdminRules()
+          currentUser?.role === 'ADMIN' ? apiClient.getAdminRules() : Promise.resolve([])
         ]);
 
-        if (bLeads.status === 'fulfilled' && Array.isArray(bLeads.value) && bLeads.value.length > 0) {
+        if (bLeads.status === 'fulfilled' && Array.isArray(bLeads.value)) {
           setLeads(bLeads.value.map(l => ({
             ...l,
             serviceLine: l.business_vertical_name || (l.business_vertical_code === 'XUN' ? 'Xunaris Services' : 'HYRA Connect'),
@@ -73,7 +73,7 @@ const setIsLoggedIn = (status) => {
           })));
         }
 
-        if (bOpps.status === 'fulfilled' && Array.isArray(bOpps.value) && bOpps.value.length > 0) {
+        if (bOpps.status === 'fulfilled' && Array.isArray(bOpps.value)) {
           setOpportunities(bOpps.value.map(o => ({
             ...o,
             businessUnit: o.business_vertical_name,
@@ -89,11 +89,11 @@ const setIsLoggedIn = (status) => {
           })));
         }
 
-        if (bComps.status === 'fulfilled' && Array.isArray(bComps.value) && bComps.value.length > 0) {
+        if (bComps.status === 'fulfilled' && Array.isArray(bComps.value)) {
           setCompanies(bComps.value);
         }
 
-        if (bContacts.status === 'fulfilled' && Array.isArray(bContacts.value) && bContacts.value.length > 0) {
+        if (bContacts.status === 'fulfilled' && Array.isArray(bContacts.value)) {
           setContacts(bContacts.value.map(c => ({
             id: c.id,
             companyId: c.company_id,
@@ -108,7 +108,7 @@ const setIsLoggedIn = (status) => {
           })));
         }
 
-        if (bActs.status === 'fulfilled' && Array.isArray(bActs.value) && bActs.value.length > 0) {
+        if (bActs.status === 'fulfilled' && Array.isArray(bActs.value)) {
           setActivities(bActs.value.map(a => ({
             ...a,
             relatedTo: a.related_to,

@@ -59,30 +59,6 @@ export const SpecHeader = ({ title, subtitle, actionButtons = [] }) => {
                 </button>
               ))}
 
-              <div className="pt-1.5 mt-1 border-t border-slate-100 px-3 space-y-1">
-                <button
-                  onClick={() => {
-                    if (window.confirm('Clear all sample leads, deals, companies, and activities for live testing?')) {
-                      clearAllTestData();
-                      setUserDropdown(false);
-                    }
-                  }}
-                  className="w-full text-left py-1 text-[11px] text-rose-600 hover:text-rose-800 flex items-center gap-1.5 font-semibold"
-                >
-                  <RotateCcw className="w-3 h-3 text-rose-500" />
-                  <span>Clear Test Data (Live Testing)</span>
-                </button>
-                <button
-                  onClick={() => {
-                    resetToSpecification();
-                    setUserDropdown(false);
-                  }}
-                  className="w-full text-left py-1 text-[11px] text-slate-500 hover:text-slate-800 flex items-center gap-1.5"
-                >
-                  <RotateCcw className="w-3 h-3 text-slate-400" />
-                  <span>Reload Mockup Sample Data</span>
-                </button>
-              </div>
             </div>
           )}
         </div>

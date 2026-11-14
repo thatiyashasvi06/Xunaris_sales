@@ -58,7 +58,7 @@ export const storageService = {
   // Leads
   getLeads: () => {
     const data = localStorage.getItem(SPEC_STORAGE_KEYS.LEADS);
-    return data !== null ? JSON.parse(data) : INITIAL_SPEC_LEADS;
+    return data !== null ? JSON.parse(data) : [];
   },
   setLeads: (leads) => {
     localStorage.setItem(SPEC_STORAGE_KEYS.LEADS, JSON.stringify(leads));
@@ -67,7 +67,7 @@ export const storageService = {
   // Companies
   getCompanies: () => {
     const data = localStorage.getItem(SPEC_STORAGE_KEYS.COMPANIES);
-    return data !== null ? JSON.parse(data) : INITIAL_COMPANIES;
+    return data !== null ? JSON.parse(data) : [];
   },
   setCompanies: (companies) => {
     localStorage.setItem(SPEC_STORAGE_KEYS.COMPANIES, JSON.stringify(companies));
@@ -76,7 +76,7 @@ export const storageService = {
   // Contacts
   getContacts: () => {
     const data = localStorage.getItem(SPEC_STORAGE_KEYS.CONTACTS);
-    return data !== null ? JSON.parse(data) : INITIAL_CONTACTS;
+    return data !== null ? JSON.parse(data) : [];
   },
   setContacts: (contacts) => {
     localStorage.setItem(SPEC_STORAGE_KEYS.CONTACTS, JSON.stringify(contacts));
@@ -85,7 +85,7 @@ export const storageService = {
   // Opportunities
   getOpportunities: () => {
     const data = localStorage.getItem(SPEC_STORAGE_KEYS.OPPORTUNITIES);
-    return data !== null ? JSON.parse(data) : INITIAL_OPPORTUNITIES;
+    return data !== null ? JSON.parse(data) : [];
   },
   setOpportunities: (opps) => {
     localStorage.setItem(SPEC_STORAGE_KEYS.OPPORTUNITIES, JSON.stringify(opps));
@@ -94,7 +94,7 @@ export const storageService = {
   // Activities
   getActivities: () => {
     const data = localStorage.getItem(SPEC_STORAGE_KEYS.ACTIVITIES);
-    return data !== null ? JSON.parse(data) : INITIAL_ACTIVITIES;
+    return data !== null ? JSON.parse(data) : [];
   },
   setActivities: (acts) => {
     localStorage.setItem(SPEC_STORAGE_KEYS.ACTIVITIES, JSON.stringify(acts));
@@ -103,7 +103,7 @@ export const storageService = {
   // Campaigns
   getCampaigns: () => {
     const data = localStorage.getItem(SPEC_STORAGE_KEYS.CAMPAIGNS);
-    return data !== null ? JSON.parse(data) : INITIAL_CAMPAIGNS;
+    return data !== null ? JSON.parse(data) : [];
   },
   setCampaigns: (camps) => {
     localStorage.setItem(SPEC_STORAGE_KEYS.CAMPAIGNS, JSON.stringify(camps));
@@ -112,7 +112,7 @@ export const storageService = {
   // Reports
   getReports: () => {
     const data = localStorage.getItem(SPEC_STORAGE_KEYS.REPORTS);
-    return data ? JSON.parse(data) : INITIAL_REPORTS;
+    return data ? JSON.parse(data) : [];
   },
   setReports: (reps) => {
     localStorage.setItem(SPEC_STORAGE_KEYS.REPORTS, JSON.stringify(reps));
@@ -148,7 +148,7 @@ export const storageService = {
   // Recruitment: Partners
   getPartners: () => {
     const data = localStorage.getItem(SPEC_STORAGE_KEYS.PARTNERS);
-    return data ? JSON.parse(data) : INITIAL_PARTNERS;
+    return data ? JSON.parse(data) : [];
   },
   setPartners: (partners) => {
     localStorage.setItem(SPEC_STORAGE_KEYS.PARTNERS, JSON.stringify(partners));
@@ -157,7 +157,7 @@ export const storageService = {
   // Recruitment: Recruiters
   getRecruiters: () => {
     const data = localStorage.getItem(SPEC_STORAGE_KEYS.RECRUITERS);
-    return data ? JSON.parse(data) : INITIAL_RECRUITERS;
+    return data ? JSON.parse(data) : [];
   },
   setRecruiters: (recruiters) => {
     localStorage.setItem(SPEC_STORAGE_KEYS.RECRUITERS, JSON.stringify(recruiters));
@@ -166,7 +166,7 @@ export const storageService = {
   // Recruitment: Jobs
   getJobs: () => {
     const data = localStorage.getItem(SPEC_STORAGE_KEYS.JOBS);
-    return data ? JSON.parse(data) : INITIAL_JOBS;
+    return data ? JSON.parse(data) : [];
   },
   setJobs: (jobs) => {
     localStorage.setItem(SPEC_STORAGE_KEYS.JOBS, JSON.stringify(jobs));
@@ -175,7 +175,7 @@ export const storageService = {
   // Recruitment: Candidates
   getCandidates: () => {
     const data = localStorage.getItem(SPEC_STORAGE_KEYS.CANDIDATES);
-    return data ? JSON.parse(data) : INITIAL_CANDIDATES;
+    return data ? JSON.parse(data) : [];
   },
   setCandidates: (candidates) => {
     localStorage.setItem(SPEC_STORAGE_KEYS.CANDIDATES, JSON.stringify(candidates));
