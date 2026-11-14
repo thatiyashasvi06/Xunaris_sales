@@ -6,7 +6,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DB_DIR = path.join(__dirname, '../../data');
+// On hosts with a wiped filesystem (e.g. Render free), set DATA_DIR to a persistent disk mount, e.g. /var/data
+const DB_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(__dirname, '../../data');
 if (!fs.existsSync(DB_DIR)) {
   fs.mkdirSync(DB_DIR, { recursive: true });
 }
@@ -94,5 +95,8 @@ try {
 
 
 console.log(`[DB] Connected to SQLite database at: ${DB_PATH}`);
+if (process.env.RENDER && !process.env.DATA_DIR) {
+  console.warn('[DB] WARNING: running on Render without DATA_DIR. If no persistent disk is attached, ALL data and passwords are lost on every restart or deploy.');
+}
 
 export default db;
