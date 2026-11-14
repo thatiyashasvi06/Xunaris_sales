@@ -23,6 +23,7 @@ import notificationsRoutes from './routes/notificationsRoutes.js';
 import recruitmentRoutes from './routes/recruitmentRoutes.js';
 import salesAgentRoutes, { publicBookingRouter } from './routes/salesAgentRoutes.js';
 import { authMiddleware } from './middleware/authMiddleware.js';
+import { startBackupSchedule } from './services/dbBackup.js';
 import { runCycle } from './services/salesAgent.js';
 
 import swaggerUi from 'swagger-ui-express';
@@ -164,6 +165,7 @@ applyEnvPasswords();
 
 // Start Background Worker
 startBackgroundWorker(15000);
+startBackupSchedule(db);
 
 // Sales Agent runs every 5 minutes (it only acts when switched on in the Sales Agent screen)
 setInterval(() => runCycle().catch((e) => console.error('[SalesAgent] cycle error:', e.message)), 5 * 60 * 1000);

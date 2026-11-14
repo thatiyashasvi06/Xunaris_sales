@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { restoreIfMissing } from '../services/dbBackup.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,6 +14,9 @@ if (!fs.existsSync(DB_DIR)) {
 }
 
 const DB_PATH = path.join(DB_DIR, 'xunaris_crm.sqlite');
+// If this host starts with an empty disk, bring back the latest cloud backup first (no-op when backup is not configured)
+await restoreIfMissing(DB_PATH);
+
 const db = new Database(DB_PATH);
 
 // Configure Pragmas
@@ -95,8 +99,5 @@ try {
 
 
 console.log(`[DB] Connected to SQLite database at: ${DB_PATH}`);
-if (process.env.RENDER && !process.env.DATA_DIR) {
-  console.warn('[DB] WARNING: running on Render without DATA_DIR. If no persistent disk is attached, ALL data and passwords are lost on every restart or deploy.');
-}
 
 export default db;
