@@ -1,7 +1,8 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import db from '../db/database.js';
-import { authMiddleware, requireRole } from '../middleware/authMiddleware.js';
+import { authMiddleware, requireRole, JWT_SECRET } from '../middleware/authMiddleware.js';
 import { generateActivityId } from '../services/idGenerator.js';
 import { queueEmailAlert } from '../services/backgroundWorker.js';
 import { logAuditEvent } from '../middleware/auditMiddleware.js';
@@ -11,6 +12,13 @@ const router = express.Router();
 // Guard all admin routes
 router.use(authMiddleware);
 router.use(requireRole('ADMIN'));
+
+// Short-lived link that opens the API documentation (/api-docs) for admins only
+router.post('/docs-link', (req, res) => {
+  const t = jwt.sign({ scope: 'docs' }, JWT_SECRET, { expiresIn: '2m' });
+  logAuditEvent(req.user.email, 'OPEN_API_DOCS', 'SYSTEM', null, {});
+  res.json({ url: `/api-docs/?t=${t}` });
+});
 
 // GET all users
 router.get('/users', (req, res) => {

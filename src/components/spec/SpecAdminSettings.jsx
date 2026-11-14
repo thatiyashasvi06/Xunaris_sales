@@ -421,7 +421,19 @@ export const SpecAdminSettings = () => {
           { label: 'Diagnostic Test Send', onClick: () => setIsDiagOpen(true), variant: 'secondary' },
           { label: 'Add User', onClick: handleAddUser, variant: 'secondary' },
           { label: 'Save Settings', onClick: handleSaveSettings },
-          { label: 'Clear Test Data', onClick: handleClearTestData, variant: 'secondary' }
+          { label: 'Clear Test Data', onClick: handleClearTestData, variant: 'secondary' },
+          {
+            label: 'API Docs',
+            variant: 'secondary',
+            onClick: async () => {
+              try {
+                const r = await apiClient.request('/admin/docs-link', { method: 'POST' });
+                window.open(r.url, '_blank', 'noopener');
+              } catch (e) {
+                setNotice(`Could not open the API docs: ${e.message}`);
+              }
+            }
+          }
         ]}
       />
 

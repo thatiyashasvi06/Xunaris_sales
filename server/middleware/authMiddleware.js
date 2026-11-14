@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import db from '../db/database.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'xunaris_super_secret_jwt_key_2026';
+export const JWT_SECRET = process.env.JWT_SECRET || 'xunaris_super_secret_jwt_key_2026';
 
 // Insecure shortcuts (x-user-id header, anonymous admin) are OFF unless explicitly enabled. Never set this on a hosted server.
 const DEV_AUTH = process.env.ALLOW_DEV_AUTH === 'true';

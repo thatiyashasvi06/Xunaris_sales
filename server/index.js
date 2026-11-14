@@ -22,7 +22,8 @@ import adminRoutes from './routes/adminRoutes.js';
 import notificationsRoutes from './routes/notificationsRoutes.js';
 import recruitmentRoutes from './routes/recruitmentRoutes.js';
 import salesAgentRoutes, { publicBookingRouter } from './routes/salesAgentRoutes.js';
-import { authMiddleware } from './middleware/authMiddleware.js';
+import jwt from 'jsonwebtoken';
+import { authMiddleware, JWT_SECRET } from './middleware/authMiddleware.js';
 import { startBackupSchedule } from './services/dbBackup.js';
 import { runCycle } from './services/salesAgent.js';
 
@@ -49,7 +50,26 @@ if (fs.existsSync(distPath)) {
 }
 
 // Swagger UI Interactive API Documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// API documentation is for administrators only. An admin gets a 2-minute link from Admin Settings
+// (POST /api/admin/docs-link); opening it starts a 30-minute cookie session limited to /api-docs.
+app.use('/api-docs', (req, res, next) => {
+  try {
+    if (req.query.t) {
+      const link = jwt.verify(String(req.query.t), JWT_SECRET);
+      if (link.scope !== 'docs') throw new Error('wrong scope');
+      const session = jwt.sign({ scope: 'docs-session' }, JWT_SECRET, { expiresIn: '30m' });
+      const secure = req.secure || req.headers['x-forwarded-proto'] === 'https';
+      res.setHeader('Set-Cookie', `docs_session=${session}; Path=/api-docs; HttpOnly; SameSite=Strict; Max-Age=1800${secure ? '; Secure' : ''}`);
+      return res.redirect('/api-docs/');
+    }
+    const cookie = (req.headers.cookie || '').split(';').map((c) => c.trim()).find((c) => c.startsWith('docs_session='));
+    if (!cookie) throw new Error('no session');
+    if (jwt.verify(cookie.slice('docs_session='.length), JWT_SECRET).scope !== 'docs-session') throw new Error('wrong scope');
+    return next();
+  } catch (e) {
+    return res.status(401).send('Sign in to the CRM as an administrator and open the API docs from Admin Settings.');
+  }
+}, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/swagger', (req, res) => res.redirect('/api-docs'));
 
 // Status Page HTML Generator
