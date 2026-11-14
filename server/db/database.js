@@ -39,6 +39,12 @@ for (const [col, ddl] of [
   if (!userCols.includes(col)) db.exec(`ALTER TABLE users ADD COLUMN ${col} ${ddl}`);
 }
 
+// Leads AI: the brief, next action and draft message are stored on the lead
+const leadCols = db.prepare('PRAGMA table_info(leads)').all().map((c) => c.name);
+for (const col of ['ai_summary', 'ai_next_action', 'ai_message', 'ai_company_summary', 'ai_engine', 'ai_updated_at']) {
+  if (!leadCols.includes(col)) db.exec(`ALTER TABLE leads ADD COLUMN ${col} TEXT`);
+}
+
 // Ensure default company sender accounts exist (Xunaris & HYRA Connect)
 try {
   const insertSenderAccount = db.prepare(`

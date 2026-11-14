@@ -228,6 +228,7 @@ export const SpecToday = () => {
                         <Chip tone={l.vertical === 'XUN' ? 'xun' : 'hyra'}>{l.vertical === 'XUN' ? 'Xunaris' : 'HYRA'}</Chip>
                       </span>
                       <span className="block text-xs text-slate-500 truncate">{l.contact}{l.title ? `, ${l.title}` : ''} · {ago(l.ageHours)}{me.isHead ? ` · ${l.owner}` : ''}</span>
+                      {l.nextAction && <span className="block text-xs font-medium text-hyra-700 truncate mt-0.5">{l.nextAction}</span>}
                     </span>
                     <span className="hidden sm:block"><Chip tone={l.tone}>{l.reason}</Chip></span>
                     <span className="text-xs font-bold text-hyra-700 shrink-0">Open</span>

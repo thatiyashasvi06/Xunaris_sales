@@ -1,6 +1,7 @@
 import dns from 'dns/promises';
 import net from 'net';
 import db from '../db/database.js';
+import { askGeminiJson, geminiConfigured } from './gemini.js';
 
 /**
  * Website -> ideal customer profile.
@@ -50,7 +51,7 @@ const assertPublicUrl = async (raw) => {
   return u;
 };
 
-const fetchPage = async (raw) => {
+export const fetchPage = async (raw) => {
   let url = await assertPublicUrl(raw);
   for (let hop = 0; hop < 4; hop++) {
     const res = await fetch(url, {
@@ -116,24 +117,15 @@ export const heuristicIcp = ({ title, desc, text }) => {
 };
 
 const geminiIcp = async (page) => {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) return null;
-  try {
-    const prompt = `You are a B2B sales strategist. From this company website text, write the ideal customer profile for a salesperson.\nReturn JSON: {"summary":[3 short lines: what the company sells, which companies buy it and why, which job titles to contact],"industries":[up to 5 industry names],"titles":[up to 6 job titles]}.\nUse only what the text supports.\n\nTITLE: ${page.title}\nDESCRIPTION: ${page.desc}\nTEXT: ${page.text.slice(0, 6000)}`;
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: 'application/json' } }),
-      signal: AbortSignal.timeout(20000)
-    });
-    if (!res.ok) return null;
-    const out = JSON.parse((await res.json()).candidates[0].content.parts[0].text);
-    const arr = (v, n) => (Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean).slice(0, n) : []);
-    const summary = arr(out.summary, 3);
-    if (summary.length < 2) return null;
-    return { engine: 'Gemini AI', summary, industries: arr(out.industries, 5), titles: arr(out.titles, 6) };
-  } catch {
-    return null;
-  }
+  if (!geminiConfigured()) return null;
+  const out = await askGeminiJson(
+    `You are a B2B sales strategist. From this company website text, write the ideal customer profile for a salesperson.\nReturn JSON: {"summary":[3 short lines: what the company sells, which companies buy it and why, which job titles to contact],"industries":[up to 5 industry names],"titles":[up to 6 job titles]}.\nUse only what the text supports.\n\nTITLE: ${page.title}\nDESCRIPTION: ${page.desc}\nTEXT: ${page.text.slice(0, 6000)}`
+  );
+  if (!out) return null;
+  const arr = (v, n) => (Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean).slice(0, n) : []);
+  const summary = arr(out.summary, 3);
+  if (summary.length < 2) return null;
+  return { engine: 'Gemini AI', summary, industries: arr(out.industries, 5), titles: arr(out.titles, 6) };
 };
 
 export const buildIcp = async (website) => {

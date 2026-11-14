@@ -23,6 +23,8 @@ import notificationsRoutes from './routes/notificationsRoutes.js';
 import recruitmentRoutes from './routes/recruitmentRoutes.js';
 import salesAgentRoutes, { publicBookingRouter } from './routes/salesAgentRoutes.js';
 import teamRoutes from './routes/teamRoutes.js';
+import leadAiRoutes from './routes/leadAiRoutes.js';
+import { refreshStale } from './services/leadAi.js';
 import { ensureTeamDefaults, reassignStaleLeads } from './services/routing.js';
 import jwt from 'jsonwebtoken';
 import { authMiddleware, JWT_SECRET } from './middleware/authMiddleware.js';
@@ -159,6 +161,7 @@ app.use('/api/notifications', authMiddleware, notificationsRoutes);
 app.use('/api/recruitment', authMiddleware, recruitmentRoutes);
 app.use('/api/sales-agent', salesAgentRoutes);
 app.use('/api/team', authMiddleware, teamRoutes);
+app.use('/api/lead-ai', authMiddleware, leadAiRoutes);
 app.use('/api/public', publicBookingRouter);
 
 // Client-Side Routing Fallback (serves React frontend for all non-API paths, compatible with Express v5)
@@ -196,6 +199,10 @@ setInterval(() => runCycle().catch((e) => console.error('[SalesAgent] cycle erro
 
 // Every 5 minutes: move untouched or orphaned new leads to the next available person
 setInterval(() => { try { reassignStaleLeads(); } catch (e) { console.error('[Routing] error:', e.message); } }, 5 * 60 * 1000);
+
+// Leads AI: write briefs for leads that have none or changed (small batches keep AI use low)
+setTimeout(() => refreshStale(5).catch(() => {}), 45 * 1000);
+setInterval(() => refreshStale(5).catch((e) => console.error('[LeadAI] error:', e.message)), 5 * 60 * 1000);
 
 // Start Server
 app.listen(PORT, () => {

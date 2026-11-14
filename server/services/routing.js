@@ -212,7 +212,8 @@ export const buildToday = (user) => {
       id: l.id, company: l.company_name, contact: l.contact_name, title: l.job_title, status: l.lead_status,
       vertical: l.business_vertical_code, source: l.lead_source, owner: l.owner_name || 'Unassigned', ownerEmail: l.owner_email || '',
       score, hot, ageHours: Math.round(ageHours), slaHours: sla, overdue: l.lead_status === 'New' && ageHours >= sla,
-      requirement: (l.requirement_summary || '').slice(0, 140)
+      requirement: (l.requirement_summary || '').slice(0, 140),
+      nextAction: l.ai_next_action || ''
     };
   });
   const visible = isHead ? scored : scored.filter((l) => mine(l.ownerEmail));

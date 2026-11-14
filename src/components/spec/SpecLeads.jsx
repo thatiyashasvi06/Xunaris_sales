@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCRM } from '../../context/CRMContext';
 import { SpecHeader } from './SpecHeader';
 import { SpecAddLeadModal } from './SpecAddLeadModal';
+import { LeadAiBrief } from './LeadAiBrief';
 import { BulkLeadUploadModal } from '../crm/BulkLeadUploadModal';
 import { SERVICE_CATALOG } from '../../data/crmSpecData';
 import { CheckCircle2, AlertCircle, Plus, Trash2, Mail, Send, X, ShieldCheck, ExternalLink, Check, ChevronDown } from 'lucide-react';
@@ -501,6 +502,14 @@ export const SpecLeads = () => {
               </span>
             )}
           </div>
+
+          {selectedLeadId && (
+            <LeadAiBrief
+              key={selectedLeadId}
+              leadId={selectedLeadId}
+              signature={`${leads.find((l) => l.id === selectedLeadId)?.status}|${leads.find((l) => l.id === selectedLeadId)?.priority}`}
+            />
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* LEAD NAME* */}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCRM } from '../../context/CRMContext';
 import { parseLinkedInPost } from '../../utils/parseLinkedInPost';
+import { apiClient } from '../../services/apiClient';
 import {
   SERVICE_CATALOG
 } from '../../data/crmSpecData';
@@ -36,7 +37,7 @@ import {
 } from 'lucide-react';
 
 export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
-  const { createLead, currentUser, users, campaigns, companies } = useCRM();
+  const { createLead, currentUser, users, campaigns, companies, setActiveNav } = useCRM();
 
   // Form State
   const initialFormState = {
@@ -68,6 +69,28 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successLink, setSuccessLink] = useState(null); // { id, name }
   const [notificationMsg, setNotificationMsg] = useState('');
+  const [dupes, setDupes] = useState([]);
+
+  // Look for the same email, phone or company already in the CRM (after a short pause in typing)
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const email = formData.workEmail.includes('@') ? formData.workEmail.trim() : '';
+    const phone = formData.phone.replace(/[^0-9]/g, '').length >= 8 ? formData.phone : '';
+    const company = formData.companyName.trim().length >= 3 ? formData.companyName.trim() : '';
+    if (!email && !phone && !company) { setDupes([]); return undefined; }
+    const t = setTimeout(() => {
+      const q = new URLSearchParams({ email, phone, company }).toString();
+      apiClient.request(`/lead-ai/duplicates?${q}`).then(setDupes).catch(() => setDupes([]));
+    }, 600);
+    return () => clearTimeout(t);
+  }, [isOpen, formData.workEmail, formData.phone, formData.companyName]);
+
+  const openExisting = (id) => {
+    try { sessionStorage.setItem('xun_open_lead', id); } catch {}
+    setActiveNav('leads');
+    onClose();
+  };
+
   const [pasteText, setPasteText] = useState('');
   const [pasteResult, setPasteResult] = useState(null);
 
@@ -317,6 +340,21 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
               </div>
             )}
           </div>
+
+          {dupes.length > 0 && (
+            <div className={`p-3.5 rounded-2xl border text-xs space-y-2 ${dupes.some((d) => d.strong) ? 'bg-rose-50 border-rose-200' : 'bg-amber-50 border-amber-200'}`} role="alert">
+              <div className="font-bold text-ink-900">{dupes.some((d) => d.strong) ? 'This lead is probably already in your CRM' : 'This company is already in your CRM'}</div>
+              <ul className="space-y-1.5">
+                {dupes.map((d) => (
+                  <li key={d.id} className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-slate-700"><strong>{d.company}</strong>, {d.contact} · {d.status} · owner {d.owner || 'none'} <span className="text-slate-500">({d.match})</span></span>
+                    <button type="button" onClick={() => openExisting(d.id)} className="font-bold text-hyra-700 underline">Open it</button>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-slate-500">You can still save this as a new lead if it is a different person.</p>
+            </div>
+          )}
 
           <form
             onSubmit={(e) => {

@@ -6,6 +6,7 @@ import { validateLeadPayload, checkPossibleDuplicate } from '../services/leadVal
 import { queueEmailAlert, createNotification } from '../services/backgroundWorker.js';
 import { logAuditEvent } from '../middleware/auditMiddleware.js';
 import { routeNewLead, logRouting } from '../services/routing.js';
+import { refreshLead } from '../services/leadAi.js';
 
 const router = express.Router();
 const upload = multer({ limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
@@ -224,6 +225,8 @@ router.post('/', (req, res) => {
 
   const createdLead = db.prepare('SELECT * FROM leads WHERE id = ?').get(leadId);
   res.status(201).json(createdLead);
+  // Write the AI brief in the background so saving stays instant
+  setImmediate(() => refreshLead(leadId).catch((e) => console.warn('[LeadAI] brief skipped:', e.message)));
 });
 
 // POST /api/leads/:id/qualify: Atomically converts lead to Opportunity
