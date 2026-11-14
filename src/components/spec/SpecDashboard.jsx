@@ -28,6 +28,8 @@ import {
   Send
 } from 'lucide-react';
 
+import { JourneyPanel } from './JourneyPanel';
+
 export const SpecDashboard = () => {
   const {
     leads,
@@ -388,6 +390,9 @@ export const SpecDashboard = () => {
 
   return (
     <div className="space-y-6 font-sans">
+      {/* Guided journey: next step and live flow */}
+      <JourneyPanel />
+
       {/* ========================================================= */}
       {/* 1. TOP BRAND BANNER WITH FRESHNESS & AUTO-REFRESH         */}
       {/* ========================================================= */}

@@ -524,7 +524,10 @@ export const getOverview = () => {
     sent_today: sentToday(),
     meetings_booked: c(`SELECT COUNT(*) c FROM agent_meetings WHERE status = 'Booked'`),
     replies: c(`SELECT COUNT(*) c FROM agent_outreach WHERE status = 'Replied'`),
-    suppressed: c(`SELECT COUNT(*) c FROM agent_suppressions`)
+    suppressed: c(`SELECT COUNT(*) c FROM agent_suppressions`),
+    approved: c(`SELECT COUNT(*) c FROM agent_outreach WHERE status = 'Approved'`),
+    sent_total: c(`SELECT COUNT(*) c FROM agent_outreach WHERE status IN ('Sent','Task Created','Replied')`),
+    drafted: c(`SELECT COUNT(DISTINCT lead_id) c FROM agent_outreach`)
   };
 };
 

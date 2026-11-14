@@ -755,6 +755,18 @@ export const SpecLeads = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 bg-white">
+                {leads.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="px-4 py-10 text-center">
+                      <div className="text-sm font-extrabold text-[#0d2238]">No leads yet</div>
+                      <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Add your first lead, or import a CSV or Excel file. Include email, job title and industry so the Sales Agent can score them.</p>
+                      <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                        <button type="button" onClick={() => setIsManualModalOpen(true)} className="px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">+ Add your first lead</button>
+                        <button type="button" onClick={() => setIsBulkModalOpen(true)} className="px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold">Import CSV / Excel</button>
+                      </div>
+                    </td>
+                  </tr>
+                )}
                 {leads.map((lead) => (
                   <tr
                     key={lead.id}

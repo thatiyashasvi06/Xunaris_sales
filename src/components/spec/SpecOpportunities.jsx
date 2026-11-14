@@ -5,7 +5,7 @@ import { SERVICE_CATALOG } from '../../data/crmSpecData';
 import { CheckCircle2, AlertCircle, Plus, Trash2 } from 'lucide-react';
 
 export const SpecOpportunities = () => {
-  const { opportunities, addOpportunity, updateOpportunity, updateOpportunityStage, companies, users, currentUser } = useCRM();
+  const { opportunities, addOpportunity, updateOpportunity, updateOpportunityStage, companies, users, currentUser, setActiveNav } = useCRM();
 
   const [selectedOppId, setSelectedOppId] = useState(opportunities[0]?.id || null);
 
@@ -323,6 +323,15 @@ export const SpecOpportunities = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 bg-white">
+                {opportunities.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-10 text-center">
+                      <div className="text-sm font-extrabold text-[#0d2238]">No deals yet</div>
+                      <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Deals come from qualified leads. Open a lead and press Convert to Opportunity, or add a deal here.</p>
+                      <button type="button" onClick={() => setActiveNav('leads')} className="mt-3 px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Go to Leads</button>
+                    </td>
+                  </tr>
+                )}
                 {opportunities.map((opp) => (
                   <tr
                     key={opp.id}

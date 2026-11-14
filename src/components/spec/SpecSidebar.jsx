@@ -22,11 +22,11 @@ export const SpecSidebar = () => {
   const allNavItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'leads', label: 'Leads', icon: Users },
-    { id: 'companies', label: 'Companies & Contacts', icon: Building2 },
-    { id: 'opportunities', label: 'Opportunities', icon: Briefcase },
-    { id: 'activities', label: 'Activities', icon: CalendarCheck },
-    { id: 'campaigns', label: 'Campaigns', icon: Send },
     { id: 'sales-agent', label: 'Sales Agent', icon: Bot, badge: 'AI' },
+    { id: 'campaigns', label: 'Campaigns', icon: Send },
+    { id: 'activities', label: 'Activities', icon: CalendarCheck },
+    { id: 'opportunities', label: 'Opportunities', icon: Briefcase },
+    { id: 'companies', label: 'Companies & Contacts', icon: Building2 },
     { id: 'reports', label: 'Reports', icon: BarChart3 },
     { id: 'admin', label: 'Admin Settings', icon: Settings, adminOnly: true }
   ];
@@ -45,7 +45,7 @@ export const SpecSidebar = () => {
       {/* Navigation List */}
       <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
         <div className="px-3 pb-1.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-          CRM MODULE
+          SALES WORKFLOW
         </div>
         {crmNavItems.map((item) => {
           const Icon = item.icon;
