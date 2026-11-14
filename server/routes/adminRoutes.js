@@ -62,6 +62,19 @@ router.post('/users', (req, res) => {
   res.status(201).json(created);
 });
 
+// PUT set a user's password (admin only; stored as a bcrypt hash, never returned)
+router.put('/users/:id/password', (req, res) => {
+  const { password } = req.body || {};
+  if (!password || password.length < 12) {
+    return res.status(400).json({ error: 'Password must be at least 12 characters.' });
+  }
+  const target = db.prepare('SELECT id, email FROM users WHERE id = ?').get(req.params.id);
+  if (!target) return res.status(404).json({ error: 'User not found.' });
+  db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(bcrypt.hashSync(password, 10), target.id);
+  logAuditEvent(req.user.email, 'ADMIN_PASSWORD_RESET', 'USER', target.id, { email: target.email });
+  res.json({ message: `Password updated for ${target.email}.` });
+});
+
 // DELETE user
 router.delete('/users/:id', (req, res) => {
   const adminCount = db.prepare("SELECT COUNT(*) as c FROM users WHERE role = 'ADMIN'").get().c;

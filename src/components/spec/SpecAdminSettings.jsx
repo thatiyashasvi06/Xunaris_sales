@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCRM } from '../../context/CRMContext';
 import { SpecHeader } from './SpecHeader';
+import { apiClient } from '../../services/apiClient';
 import { 
   CheckCircle2, 
   ShieldCheck, 
@@ -28,6 +29,26 @@ export const SpecAdminSettings = () => {
   const [userName, setUserName] = useState('');
   const [workEmail, setWorkEmail] = useState('');
   const [role, setRole] = useState('User');
+  // Admin password reset dialog
+  const [pwTarget, setPwTarget] = useState(null);
+  const [pwValue, setPwValue] = useState('');
+  const [pwBusy, setPwBusy] = useState(false);
+  const [pwMsg, setPwMsg] = useState({ type: '', text: '' });
+
+  const submitPasswordReset = async (e) => {
+    e.preventDefault();
+    if (pwValue.length < 12) { setPwMsg({ type: 'err', text: 'Use at least 12 characters.' }); return; }
+    setPwBusy(true);
+    try {
+      const r = await apiClient.setUserPassword(pwTarget.id, pwValue);
+      setPwMsg({ type: 'ok', text: r.message });
+      setPwValue('');
+    } catch (err) {
+      setPwMsg({ type: 'err', text: err.message });
+    } finally {
+      setPwBusy(false);
+    }
+  };
   const [department, setDepartment] = useState('Sales');
   const [businessUnitAccess, setBusinessUnitAccess] = useState('Both');
   const [accountStatus, setAccountStatus] = useState('Active');
@@ -1224,6 +1245,12 @@ export const SpecAdminSettings = () => {
                               </button>
                             )}
                             <button
+                              onClick={() => { setPwTarget(u); setPwValue(''); setPwMsg({ type: '', text: '' }); }}
+                              className="px-2.5 py-1 text-[11px] font-bold text-amber-700 bg-amber-50 hover:bg-amber-600 hover:text-white rounded-md border border-amber-200 transition-colors"
+                            >
+                              Reset password
+                            </button>
+                            <button
                               onClick={() => handleDeleteUser(u.id, u.name)}
                               className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
                               title="Delete user"
@@ -1241,6 +1268,26 @@ export const SpecAdminSettings = () => {
           )}
         </div>
       </div>
+
+      {pwTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" onClick={() => setPwTarget(null)}>
+          <form onSubmit={submitPasswordReset} onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl space-y-3">
+            <h3 className="text-base font-extrabold text-slate-900">Reset password</h3>
+            <p className="text-xs text-slate-500">Set a new password for <strong>{pwTarget.name}</strong> ({pwTarget.email}). Share it with them privately and ask them to keep it safe.</p>
+            <input
+              type="password" autoComplete="new-password" autoFocus value={pwValue}
+              onChange={(e) => setPwValue(e.target.value)}
+              placeholder="New password (min 12 characters)"
+              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+            />
+            {pwMsg.text && <p className={`text-xs font-semibold ${pwMsg.type === 'ok' ? 'text-emerald-700' : 'text-rose-700'}`}>{pwMsg.text}</p>}
+            <div className="flex justify-end gap-2">
+              <button type="button" onClick={() => setPwTarget(null)} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700">Close</button>
+              <button type="submit" disabled={pwBusy} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-[#0063f2] text-white disabled:opacity-60">{pwBusy ? 'Saving...' : 'Save password'}</button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {/* Real-Time Testing & Sample Data Controls */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
