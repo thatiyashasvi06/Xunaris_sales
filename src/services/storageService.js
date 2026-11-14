@@ -103,7 +103,10 @@ export const storageService = {
   // Campaigns
   getCampaigns: () => {
     const data = localStorage.getItem(SPEC_STORAGE_KEYS.CAMPAIGNS);
-    return data !== null ? JSON.parse(data) : [];
+    // Drop the two built-in demo campaigns that older versions cached in this browser (exact id + name only)
+    const DEMO = { 'CAM-000001': 'HYRA Launch Outreach', 'CAM-000002': 'SAP Cloud Enterprise Modernization' };
+    const list = data !== null ? JSON.parse(data) : [];
+    return list.filter((c) => DEMO[c.id] !== c.name);
   },
   setCampaigns: (camps) => {
     localStorage.setItem(SPEC_STORAGE_KEYS.CAMPAIGNS, JSON.stringify(camps));
