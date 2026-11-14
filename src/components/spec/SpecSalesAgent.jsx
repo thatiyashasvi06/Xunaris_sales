@@ -64,6 +64,8 @@ export const SpecSalesAgent = () => {
   const [titles, setTitles] = useState('');
   const [suppressions, setSuppressions] = useState([]);
   const [supText, setSupText] = useState('');
+  const [site, setSite] = useState('');
+  const [icpDraft, setIcpDraft] = useState(null);
 
   const load = useCallback(async () => {
     try {
@@ -72,6 +74,7 @@ export const SpecSalesAgent = () => {
       setSuppressions(sup);
       setProspects(p);
       setOutreach(out);
+      setSite((v) => v || o.icp?.website || '');
       setIndustries((v) => v || o.settings.target_industries.join(', '));
       setTitles((v) => v || o.settings.target_titles.join(', '));
       setError('');
@@ -168,6 +171,34 @@ export const SpecSalesAgent = () => {
               className="w-20 border border-slate-200 rounded-lg px-2 py-1.5 text-sm"
             />
           </label>
+        </div>
+        {/* Website -> ideal customer */}
+        <div className="rounded-xl border border-orange-100 bg-orange-50/40 p-4 space-y-3">
+          <div className="text-xs font-bold text-orange-700 uppercase tracking-wide">Your website is the only input</div>
+          <div className="flex flex-wrap gap-2">
+            <input value={site} onChange={(e) => setSite(e.target.value)} placeholder="hyraconnect.com"
+              className="flex-1 min-w-[220px] border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white" />
+            <button disabled={busy || !site.trim()}
+              onClick={() => act(async () => { const r = await api('/icp/analyze', { method: 'POST', body: { website: site } }); setIcpDraft(r); return r; }, 'Ideal customer written. Review it below, then apply.')}
+              className="px-4 py-2 text-sm font-bold rounded-lg bg-orange-600 text-white disabled:opacity-50">Read website</button>
+          </div>
+          {(icpDraft || data.icp) && (() => {
+            const v = icpDraft || data.icp;
+            return (
+              <div className="bg-white rounded-lg border border-slate-200 p-3 space-y-1.5">
+                {v.summary.map((l, i) => <p key={i} className="text-sm text-slate-700"><span className="font-bold text-orange-600 mr-1">{i + 1}.</span>{l}</p>)}
+                <p className="text-[11px] text-slate-400">{icpDraft ? `Suggested by ${v.engine}. Nothing changes until you apply it.` : `Applied from ${v.website}`}</p>
+                {icpDraft && (
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <span className="text-xs text-slate-500">Industries: <strong>{icpDraft.industries.join(', ') || 'none found'}</strong> · Titles: <strong>{icpDraft.titles.join(', ') || 'none found'}</strong></span>
+                    <button disabled={busy} onClick={() => act(async () => { await api('/icp/apply', { method: 'POST', body: icpDraft }); setIndustries(icpDraft.industries.join(', ')); setTitles(icpDraft.titles.join(', ')); setIcpDraft(null); }, 'Applied. Scoring now favours this profile.')}
+                      className="px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white">Apply to scoring</button>
+                    <button onClick={() => setIcpDraft(null)} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700">Discard</button>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </div>
         <div className="grid md:grid-cols-2 gap-3">
           <label className="text-xs font-semibold text-slate-500">

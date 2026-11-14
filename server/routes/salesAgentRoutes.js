@@ -1,5 +1,6 @@
 import express from 'express';
 import db from '../db/database.js';
+import { buildIcp, saveIcp, getIcp } from '../services/icpFromWebsite.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import {
   getSettings, updateSettings, listProspects, runCycle, scoreAllLeads, draftSequenceForLead,
@@ -31,7 +32,20 @@ publicBookingRouter.post('/book/:token', (req, res) => {
 router.use(authMiddleware);
 
 router.get('/overview', (req, res) => {
-  res.json({ settings: getSettings(), overview: getOverview(), weekly: weeklyStats(5), insights: getInsights(), meetings: listMeetings() });
+  res.json({ icp: getIcp(), settings: getSettings(), overview: getOverview(), weekly: weeklyStats(5), insights: getInsights(), meetings: listMeetings() });
+});
+
+// Website -> ideal customer. Analyse only suggests; nothing changes until the user applies it.
+router.post('/icp/analyze', async (req, res) => {
+  try { res.json(await buildIcp(String(req.body?.website || '').trim())); }
+  catch (e) { res.status(400).json({ error: e.message }); }
+});
+
+router.post('/icp/apply', (req, res) => {
+  const { website, summary, engine, industries, titles } = req.body || {};
+  if (!Array.isArray(summary) || !summary.length) return res.status(400).json({ error: 'Nothing to apply.' });
+  saveIcp({ website: String(website || ''), summary: summary.map(String).slice(0, 3), engine: String(engine || '') });
+  res.json(updateSettings({ target_industries: industries, target_titles: titles }));
 });
 
 router.put('/settings', (req, res) => res.json(updateSettings(req.body || {})));
