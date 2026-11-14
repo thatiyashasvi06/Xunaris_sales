@@ -6,7 +6,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 import db from './db/database.js';
-import { seedDatabase } from './db/seed.js';
+import { seedDatabase, applyEnvPasswords } from './db/seed.js';
 import { startBackgroundWorker } from './services/backgroundWorker.js';
 
 import authRoutes from './routes/authRoutes.js';
@@ -160,6 +160,7 @@ app.use((err, req, res, next) => {
 
 // Seed Initial Data
 seedDatabase();
+applyEnvPasswords();
 
 // Start Background Worker
 startBackgroundWorker(15000);

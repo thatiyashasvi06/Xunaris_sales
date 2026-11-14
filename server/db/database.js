@@ -92,6 +92,7 @@ try {
   console.warn('[DB] Warning initializing sender_accounts:', e.message);
 }
 
+
 console.log(`[DB] Connected to SQLite database at: ${DB_PATH}`);
 
 export default db;

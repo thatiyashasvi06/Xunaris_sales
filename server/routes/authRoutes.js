@@ -1,6 +1,8 @@
 import express from 'express';
+import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { authMiddleware, requireRole } from '../middleware/authMiddleware.js';
 import db from '../db/database.js';
 import { logAuditEvent } from '../middleware/auditMiddleware.js';
 
@@ -139,14 +141,15 @@ router.post('/register', (req, res) => {
   });
 });
 
-router.post('/reset', (req, res) => {
+// Admin-only: an unauthenticated reset that returns the token would let anyone take over any account.
+router.post('/reset', authMiddleware, requireRole('ADMIN'), (req, res) => {
   const { email } = req.body;
   if (!email) {
     return res.status(400).json({ error: 'Email is required' });
   }
 
   const normalizedEmail = email.toLowerCase().trim();
-  const token = `XUN-RST-${Math.random().toString(36).substring(2, 8).toUpperCase()}-${Date.now().toString(36).toUpperCase()}`;
+  const token = `XUN-RST-${crypto.randomBytes(16).toString('hex')}`;
 
   resetTokens.set(token, {
     email: normalizedEmail,
@@ -154,7 +157,7 @@ router.post('/reset', (req, res) => {
     used: false
   });
 
-  logAuditEvent(normalizedEmail, 'RESET_TOKEN_GENERATED', 'AUTH', null, { token });
+  logAuditEvent(normalizedEmail, 'RESET_TOKEN_GENERATED', 'AUTH', null, { requestedBy: req.user?.email });
 
   res.json({
     message: 'Single-use reset token generated.',

@@ -247,16 +247,8 @@ export const SpecLoginModal = () => {
       return;
     }
 
-    // Generate cryptographic-style single use token
-    const randomHex = Array.from(crypto.getRandomValues(new Uint8Array(16)))
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('');
-    const token = `rst_xun_${randomHex}`;
-
-    setResetToken(token);
-    setResetTokenTimeRemaining(900); // 15 minutes
-    setResetTokenUsed(false);
-    setSuccessMessage('Expiring single-use reset token generated. Valid for 15 minutes.');
+    // Resets change the server password, so they are done by an administrator (Admin Settings) or the server owner.
+    setErrorMessage('Password resets are handled by your administrator. Ask them to reset your password.');
   };
 
   // Redeem Single-Use Reset Token
@@ -288,17 +280,6 @@ export const SpecLoginModal = () => {
     if (newPassword !== confirmPassword) {
       setErrorMessage('Passwords do not match. Please verify both fields.');
       return;
-    }
-
-    // Find user and update password with simulated server-side hash
-    const normalizedEmail = resetEmail.toLowerCase().trim();
-    const foundUser = users.find((u) => u.email.toLowerCase() === normalizedEmail);
-
-    if (foundUser) {
-      updateUser(foundUser.id, {
-        password: newPassword,
-        passwordHash: `$argon2id$v=19$m=65536,t=3,p=4$${btoa(newPassword).substring(0, 16)}$reset_hash`
-      });
     }
 
     // Invalidate token permanently (Single-Use rule)

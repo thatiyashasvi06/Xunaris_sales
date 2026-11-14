@@ -463,3 +463,18 @@ export const seedDatabase = () => {
 
   console.log('[Seed] Database initialization completed successfully!');
 };
+
+/**
+ * Set / rotate user passwords from environment variables on every start (works on hosts without a shell).
+ * ADMIN_PASSWORD, SALES_PASSWORD, MARKETING_PASSWORD: min 12 characters.
+ */
+export const applyEnvPasswords = () => {
+  const envUsers = { ADMIN_PASSWORD: 'admin@xunaris.com', SALES_PASSWORD: 'sales@xunaris.com', MARKETING_PASSWORD: 'marketing@xunaris.com' };
+  for (const [envName, email] of Object.entries(envUsers)) {
+    const pw = process.env[envName];
+    if (!pw) continue;
+    if (pw.length < 12) { console.warn(`[Seed] ${envName} ignored: must be at least 12 characters.`); continue; }
+    const r = db.prepare('UPDATE users SET password_hash = ? WHERE LOWER(email) = ?').run(bcrypt.hashSync(pw, 10), email);
+    console.log(`[Seed] ${envName}: ${r.changes ? 'password updated' : 'no such user'}`);
+  }
+};
