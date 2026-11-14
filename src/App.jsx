@@ -21,7 +21,7 @@ import { aiService } from './services/aiService';
 import { Sparkles, Menu, X, ExternalLink } from 'lucide-react';
 
 const MainLayout = () => {
-  const { activeNav, setActiveNav, isLoggedIn, currentUser } = useCRM();
+  const { activeNav, setActiveNav, isLoggedIn, currentUser, setIsLoggedIn } = useCRM();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
 
@@ -122,6 +122,18 @@ const MainLayout = () => {
 
           {/* Active Screen Rendered Exactly As Mockup */}
           {renderActiveScreen()}
+
+          {/* Page footer: always visible, including on phones where the sidebar is hidden */}
+          <footer className="mt-10 pt-4 border-t border-slate-200 text-[11px] text-slate-400 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+            <span>&copy; {new Date().getFullYear()} Xunaris Technology Services &middot; HYRA Connect Staffing</span>
+            <span>
+              Signed in as <strong className="text-slate-500">{currentUser?.name}</strong>
+              {currentUser?.role ? ` (${currentUser.role})` : ''} &middot;{' '}
+              <button type="button" onClick={() => setIsLoggedIn(false)} className="font-semibold text-slate-500 hover:text-slate-800 underline">
+                Sign out
+              </button>
+            </span>
+          </footer>
         </main>
       </div>
 
