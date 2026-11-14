@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useCRM } from '../../context/CRMContext';
 import { apiClient } from '../../services/apiClient';
+import { JourneyPanel } from './JourneyPanel';
 
 /**
  * Today: the home screen. It answers "what should I do now?" for the signed-in person.
@@ -192,6 +193,9 @@ export const SpecToday = () => {
           )}
         </div>
       </div>
+
+      {/* Onboarding: shown until the seven steps are done */}
+      <JourneyPanel hideWhenComplete />
 
       {error && <div className="rounded-xl bg-rose-50 text-rose-700 text-sm px-4 py-2">{error}</div>}
       {msg && <div className="rounded-xl bg-emerald-50 text-emerald-700 text-sm px-4 py-2">{msg}</div>}

@@ -28,8 +28,6 @@ import {
   Send
 } from 'lucide-react';
 
-import { JourneyPanel } from './JourneyPanel';
-
 export const SpecDashboard = () => {
   const {
     leads,
@@ -390,78 +388,43 @@ export const SpecDashboard = () => {
 
   return (
     <div className="space-y-6 font-sans">
-      {/* Guided journey: next step and live flow */}
-      <JourneyPanel />
-
       {/* ========================================================= */}
       {/* 1. TOP BRAND BANNER WITH FRESHNESS & AUTO-REFRESH         */}
       {/* ========================================================= */}
-      <div className="bg-gradient-to-r from-[#0a1120] via-[#0f172a] to-[#0a1120] border border-slate-800 text-white rounded-3xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
-        {/* Ambient lighting glow */}
-        <div className="absolute -right-20 -top-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-xl sm:text-2xl tracking-wide text-white">
-                XUNARIS
-              </span>
-              <span className="text-slate-500 font-semibold text-lg">/</span>
-              <span className="font-extrabold text-xl sm:text-2xl tracking-wide text-white">
-                HYRA CONNECT
-              </span>
-            </div>
-            <p className="text-xs text-slate-300 font-medium mt-1 flex items-center gap-2">
-              <span>Executive Performance Dashboard</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-emerald-400 font-mono text-[11px]">Live Multi-Dimensional Analytics</span>
-            </p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-[28px] sm:text-[32px] leading-tight font-bold text-ink-900 tracking-tight">Dashboard</h1>
+          <p className="text-sm text-slate-500 mt-1.5">How Xunaris and HYRA Connect are doing across leads, deals and campaigns.</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2.5 text-xs">
+          <div className="bg-white border border-[#E6E9F2] px-3.5 py-2 rounded-xl flex items-center gap-2 text-slate-600">
+            <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <span>Updated {lastUpdated.toLocaleTimeString()}</span>
           </div>
-
-          {/* FRESHNESS CONTROLS */}
-          <div className="flex flex-wrap items-center gap-3 text-xs">
-            {/* Last Updated Timestamp */}
-            <div className="bg-slate-900/90 border border-slate-700/80 px-3 py-2 rounded-xl flex items-center gap-2 text-slate-300 shadow-inner">
-              <Clock className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-              <div>
-                <span className="text-[10px] text-slate-400 block uppercase font-mono">Last Updated</span>
-                <span className="font-bold font-mono text-white text-[11px]">
-                  {lastUpdated.toLocaleTimeString()}
-                </span>
-              </div>
-            </div>
-
-            {/* Refresh Interval Selector */}
-            <div className="bg-slate-900/90 border border-slate-700/80 px-3 py-2 rounded-xl flex items-center gap-2 shadow-inner">
-              <span className="text-[10px] text-slate-400 uppercase font-mono">Interval:</span>
-              <select
-                value={refreshIntervalSec}
-                onChange={(e) => setRefreshIntervalSec(Number(e.target.value))}
-                className="bg-transparent text-white font-bold outline-hidden cursor-pointer text-xs"
-              >
-                <option value={30} className="bg-slate-900">30s Auto</option>
-                <option value={60} className="bg-slate-900">1m Auto</option>
-                <option value={300} className="bg-slate-900">5m Auto</option>
-                <option value={0} className="bg-slate-900">Manual Only</option>
-              </select>
-              {refreshIntervalSec > 0 && (
-                <span className="text-[10px] font-mono text-cyan-300 bg-cyan-900/40 px-1.5 py-0.5 rounded border border-cyan-700/40">
-                  {secondsUntilRefresh}s
-                </span>
-              )}
-            </div>
-
-            {/* Refresh Now Button */}
-            <button
-              onClick={triggerRefresh}
-              disabled={isRefreshing}
-              className="px-3.5 py-2 rounded-xl bg-[#0063f2] hover:bg-blue-600 active:scale-95 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-blue-500/20 transition-all cursor-pointer"
-              title="Refresh dashboard metrics"
+          <div className="bg-white border border-[#E6E9F2] px-3.5 py-2 rounded-xl flex items-center gap-2">
+            <span className="text-slate-500">Refresh</span>
+            <select
+              value={refreshIntervalSec}
+              onChange={(e) => setRefreshIntervalSec(Number(e.target.value))}
+              className="bg-transparent text-ink-900 font-semibold outline-hidden cursor-pointer text-xs"
+              aria-label="Refresh interval"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
-              <span>Refresh</span>
-            </button>
+              <option value={30}>every 30s</option>
+              <option value={60}>every minute</option>
+              <option value={300}>every 5 minutes</option>
+              <option value={0}>manually</option>
+            </select>
+            {refreshIntervalSec > 0 && <span className="text-slate-400 tabular-nums">{secondsUntilRefresh}s</span>}
           </div>
+          <button
+            onClick={triggerRefresh}
+            disabled={isRefreshing}
+            className="px-3.5 py-2 rounded-xl bg-hyra-700 hover:bg-hyra-800 text-white font-semibold text-xs flex items-center gap-1.5 transition-colors"
+            title="Refresh dashboard metrics"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span>Refresh now</span>
+          </button>
         </div>
       </div>
 
@@ -471,12 +434,12 @@ export const SpecDashboard = () => {
       <div className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-blue-600" />
+            <Filter className="w-4 h-4 text-hyra-700" />
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700">
               Global Dimensional Filters
             </h2>
             {activeFiltersCount > 0 && (
-              <span className="text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-bold bg-hyra-50 text-hyra-700 border border-hyra-200 px-2 py-0.5 rounded-full">
                 {activeFiltersCount} active
               </span>
             )}
@@ -502,7 +465,7 @@ export const SpecDashboard = () => {
             <select
               value={filterVertical}
               onChange={(e) => setFilterVertical(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-hyra-600"
             >
               <option value="All">All Verticals</option>
               <option value="Xunaris">Xunaris (IT/SAP)</option>
@@ -518,7 +481,7 @@ export const SpecDashboard = () => {
             <select
               value={filterDateRange}
               onChange={(e) => setFilterDateRange(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-hyra-600"
             >
               <option value="All">All Time</option>
               <option value="Today">Today ({new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })})</option>
@@ -536,7 +499,7 @@ export const SpecDashboard = () => {
             <select
               value={filterOwner}
               onChange={(e) => setFilterOwner(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-hyra-600"
             >
               <option value="All">All Owners</option>
               <option value="Sales User">Sales User</option>
@@ -554,7 +517,7 @@ export const SpecDashboard = () => {
             <select
               value={filterSource}
               onChange={(e) => setFilterSource(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-hyra-600"
             >
               <option value="All">All Sources</option>
               <option value="LinkedIn">LinkedIn</option>
@@ -574,7 +537,7 @@ export const SpecDashboard = () => {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-hyra-600"
             >
               <option value="All">All Statuses</option>
               <option value="New">New</option>
@@ -595,13 +558,13 @@ export const SpecDashboard = () => {
         {/* TILE 1: New Leads */}
         <div
           onClick={() => setActiveNav('leads')}
-          className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs cursor-pointer hover:border-blue-400 hover:shadow-md hover:-translate-y-0.5 transition-all group"
+          className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs cursor-pointer hover:border-hyra-400 hover:shadow-md hover:-translate-y-0.5 transition-all group"
         >
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase">New Leads</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-blue-600 transition-colors" />
+            <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-hyra-700 transition-colors" />
           </div>
-          <span className="text-2xl sm:text-3xl font-extrabold text-[#0a1120] mt-2 block tracking-tight font-mono group-hover:text-[#0063f2] transition-colors">
+          <span className="text-2xl sm:text-3xl font-extrabold text-ink-900 mt-2 block tracking-tight font-mono group-hover:text-hyra-700 transition-colors">
             {kpiNewLeads}
           </span>
           <span className="text-[10px] text-slate-400 mt-1 block">Awaiting qualification</span>
@@ -610,13 +573,13 @@ export const SpecDashboard = () => {
         {/* TILE 2: Qualified */}
         <div
           onClick={() => setActiveNav('leads')}
-          className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs cursor-pointer hover:border-blue-400 hover:shadow-md hover:-translate-y-0.5 transition-all group"
+          className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs cursor-pointer hover:border-hyra-400 hover:shadow-md hover:-translate-y-0.5 transition-all group"
         >
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase">Qualified</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-blue-600 transition-colors" />
+            <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-hyra-700 transition-colors" />
           </div>
-          <span className="text-2xl sm:text-3xl font-extrabold text-[#0a1120] mt-2 block tracking-tight font-mono group-hover:text-[#0063f2] transition-colors">
+          <span className="text-2xl sm:text-3xl font-extrabold text-ink-900 mt-2 block tracking-tight font-mono group-hover:text-hyra-700 transition-colors">
             {kpiQualifiedLeads}
           </span>
           <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">Sales-ready accounts</span>
@@ -625,13 +588,13 @@ export const SpecDashboard = () => {
         {/* TILE 3: Open Opportunities */}
         <div
           onClick={() => setActiveNav('opportunities')}
-          className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs cursor-pointer hover:border-blue-400 hover:shadow-md hover:-translate-y-0.5 transition-all group"
+          className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs cursor-pointer hover:border-hyra-400 hover:shadow-md hover:-translate-y-0.5 transition-all group"
         >
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase">Open Deals</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-blue-600 transition-colors" />
+            <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-hyra-700 transition-colors" />
           </div>
-          <span className="text-2xl sm:text-3xl font-extrabold text-[#0a1120] mt-2 block tracking-tight font-mono group-hover:text-[#0063f2] transition-colors">
+          <span className="text-2xl sm:text-3xl font-extrabold text-ink-900 mt-2 block tracking-tight font-mono group-hover:text-hyra-700 transition-colors">
             {kpiOpenOpps}
           </span>
           <span className="text-[10px] text-slate-400 mt-1 block">Active sales pipeline</span>
@@ -699,9 +662,9 @@ export const SpecDashboard = () => {
         <div className="bg-white rounded-3xl border border-slate-200/90 p-6 shadow-xs space-y-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-extrabold text-[#0a1120] tracking-tight flex items-center gap-2">
+              <h3 className="text-base font-extrabold text-ink-900 tracking-tight flex items-center gap-2">
                 <span>Lead-to-Won Funnel</span>
-                <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
+                <span className="text-[10px] font-bold text-hyra-700 bg-hyra-50 px-2 py-0.5 rounded-md border border-hyra-200">
                   Unique Lead IDs
                 </span>
               </h3>
@@ -751,7 +714,7 @@ export const SpecDashboard = () => {
         <div className="bg-white rounded-3xl border border-slate-200/90 p-6 shadow-xs space-y-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-extrabold text-[#0a1120] tracking-tight flex items-center gap-2">
+              <h3 className="text-base font-extrabold text-ink-900 tracking-tight flex items-center gap-2">
                 <span>Pipeline Value by Vertical</span>
                 <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
                   Currency: INR (₹)
@@ -763,8 +726,8 @@ export const SpecDashboard = () => {
             </div>
             {/* Legend */}
             <div className="flex items-center gap-3 text-[10px] font-bold">
-              <span className="flex items-center gap-1 text-[#0063f2]">
-                <span className="w-2.5 h-2.5 rounded bg-[#0063f2]" /> Xunaris
+              <span className="flex items-center gap-1 text-hyra-700">
+                <span className="w-2.5 h-2.5 rounded bg-hyra-700" /> Xunaris
               </span>
               <span className="flex items-center gap-1 text-[#06b6d4]">
                 <span className="w-2.5 h-2.5 rounded bg-[#06b6d4]" /> HYRA Connect
@@ -794,7 +757,7 @@ export const SpecDashboard = () => {
                       <div className="flex-1 bg-slate-100 h-3 rounded-full overflow-hidden">
                         <div
                           style={{ width: `${Math.max(5, xunPct)}%` }}
-                          className="h-full bg-[#0063f2] rounded-full transition-all duration-500"
+                          className="h-full bg-hyra-700 rounded-full transition-all duration-500"
                         />
                       </div>
                       <span className="w-16 text-right font-mono text-slate-700 font-semibold">
@@ -829,7 +792,7 @@ export const SpecDashboard = () => {
       <div className="bg-white rounded-3xl border border-slate-200/90 p-6 shadow-xs space-y-4 hover:shadow-md transition-shadow">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h3 className="text-base font-extrabold text-[#0a1120] tracking-tight flex items-center gap-2">
+            <h3 className="text-base font-extrabold text-ink-900 tracking-tight flex items-center gap-2">
               <span>Lead Source Distribution</span>
               <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 flex items-center gap-1">
                 <ShieldCheck className="w-3 h-3 text-emerald-600" />
@@ -892,9 +855,9 @@ export const SpecDashboard = () => {
       <div className="bg-white rounded-3xl border border-slate-200/90 p-6 shadow-xs space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-extrabold text-[#0a1120] tracking-tight flex items-center gap-2">
+            <h3 className="text-base font-extrabold text-ink-900 tracking-tight flex items-center gap-2">
               <span>My Actions Center</span>
-              <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
+              <span className="text-[10px] font-bold text-hyra-700 bg-hyra-50 px-2 py-0.5 rounded-md border border-hyra-200">
                 Click Tile Opens Filtered List
               </span>
             </h3>
@@ -911,18 +874,18 @@ export const SpecDashboard = () => {
             onClick={() => setActiveActionModal('dueToday')}
             className={`p-4 rounded-2xl border text-left transition-all cursor-pointer group ${
               activeActionModal === 'dueToday'
-                ? 'bg-blue-50 border-blue-400 ring-2 ring-blue-500/20'
-                : 'bg-white border-slate-200/90 hover:border-blue-400 hover:shadow-md'
+                ? 'bg-hyra-50 border-hyra-400 ring-2 ring-hyra-600/20'
+                : 'bg-white border-slate-200/90 hover:border-hyra-400 hover:shadow-md'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold text-slate-600">Due Today</span>
-              <Calendar className="w-4 h-4 text-blue-600" />
+              <Calendar className="w-4 h-4 text-hyra-700" />
             </div>
-            <span className="text-2xl font-extrabold text-[#0a1120] font-mono block">
+            <span className="text-2xl font-extrabold text-ink-900 font-mono block">
               {actionItemsDueToday.length}
             </span>
-            <span className="text-[10px] text-blue-600 font-semibold mt-1 block">
+            <span className="text-[10px] text-hyra-700 font-semibold mt-1 block">
               Click to view list &rarr;
             </span>
           </button>
@@ -1001,7 +964,7 @@ export const SpecDashboard = () => {
           <div className="mt-4 p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 transition-all animate-fadeIn">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-extrabold text-[#0a1120]">
+                <span className="text-sm font-extrabold text-ink-900">
                   Filtered List:{' '}
                   {activeActionModal === 'dueToday'
                     ? 'Actions Due Today'
@@ -1046,7 +1009,7 @@ export const SpecDashboard = () => {
                     </div>
                     <button
                       onClick={() => setActiveNav('activities')}
-                      className="px-2.5 py-1 text-[11px] font-bold text-blue-600 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors"
+                      className="px-2.5 py-1 text-[11px] font-bold text-hyra-700 bg-white border border-hyra-200 rounded-lg hover:bg-hyra-50 transition-colors"
                     >
                       Open in Activities
                     </button>

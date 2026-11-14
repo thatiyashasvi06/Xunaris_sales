@@ -111,7 +111,7 @@ export const Navbar = ({ onToggleMobileSidebar }) => {
                 disabled={!permissions.canAccessCRM}
                 className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all ${
                   isCRM
-                    ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/30'
+                    ? 'bg-hyra-700 text-white shadow-sm'
                     : permissions.canAccessCRM
                     ? 'text-slate-400 hover:text-white hover:bg-slate-800'
                     : 'text-slate-600 cursor-not-allowed'
@@ -206,7 +206,7 @@ export const Navbar = ({ onToggleMobileSidebar }) => {
                             setIsUserMenuOpen(false);
                           }}
                           className={`w-full flex items-center justify-between px-4 py-2 text-left hover:bg-slate-50 transition-colors ${
-                            currentUser.id === user.id ? 'bg-blue-50/80 text-blue-900' : 'text-slate-700'
+                            currentUser.id === user.id ? 'bg-hyra-50/80 text-hyra-900' : 'text-slate-700'
                           }`}
                         >
                           <div className="flex items-center gap-2.5">
@@ -223,7 +223,7 @@ export const Navbar = ({ onToggleMobileSidebar }) => {
                             </div>
                           </div>
                           {currentUser.id === user.id && (
-                            <Check className="w-4 h-4 text-blue-600" />
+                            <Check className="w-4 h-4 text-hyra-700" />
                           )}
                         </button>
                       ))}
@@ -236,7 +236,7 @@ export const Navbar = ({ onToggleMobileSidebar }) => {
                           setIsUserMenuOpen(false);
                           setIsAiModalOpen(true);
                         }}
-                        className="text-blue-600 font-semibold hover:underline"
+                        className="text-hyra-700 font-semibold hover:underline"
                       >
                         AI Settings
                       </button>
@@ -254,7 +254,7 @@ export const Navbar = ({ onToggleMobileSidebar }) => {
             onClick={() => setActiveModule('crm')}
             disabled={!permissions.canAccessCRM}
             className={`flex-1 py-1.5 text-center text-xs font-bold rounded-lg transition-colors ${
-              isCRM ? 'bg-blue-600 text-white' : 'text-slate-400'
+              isCRM ? 'bg-hyra-700 text-white' : 'text-slate-400'
             }`}
           >
             Xunaris CRM

@@ -22,7 +22,7 @@ export const AnimatedBackground = () => {
       />
 
       {/* Subtle Floating Star / Dust Accents */}
-      <div className="absolute top-20 left-[15%] w-1.5 h-1.5 rounded-full bg-blue-400/40 animate-ping" />
+      <div className="absolute top-20 left-[15%] w-1.5 h-1.5 rounded-full bg-hyra-400/40 animate-ping" />
       <div className="absolute top-1/2 right-[10%] w-2 h-2 rounded-full bg-emerald-400/30 animate-pulse" />
       <div className="absolute bottom-24 left-[35%] w-1.5 h-1.5 rounded-full bg-indigo-400/40 animate-ping" />
     </div>

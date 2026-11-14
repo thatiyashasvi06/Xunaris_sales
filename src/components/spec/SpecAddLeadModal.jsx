@@ -251,7 +251,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
     <div className="fixed inset-0 z-50 overflow-y-auto font-sans">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#0a1120]/70 backdrop-blur-xs transition-opacity"
+        className="fixed inset-0 bg-ink-900/70 backdrop-blur-xs transition-opacity"
         onClick={() => !isSubmitting && onClose()}
       />
 
@@ -261,10 +261,10 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl sm:text-2xl font-extrabold text-[#0a1120] tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-ink-900 tracking-tight">
                   Add Lead &bull; Manual Entry
                 </h2>
-                <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold uppercase tracking-wider bg-hyra-50 text-hyra-700 border border-hyra-200 px-2 py-0.5 rounded-full">
                   Unified Form
                 </span>
               </div>
@@ -313,9 +313,9 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
           )}
 
           {/* Paste a LinkedIn post: fills the form below, nothing is saved until you press Save */}
-          <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-100 space-y-2">
+          <div className="p-4 rounded-2xl bg-hyra-50/60 border border-hyra-100 space-y-2">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700">Optional: paste a LinkedIn post</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-hyra-700">Optional: paste a LinkedIn post</span>
               {(pasteText || pasteResult) && (
                 <button type="button" onClick={() => { setPasteText(''); setPasteResult(null); }} className="text-[11px] font-bold text-slate-500 hover:text-slate-800">Clear</button>
               )}
@@ -325,11 +325,11 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
               onChange={(e) => setPasteText(e.target.value)}
               rows={4}
               placeholder="Copy the text of a post that has a hiring need or contact details, and paste it here. We fill in the company, contact, email, phone and requirement for you to check."
-              className="w-full text-xs px-3 py-2 rounded-xl border border-blue-200 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+              className="w-full text-xs px-3 py-2 rounded-xl border border-hyra-200 bg-white focus:ring-2 focus:ring-hyra-600 focus:outline-hidden"
             />
             <div className="flex flex-wrap items-center gap-2">
               <button type="button" onClick={applyPastedPost} disabled={!pasteText.trim()}
-                className="px-3.5 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold disabled:opacity-50">Fill the form</button>
+                className="px-3.5 py-2 rounded-xl bg-hyra-700 text-white text-xs font-bold disabled:opacity-50">Fill the form</button>
               <span className="text-[11px] text-slate-500">Nothing is saved until you press Save Lead.</span>
             </div>
             {pasteResult && (
@@ -386,7 +386,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border bg-white font-semibold transition-all ${
                       inlineErrors.businessVertical
                         ? 'border-rose-400 ring-2 ring-rose-500/10'
-                        : 'border-slate-300 focus:ring-2 focus:ring-blue-600'
+                        : 'border-slate-300 focus:ring-2 focus:ring-hyra-700'
                     }`}
                   >
                     <option value="Xunaris">Xunaris (IT & Cloud Services)</option>
@@ -403,7 +403,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     <label className="text-xs font-bold text-slate-800 uppercase">
                       Service Line Dependent <span className="text-rose-500">*</span>
                     </label>
-                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.2 rounded border border-blue-200">
+                    <span className="text-[10px] font-bold text-hyra-700 bg-hyra-50 px-1.5 py-0.2 rounded border border-hyra-200">
                       {currentVerticalCode} Active Catalog
                     </span>
                   </div>
@@ -413,7 +413,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border bg-white font-medium transition-all ${
                       inlineErrors.service
                         ? 'border-rose-400 ring-2 ring-rose-500/10'
-                        : 'border-slate-300 focus:ring-2 focus:ring-blue-600'
+                        : 'border-slate-300 focus:ring-2 focus:ring-hyra-700'
                     }`}
                   >
                     {availableServices.map((svc) => (
@@ -459,7 +459,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border font-medium ${
                       inlineErrors.companyName
                         ? 'border-rose-400 ring-2 ring-rose-500/10'
-                        : 'border-slate-300 focus:ring-2 focus:ring-blue-600'
+                        : 'border-slate-300 focus:ring-2 focus:ring-hyra-700'
                     }`}
                   />
                   {inlineErrors.companyName && (
@@ -481,7 +481,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     onChange={(e) => handleChange('companyWebsite', e.target.value)}
                     onBlur={handleWebsiteBlur}
                     placeholder="https://company.example.com"
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 font-medium"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-hyra-700 font-medium"
                   />
                 </div>
               </div>
@@ -496,7 +496,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                   <select
                     value={formData.industry}
                     onChange={(e) => handleChange('industry', e.target.value)}
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-600"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-hyra-700"
                   >
                     {INDUSTRY_OPTIONS.map((ind) => (
                       <option key={ind} value={ind}>
@@ -526,7 +526,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     value={formData.city}
                     onChange={(e) => handleChange('city', e.target.value)}
                     placeholder="e.g. Bengaluru"
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 font-medium"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-hyra-700 font-medium"
                   />
                   {inlineErrors.city && (
                     <p className="text-[11px] text-rose-600 mt-1 font-medium">{inlineErrors.city}</p>
@@ -541,7 +541,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                   <select
                     value={formData.country}
                     onChange={(e) => handleChange('country', e.target.value)}
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-600"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-hyra-700"
                   >
                     {COUNTRY_OPTIONS.map((c) => (
                       <option key={c} value={c}>
@@ -581,7 +581,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border font-medium ${
                       inlineErrors.contactName
                         ? 'border-rose-400 ring-2 ring-rose-500/10'
-                        : 'border-slate-300 focus:ring-2 focus:ring-blue-600'
+                        : 'border-slate-300 focus:ring-2 focus:ring-hyra-700'
                     }`}
                   />
                   {inlineErrors.contactName && (
@@ -600,7 +600,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     value={formData.jobTitle}
                     onChange={(e) => handleChange('jobTitle', e.target.value)}
                     placeholder="e.g. VP of Engineering"
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 font-medium"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-hyra-700 font-medium"
                   />
                 </div>
               </div>
@@ -623,7 +623,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border font-medium ${
                       inlineErrors.workEmail
                         ? 'border-rose-400 ring-2 ring-rose-500/10'
-                        : 'border-slate-300 focus:ring-2 focus:ring-blue-600'
+                        : 'border-slate-300 focus:ring-2 focus:ring-hyra-700'
                     }`}
                   />
                   {inlineErrors.workEmail && (
@@ -647,7 +647,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border font-medium ${
                       inlineErrors.phone
                         ? 'border-rose-400 ring-2 ring-rose-500/10'
-                        : 'border-slate-300 focus:ring-2 focus:ring-blue-600'
+                        : 'border-slate-300 focus:ring-2 focus:ring-hyra-700'
                     }`}
                   />
                   {inlineErrors.phone && (
@@ -674,7 +674,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                   <select
                     value={formData.leadSource}
                     onChange={(e) => handleChange('leadSource', e.target.value)}
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-600"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-hyra-700"
                   >
                     {LEAD_SOURCE_OPTIONS.map((src) => (
                       <option key={src} value={src}>
@@ -701,7 +701,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                       className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border bg-white font-medium ${
                         inlineErrors.campaignName
                           ? 'border-rose-400 ring-2 ring-rose-500/10'
-                          : 'border-slate-300 focus:ring-2 focus:ring-blue-600'
+                          : 'border-slate-300 focus:ring-2 focus:ring-hyra-700'
                       }`}
                     >
                       <option value="">-- Select Active Campaign --</option>
@@ -720,7 +720,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                       className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border font-medium ${
                         inlineErrors.campaignName
                           ? 'border-rose-400 ring-2 ring-rose-500/10'
-                          : 'border-slate-300 focus:ring-2 focus:ring-blue-600'
+                          : 'border-slate-300 focus:ring-2 focus:ring-hyra-700'
                       }`}
                     />
                   )}
@@ -740,7 +740,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                   <select
                     value={formData.status}
                     onChange={(e) => handleChange('status', e.target.value)}
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-600"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-hyra-700"
                   >
                     {LEAD_STATUS_OPTIONS.map((stat) => (
                       <option key={stat} value={stat}>
@@ -769,7 +769,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                   value={formData.requirementSummary}
                   onChange={(e) => handleChange('requirementSummary', e.target.value)}
                   placeholder="Describe scope, technical requirements, headcount, or migration objectives..."
-                  className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 font-medium"
+                  className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-hyra-700 font-medium"
                 />
               </div>
             </div>
@@ -791,7 +791,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                   <select
                     value={formData.priority}
                     onChange={(e) => handleChange('priority', e.target.value)}
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-600"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-hyra-700"
                   >
                     {PRIORITY_OPTIONS.map((p) => (
                       <option key={p} value={p}>
@@ -823,7 +823,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                         ownerName: sel ? sel.name : 'Sales User'
                       }));
                     }}
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-600"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-hyra-700"
                   >
                     <option value="auto">Auto-assign (best available person)</option>
                     {users.map((u) => (
@@ -846,7 +846,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     type="date"
                     value={formData.nextFollowup}
                     onChange={(e) => handleChange('nextFollowup', e.target.value)}
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 font-medium"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-hyra-700 font-medium"
                   />
                   <p className="text-[10px] text-slate-400 mt-1">
                     If blank: auto-creates next-business-day task ({getNextBusinessDay()})
@@ -870,7 +870,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                   value={formData.notes}
                   onChange={(e) => handleChange('notes', e.target.value)}
                   placeholder="Add confidential deal notes, procurement contacts, or relationship context..."
-                  className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 font-medium"
+                  className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-hyra-700 font-medium"
                 />
               </div>
             </div>
@@ -896,7 +896,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                   type="button"
                   disabled={isSubmitting}
                   onClick={() => executeSaveSequence(true)}
-                  className="px-4 py-2.5 text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                  className="px-4 py-2.5 text-xs font-bold text-hyra-700 bg-hyra-50 hover:bg-hyra-100 border border-hyra-200 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
                   title="Validate and save, then clear form for next lead"
                 >
                   <PlusCircle className="w-3.5 h-3.5" />
@@ -907,7 +907,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2.5 text-xs font-bold text-white bg-[#0063f2] hover:bg-blue-700 rounded-xl shadow-md shadow-blue-500/20 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                  className="px-5 py-2.5 text-xs font-bold text-white bg-hyra-700 hover:bg-hyra-700 rounded-xl shadow-md active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
                   title="Validate, match company, create lead, assign, and schedule task"
                 >
                   <Check className="w-3.5 h-3.5" />

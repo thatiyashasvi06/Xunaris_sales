@@ -8,6 +8,8 @@ import { SERVICE_CATALOG } from '../../data/crmSpecData';
 import { CheckCircle2, AlertCircle, Plus, Trash2, Mail, Send, X, ShieldCheck, ExternalLink, Check, ChevronDown } from 'lucide-react';
 import { launchEmailCompose, downloadOutlookEmlDraft, copyRichHtmlToClipboard } from '../../utils/emailCompose';
 
+const tomorrowLabel = () => new Date(Date.now() + 86400000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
 export const SpecLeads = () => {
   const { leads, createLead, updateLead, deleteLead, convertLeadToOpportunity, users, companies, currentUser, addActivity } = useCRM();
 
@@ -136,7 +138,7 @@ export const SpecLeads = () => {
   const [serviceInterest, setServiceInterest] = useState(leads[0]?.service || 'IT Staffing');
   const [status, setStatus] = useState(leads[0]?.status || 'New');
   const [owner, setOwner] = useState(leads[0]?.ownerName || currentUser.name);
-  const [nextFollowup, setNextFollowup] = useState(leads[0]?.nextFollowup || '16 Oct 2026');
+  const [nextFollowup, setNextFollowup] = useState(leads[0]?.nextFollowup || tomorrowLabel());
   const [priority, setPriority] = useState(leads[0]?.priority || 'High');
   const [notes, setNotes] = useState(leads[0]?.notes || '');
 
@@ -174,7 +176,7 @@ export const SpecLeads = () => {
     setServiceInterest(lead.service || 'IT Staffing');
     setStatus(lead.status || 'New');
     setOwner(lead.ownerName || currentUser.name);
-    setNextFollowup(lead.nextFollowup || '16 Oct 2026');
+    setNextFollowup(lead.nextFollowup || tomorrowLabel());
     setPriority(lead.priority || 'Medium');
     setNotes(lead.notes || '');
     setErrorMsg('');
@@ -191,7 +193,7 @@ export const SpecLeads = () => {
     setServiceInterest(SERVICE_CATALOG['XUN'][0]);
     setStatus('New');
     setOwner(currentUser.name);
-    setNextFollowup('16 Oct 2026');
+    setNextFollowup(tomorrowLabel());
     setPriority('Medium');
     setNotes('');
     setErrorMsg('');
@@ -493,11 +495,11 @@ export const SpecLeads = () => {
         {/* DETAILS / FILTERS Section */}
         <div className="p-6 border-b border-slate-100 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+            <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
               DETAILS / FILTERS
             </h2>
             {selectedLeadId && (
-              <span className="text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 font-mono">
+              <span className="text-[11px] font-bold text-hyra-700 bg-hyra-50 px-2 py-0.5 rounded border border-hyra-200 font-mono">
                 Editing: {selectedLeadId}
               </span>
             )}
@@ -523,7 +525,7 @@ export const SpecLeads = () => {
                 value={leadName}
                 onChange={(e) => setLeadName(e.target.value)}
                 placeholder="Priya Kumar"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -538,7 +540,7 @@ export const SpecLeads = () => {
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="Example Technologies"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -552,7 +554,7 @@ export const SpecLeads = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="priya@example.com"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -566,7 +568,7 @@ export const SpecLeads = () => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+91 90000 00000"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -578,7 +580,7 @@ export const SpecLeads = () => {
               <select
                 value={businessUnit}
                 onChange={(e) => handleBusinessUnitChange(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="Xunaris">Xunaris (XUN)</option>
                 <option value="HYRA Connect">HYRA Connect (HYRA)</option>
@@ -593,7 +595,7 @@ export const SpecLeads = () => {
               <select
                 value={source}
                 onChange={(e) => setSource(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="LinkedIn">LinkedIn</option>
                 <option value="Manual">Manual</option>
@@ -614,7 +616,7 @@ export const SpecLeads = () => {
               <select
                 value={serviceInterest}
                 onChange={(e) => setServiceInterest(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 {availableServices.map(s => (
                   <option key={s} value={s}>{s}</option>
@@ -630,7 +632,7 @@ export const SpecLeads = () => {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="New">New</option>
                 <option value="Contacted">Contacted</option>
@@ -648,7 +650,7 @@ export const SpecLeads = () => {
               <select
                 value={owner}
                 onChange={(e) => setOwner(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 {users.map(u => (
                   <option key={u.id} value={u.name}>{u.name} ({u.role})</option>
@@ -666,7 +668,7 @@ export const SpecLeads = () => {
                 value={nextFollowup}
                 onChange={(e) => setNextFollowup(e.target.value)}
                 placeholder="16 Oct 2026"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -678,7 +680,7 @@ export const SpecLeads = () => {
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="High">High</option>
                 <option value="Medium">Medium</option>
@@ -696,7 +698,7 @@ export const SpecLeads = () => {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Looking for SAP..."
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
           </div>
@@ -705,7 +707,7 @@ export const SpecLeads = () => {
         {/* RECORDS / ACTIVITY Table Section */}
         <div className="p-6 space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+            <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
               RECORDS / ACTIVITY
             </h2>
             <span className="text-xs text-slate-500 font-medium">
@@ -715,13 +717,13 @@ export const SpecLeads = () => {
 
           {/* Multiple Leads Selected Action Toolbar */}
           {checkedLeadIds.length > 0 && (
-            <div className="flex items-center justify-between bg-blue-50/90 border border-blue-200 px-4 py-2.5 rounded-xl shadow-2xs animate-in fade-in duration-150">
+            <div className="flex items-center justify-between bg-hyra-50/90 border border-hyra-200 px-4 py-2.5 rounded-xl shadow-2xs animate-in fade-in duration-150">
               <div className="flex items-center gap-2.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse" />
-                <span className="text-xs font-extrabold text-blue-900">
+                <span className="w-2.5 h-2.5 rounded-full bg-hyra-700 animate-pulse" />
+                <span className="text-xs font-extrabold text-hyra-900">
                   {checkedLeadIds.length} lead{checkedLeadIds.length > 1 ? 's' : ''} selected
                 </span>
-                <span className="text-[11px] text-blue-700 font-medium hidden sm:inline">
+                <span className="text-[11px] text-hyra-700 font-medium hidden sm:inline">
                   • Ready for multi-recipient email dispatch
                 </span>
               </div>
@@ -729,7 +731,7 @@ export const SpecLeads = () => {
                 <button
                   type="button"
                   onClick={() => handleOpenEmailForMultipleLeads(checkedLeadIds)}
-                  className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+                  className="px-3.5 py-1.5 bg-hyra-700 hover:bg-hyra-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
                 >
                   <Mail className="w-3.5 h-3.5" />
                   <span>Send Mail to Selected ({checkedLeadIds.length})</span>
@@ -747,7 +749,7 @@ export const SpecLeads = () => {
 
           <div className="border border-slate-200 rounded-xl overflow-hidden">
             <table className="min-w-full text-left text-xs divide-y divide-slate-200">
-              <thead className="bg-[#f0f4f9] text-[#0d2238] font-bold">
+              <thead className="bg-slate-50 text-ink-900 font-bold">
                 <tr>
                   <th className="px-3 py-3 w-10 text-center">
                     <input
@@ -776,10 +778,10 @@ export const SpecLeads = () => {
                 {leads.length === 0 && (
                   <tr>
                     <td colSpan={7} className="px-4 py-10 text-center">
-                      <div className="text-sm font-extrabold text-[#0d2238]">No leads yet</div>
+                      <div className="text-sm font-extrabold text-ink-900">No leads yet</div>
                       <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Add your first lead, or import a CSV or Excel file. Include email, job title and industry so the Sales Agent can score them.</p>
                       <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-                        <button type="button" onClick={() => setIsManualModalOpen(true)} className="px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">+ Add your first lead</button>
+                        <button type="button" onClick={() => setIsManualModalOpen(true)} className="px-4 py-2 rounded-xl bg-hyra-700 text-white text-xs font-bold">+ Add your first lead</button>
                         <button type="button" onClick={() => setIsBulkModalOpen(true)} className="px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold">Import CSV / Excel</button>
                       </div>
                     </td>
@@ -789,9 +791,9 @@ export const SpecLeads = () => {
                   <tr
                     key={lead.id}
                     onClick={() => handleSelectLeadRow(lead)}
-                    className={`cursor-pointer hover:bg-blue-50/50 transition-colors ${
-                      selectedLeadId === lead.id ? 'bg-blue-50/80 font-semibold' : ''
-                    } ${checkedLeadIds.includes(lead.id) ? 'bg-blue-50/40' : ''}`}
+                    className={`cursor-pointer hover:bg-hyra-50/50 transition-colors ${
+                      selectedLeadId === lead.id ? 'bg-hyra-50/80 font-semibold' : ''
+                    } ${checkedLeadIds.includes(lead.id) ? 'bg-hyra-50/40' : ''}`}
                   >
                     <td className="px-3 py-3.5 text-center" onClick={(e) => e.stopPropagation()}>
                       <input
@@ -809,7 +811,7 @@ export const SpecLeads = () => {
                     </td>
                     <td className="px-4 py-3.5 text-slate-900">
                       <div className="font-bold">{lead.contactName}</div>
-                      <span className="text-[10px] text-blue-700 font-mono font-bold">{lead.id}</span>
+                      <span className="text-[10px] text-hyra-700 font-mono font-bold">{lead.id}</span>
                     </td>
                     <td className="px-4 py-3.5 text-slate-700 font-medium">
                       <div>{lead.companyName}</div>
@@ -820,7 +822,7 @@ export const SpecLeads = () => {
                         lead.status === 'Qualified'
                           ? 'bg-emerald-100 text-emerald-800'
                           : lead.status === 'Contacted'
-                          ? 'bg-blue-100 text-blue-800'
+                          ? 'bg-hyra-100 text-hyra-800'
                           : lead.status === 'Nurture'
                           ? 'bg-purple-100 text-purple-800'
                           : 'bg-slate-100 text-slate-700'
@@ -841,7 +843,7 @@ export const SpecLeads = () => {
                           e.stopPropagation();
                           handleOpenEmailForLead(lead);
                         }}
-                        className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+                        className="p-1 text-hyra-700 hover:text-hyra-800 hover:bg-hyra-50 rounded transition-colors"
                         title={`Send Mail to ${lead.contactName} via Official Email Composer`}
                       >
                         <Mail className="w-3.5 h-3.5" />
@@ -881,11 +883,11 @@ export const SpecLeads = () => {
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-200 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b pb-3 border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-blue-100 flex items-center justify-center text-blue-700">
+                <div className="w-8 h-8 rounded-xl bg-hyra-100 flex items-center justify-center text-hyra-700">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-[#0d2238] text-sm">Send Mail</h3>
+                  <h3 className="font-extrabold text-ink-900 text-sm">Send Mail</h3>
                   <p className="text-[11px] text-slate-500 font-medium">
                     {leadEmailTarget.isMultiple
                       ? `${leadEmailTarget.count} Selected Leads • Multi-recipient Compose`
@@ -915,7 +917,7 @@ export const SpecLeads = () => {
                   onClick={() => setComposeMethod('outlook')}
                   className={`py-2 px-1.5 rounded-lg text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
                     composeMethod === 'outlook'
-                      ? 'bg-blue-600 text-white shadow-2xs'
+                      ? 'bg-hyra-700 text-white shadow-2xs'
                       : 'text-slate-700 hover:text-slate-900'
                   }`}
                 >
@@ -927,7 +929,7 @@ export const SpecLeads = () => {
                   onClick={() => setComposeMethod('outlook-web')}
                   className={`py-2 px-1.5 rounded-lg text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
                     composeMethod === 'outlook-web'
-                      ? 'bg-blue-600 text-white shadow-2xs'
+                      ? 'bg-hyra-700 text-white shadow-2xs'
                       : 'text-slate-700 hover:text-slate-900'
                   }`}
                 >
@@ -939,7 +941,7 @@ export const SpecLeads = () => {
                   onClick={() => setComposeMethod('gmail')}
                   className={`py-2 px-1.5 rounded-lg text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
                     composeMethod === 'gmail'
-                      ? 'bg-blue-600 text-white shadow-2xs'
+                      ? 'bg-hyra-700 text-white shadow-2xs'
                       : 'text-slate-700 hover:text-slate-900'
                   }`}
                 >
@@ -951,7 +953,7 @@ export const SpecLeads = () => {
                   onClick={() => setComposeMethod('direct')}
                   className={`py-2 px-1.5 rounded-lg text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
                     composeMethod === 'direct'
-                      ? 'bg-blue-600 text-white shadow-2xs'
+                      ? 'bg-hyra-700 text-white shadow-2xs'
                       : 'text-slate-700 hover:text-slate-900'
                   }`}
                 >
@@ -963,12 +965,12 @@ export const SpecLeads = () => {
 
             {/* Method Explanation Banner */}
             {composeMethod === 'outlook' ? (
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 text-xs space-y-1">
+              <div className="p-3 bg-hyra-50 border border-hyra-200 rounded-xl text-hyra-900 text-xs space-y-1">
                 <div className="flex items-center gap-1.5 font-bold">
-                  <Mail className="w-4 h-4 text-blue-600 shrink-0" />
+                  <Mail className="w-4 h-4 text-hyra-700 shrink-0" />
                   <span>Microsoft Outlook (Desktop Application)</span>
                 </div>
-                <p className="text-[11px] text-blue-800">
+                <p className="text-[11px] text-hyra-800">
                   Directly launches your installed Microsoft Outlook desktop client with recipient, subject, and pre-formatted body loaded.
                 </p>
               </div>
@@ -1037,7 +1039,7 @@ export const SpecLeads = () => {
                           key={idx}
                           className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 shadow-2xs transition-colors"
                         >
-                          <span className="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
+                          <span className="w-4 h-4 rounded-full bg-hyra-700 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
                             👤
                           </span>
                           <span className="font-mono text-[11px]">{addr}</span>
@@ -1092,7 +1094,7 @@ export const SpecLeads = () => {
                   value={inlineSmtpPass}
                   onChange={(e) => setInlineSmtpPass(e.target.value)}
                   placeholder="Enter password to authenticate and send"
-                  className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 bg-white font-mono focus:ring-2 focus:ring-blue-600"
+                  className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 bg-white font-mono focus:ring-2 focus:ring-hyra-700"
                 />
                 <span className="text-[10px] text-slate-500 block">
                   Saved securely to backend environment for {leadSenderAccount}.
@@ -1191,7 +1193,7 @@ export const SpecLeads = () => {
                   type="button"
                   disabled={leadEmailSending}
                   onClick={handleSendDirectFromCRM}
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="px-5 py-2.5 bg-hyra-700 hover:bg-hyra-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>{leadEmailSending ? 'Dispatching...' : `Send Officially via ${leadSenderAccount.split('@')[0]}`}</span>
@@ -1200,7 +1202,7 @@ export const SpecLeads = () => {
                 <button
                   type="button"
                   onClick={handleLaunchEmailCompose}
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2.5 bg-hyra-700 hover:bg-hyra-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>

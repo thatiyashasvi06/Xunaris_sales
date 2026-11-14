@@ -4,20 +4,22 @@ import { SpecHeader } from './SpecHeader';
 import { CheckCircle2, Plus, Trash2, Calendar, Mail, Phone, Users, CheckSquare, ExternalLink } from 'lucide-react';
 import { launchEmailCompose } from '../../utils/emailCompose';
 
+const tomorrowLabel = () => new Date(Date.now() + 86400000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
 export const SpecActivities = () => {
   const { activities, addActivity, updateActivity, deleteActivity, users, companies, leads, currentUser, setActiveNav } = useCRM();
 
   const [selectedActivityId, setSelectedActivityId] = useState(activities[0]?.id || null);
 
   // Form input states
-  const [relatedTo, setRelatedTo] = useState(activities[0]?.relatedTo || 'Example Technologies');
+  const [relatedTo, setRelatedTo] = useState(activities[0]?.relatedTo || '');
   const [activityType, setActivityType] = useState(activities[0]?.activityType || 'Meeting');
   const [subject, setSubject] = useState(activities[0]?.subject || 'Staffing requirements');
-  const [dateTime, setDateTime] = useState(activities[0]?.dateTime || '15 Oct 2026, 11:00');
+  const [dateTime, setDateTime] = useState(activities[0]?.dateTime || `${tomorrowLabel()}, 10:00`);
   const [assignedTo, setAssignedTo] = useState(activities[0]?.assignedTo || currentUser.name);
   const [status, setStatus] = useState(activities[0]?.status || 'Planned');
   const [outcome, setOutcome] = useState(activities[0]?.outcome || 'Awaiting response');
-  const [nextFollowup, setNextFollowup] = useState(activities[0]?.nextFollowup || '16 Oct 2026');
+  const [nextFollowup, setNextFollowup] = useState(activities[0]?.nextFollowup || tomorrowLabel());
   const [reminder, setReminder] = useState(activities[0]?.reminder || '1 day before');
 
   // Filter state for records table
@@ -28,16 +30,13 @@ export const SpecActivities = () => {
   const relatedOptions = Array.from(
     new Set([
       ...companies.map(c => c.name),
-      ...leads.map(l => l.companyName),
-      'Example Technologies',
-      'Sample Systems',
-      'Northwind Labs'
+      ...leads.map(l => l.companyName)
     ])
   );
 
   const handleClearForm = () => {
     setSelectedActivityId(null);
-    setRelatedTo(companies[0]?.name || 'Example Technologies');
+    setRelatedTo('');
     setActivityType('Meeting');
     setSubject('');
     setDateTime(
@@ -137,7 +136,7 @@ export const SpecActivities = () => {
       assignedTo: currentUser.name,
       status: 'Completed',
       outcome: `Compose window opened via ${launchRes.method} to ${targetEmail} from ${senderEmail}`,
-      nextFollowup: nextFollowup || '18 Oct 2026',
+      nextFollowup: nextFollowup || tomorrowLabel(),
       reminder: '1 day before',
       result: 'Draft Opened'
     });
@@ -202,18 +201,18 @@ export const SpecActivities = () => {
         <div className="p-6 border-b border-slate-100 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+              <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
                 DETAILS / FILTERS
               </h2>
               {selectedActivityId && (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-hyra-100 text-hyra-800">
                   Editing: {selectedActivityId}
                 </span>
               )}
             </div>
             <button
               onClick={handleClearForm}
-              className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline"
+              className="inline-flex items-center gap-1 text-xs font-bold text-hyra-700 hover:text-hyra-800 hover:underline"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Log New Activity</span>
@@ -232,7 +231,7 @@ export const SpecActivities = () => {
                 value={relatedTo}
                 onChange={(e) => setRelatedTo(e.target.value)}
                 placeholder="Example Technologies"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
               <datalist id="related-options">
                 {relatedOptions.map((opt, i) => (
@@ -248,7 +247,7 @@ export const SpecActivities = () => {
               <select
                 value={activityType}
                 onChange={(e) => setActivityType(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="Meeting">Meeting</option>
                 <option value="Call">Call</option>
@@ -267,7 +266,7 @@ export const SpecActivities = () => {
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="Staffing requirements"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -281,7 +280,7 @@ export const SpecActivities = () => {
                 value={dateTime}
                 onChange={(e) => setDateTime(e.target.value)}
                 placeholder="15 Oct 2026, 11:00"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -292,7 +291,7 @@ export const SpecActivities = () => {
               <select
                 value={assignedTo}
                 onChange={(e) => setAssignedTo(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 {users.map((u) => (
                   <option key={u.id} value={u.name}>
@@ -309,7 +308,7 @@ export const SpecActivities = () => {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="Planned">Planned</option>
                 <option value="Completed">Completed</option>
@@ -327,7 +326,7 @@ export const SpecActivities = () => {
                 value={outcome}
                 onChange={(e) => setOutcome(e.target.value)}
                 placeholder="Awaiting response"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -340,7 +339,7 @@ export const SpecActivities = () => {
                 value={nextFollowup}
                 onChange={(e) => setNextFollowup(e.target.value)}
                 placeholder="16 Oct 2026"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -351,7 +350,7 @@ export const SpecActivities = () => {
               <select
                 value={reminder}
                 onChange={(e) => setReminder(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="None">None</option>
                 <option value="15 minutes before">15 minutes before</option>
@@ -367,7 +366,7 @@ export const SpecActivities = () => {
         <div className="p-6 space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+              <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
                 RECORDS / ACTIVITY
               </h2>
               <span className="text-xs text-slate-400">
@@ -395,7 +394,7 @@ export const SpecActivities = () => {
 
           <div className="border border-slate-200 rounded-xl overflow-hidden">
             <table className="min-w-full text-left text-xs divide-y divide-slate-200">
-              <thead className="bg-[#f0f4f9] text-[#0d2238] font-bold">
+              <thead className="bg-slate-50 text-ink-900 font-bold">
                 <tr>
                   <th className="px-4 py-3">Date</th>
                   <th className="px-4 py-3">Type</th>
@@ -412,9 +411,9 @@ export const SpecActivities = () => {
                     <td colSpan="7" className="px-4 py-10 text-center">
                       {activities.length === 0 ? (
                         <>
-                          <div className="text-sm font-extrabold text-[#0d2238]">No activities yet</div>
+                          <div className="text-sm font-extrabold text-ink-900">No activities yet</div>
                           <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">Calls, emails, meetings and tasks appear here. They are created automatically when you add a lead or when someone books a meeting, or you can log one with the form above.</p>
-                          <button type="button" onClick={() => setActiveNav('leads')} className="mt-3 px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Go to Leads</button>
+                          <button type="button" onClick={() => setActiveNav('leads')} className="mt-3 px-4 py-2 rounded-xl bg-hyra-700 text-white text-xs font-bold">Go to Leads</button>
                         </>
                       ) : (
                         <span className="text-slate-400">No activities match the current filter.</span>
@@ -429,7 +428,7 @@ export const SpecActivities = () => {
                         key={act.id}
                         onClick={() => handleSelectRow(act)}
                         className={`cursor-pointer transition-colors ${
-                          isSelected ? 'bg-blue-50/80 ring-1 ring-inset ring-blue-300' : 'hover:bg-slate-50'
+                          isSelected ? 'bg-hyra-50/80 ring-1 ring-inset ring-hyra-300' : 'hover:bg-slate-50'
                         }`}
                       >
                         <td className="px-4 py-3.5 font-bold text-slate-900 whitespace-nowrap">
@@ -462,7 +461,7 @@ export const SpecActivities = () => {
                                 ? 'bg-emerald-100 text-emerald-800'
                                 : act.status === 'Cancelled'
                                 ? 'bg-rose-100 text-rose-800'
-                                : 'bg-blue-100 text-blue-800'
+                                : 'bg-hyra-100 text-hyra-800'
                             }`}
                           >
                             {act.status}

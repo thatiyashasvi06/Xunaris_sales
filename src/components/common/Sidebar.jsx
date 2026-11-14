@@ -126,7 +126,7 @@ export const Sidebar = ({ mobileOpen, onCloseMobile }) => {
           <div className="flex items-center gap-2">
             <div
               className={`w-3 h-3 rounded-full ${
-                isCRM ? 'bg-blue-600 ring-4 ring-blue-100' : 'bg-teal-600 ring-4 ring-teal-100'
+                isCRM ? 'bg-hyra-700 ring-4 ring-hyra-100' : 'bg-teal-600 ring-4 ring-teal-100'
               }`}
             />
             <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
@@ -155,7 +155,7 @@ export const Sidebar = ({ mobileOpen, onCloseMobile }) => {
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   isActive
                     ? isCRM
-                      ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/20 font-semibold'
+                      ? 'bg-hyra-700 text-white shadow-sm font-semibold'
                       : 'bg-teal-600 text-white shadow-sm shadow-teal-500/20 font-semibold'
                     : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
                 }`}

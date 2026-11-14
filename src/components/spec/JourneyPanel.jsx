@@ -8,7 +8,7 @@ import { Check, ArrowRight, ChevronDown, ChevronUp, Users, Target, Send, Power, 
  * the single next step to take, and the whole flow with live counts.
  * Everything is computed from real CRM and Sales Agent data.
  */
-export const JourneyPanel = () => {
+export const JourneyPanel = ({ hideWhenComplete = false }) => {
   const { leads, opportunities, setActiveNav } = useCRM();
   const [agent, setAgent] = useState(null);
   const [showAll, setShowAll] = useState(() => {
@@ -113,6 +113,8 @@ export const JourneyPanel = () => {
   const complete = nextIndex === -1;
   const next = complete ? null : steps[nextIndex];
   const pct = Math.round((doneCount / steps.length) * 100);
+
+  if (complete && hideWhenComplete) return null;
 
   return (
     <section className="bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden" aria-label="Your sales journey">

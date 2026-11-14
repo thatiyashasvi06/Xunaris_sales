@@ -4,20 +4,22 @@ import { SpecHeader } from './SpecHeader';
 import { SERVICE_CATALOG } from '../../data/crmSpecData';
 import { CheckCircle2, AlertCircle, Plus, Trash2 } from 'lucide-react';
 
+const tomorrowLabel = () => new Date(Date.now() + 86400000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
 export const SpecOpportunities = () => {
   const { opportunities, addOpportunity, updateOpportunity, updateOpportunityStage, companies, users, currentUser, setActiveNav } = useCRM();
 
   const [selectedOppId, setSelectedOppId] = useState(opportunities[0]?.id || null);
 
-  const [opportunityName, setOpportunityName] = useState(opportunities[0]?.title || 'SAP Staffing - 3 Roles');
-  const [company, setCompany] = useState(opportunities[0]?.companyName || 'Example Technologies');
+  const [opportunityName, setOpportunityName] = useState(opportunities[0]?.title || '');
+  const [company, setCompany] = useState(opportunities[0]?.companyName || '');
   const [businessUnit, setBusinessUnit] = useState(opportunities[0]?.businessUnit || 'HYRA Connect');
-  const [service, setService] = useState(opportunities[0]?.service || 'Contract staffing');
-  const [stage, setStage] = useState(opportunities[0]?.stage || 'Proposal');
-  const [estimatedValue, setEstimatedValue] = useState(opportunities[0]?.estimatedValue || 'INR 12,00,000');
-  const [expectedClose, setExpectedClose] = useState(opportunities[0]?.expectedClose || '30 Oct 2026');
+  const [service, setService] = useState(opportunities[0]?.service || SERVICE_CATALOG['HYRA'][0]);
+  const [stage, setStage] = useState(opportunities[0]?.stage || 'Discovery');
+  const [estimatedValue, setEstimatedValue] = useState(opportunities[0]?.estimatedValue || '');
+  const [expectedClose, setExpectedClose] = useState(opportunities[0]?.expectedClose || '');
   const [owner, setOwner] = useState(opportunities[0]?.ownerName || currentUser.name);
-  const [nextActionDate, setNextActionDate] = useState(opportunities[0]?.nextActionDate || '16 Oct 2026');
+  const [nextActionDate, setNextActionDate] = useState(opportunities[0]?.nextActionDate || tomorrowLabel());
 
   const [notice, setNotice] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -42,19 +44,19 @@ export const SpecOpportunities = () => {
     setEstimatedValue(opp.estimatedValue);
     setExpectedClose(opp.expectedClose);
     setOwner(opp.ownerName || currentUser.name);
-    setNextActionDate(opp.nextActionDate || '16 Oct 2026');
+    setNextActionDate(opp.nextActionDate || tomorrowLabel());
     setErrorMsg('');
   };
 
   const handleClearForm = () => {
     setSelectedOppId(null);
     setOpportunityName('');
-    setCompany(companies[0]?.name || 'Example Technologies');
+    setCompany('');
     setBusinessUnit('Xunaris');
     setService(SERVICE_CATALOG['XUN'][0]);
     setStage('Discovery');
-    setEstimatedValue('INR 10,00,000');
-    setExpectedClose('30 Nov 2026');
+    setEstimatedValue('');
+    setExpectedClose('');
     setOwner(currentUser.name);
     setNextActionDate('20 Oct 2026');
     setNotice('Opportunity form cleared. Enter details to register a new deal.');
@@ -156,11 +158,11 @@ export const SpecOpportunities = () => {
         {/* DETAILS / FILTERS Section */}
         <div className="p-6 border-b border-slate-100 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+            <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
               DETAILS / FILTERS
             </h2>
             {selectedOppId && (
-              <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 font-mono text-[11px]">
+              <span className="font-bold text-hyra-700 bg-hyra-50 px-2 py-0.5 rounded border border-hyra-200 font-mono text-[11px]">
                 Deal: {selectedOppId}
               </span>
             )}
@@ -178,7 +180,7 @@ export const SpecOpportunities = () => {
                 value={opportunityName}
                 onChange={(e) => setOpportunityName(e.target.value)}
                 placeholder="SAP Staffing - 3 Roles"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -192,7 +194,7 @@ export const SpecOpportunities = () => {
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="Example Technologies"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -203,7 +205,7 @@ export const SpecOpportunities = () => {
               <select
                 value={businessUnit}
                 onChange={(e) => handleBusinessUnitChange(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="HYRA Connect">HYRA Connect (HYRA)</option>
                 <option value="Xunaris">Xunaris (XUN)</option>
@@ -218,7 +220,7 @@ export const SpecOpportunities = () => {
               <select
                 value={service}
                 onChange={(e) => setService(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 {availableServices.map(s => (
                   <option key={s} value={s}>{s}</option>
@@ -233,7 +235,7 @@ export const SpecOpportunities = () => {
               <select
                 value={stage}
                 onChange={(e) => setStage(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="Discovery">Discovery</option>
                 <option value="Qualified">Qualified</option>
@@ -253,7 +255,7 @@ export const SpecOpportunities = () => {
                 value={estimatedValue}
                 onChange={(e) => setEstimatedValue(e.target.value)}
                 placeholder="INR 12,00,000"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -267,7 +269,7 @@ export const SpecOpportunities = () => {
                 value={expectedClose}
                 onChange={(e) => setExpectedClose(e.target.value)}
                 placeholder="30 Oct 2026"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -278,7 +280,7 @@ export const SpecOpportunities = () => {
               <select
                 value={owner}
                 onChange={(e) => setOwner(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 {users.map(u => (
                   <option key={u.id} value={u.name}>{u.name} ({u.role})</option>
@@ -295,7 +297,7 @@ export const SpecOpportunities = () => {
                 value={nextActionDate}
                 onChange={(e) => setNextActionDate(e.target.value)}
                 placeholder="16 Oct 2026"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
           </div>
@@ -304,7 +306,7 @@ export const SpecOpportunities = () => {
         {/* RECORDS / ACTIVITY Table Section */}
         <div className="p-6 space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+            <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
               RECORDS / ACTIVITY
             </h2>
             <span className="text-xs text-slate-500 font-medium">
@@ -314,7 +316,7 @@ export const SpecOpportunities = () => {
 
           <div className="border border-slate-200 rounded-xl overflow-hidden">
             <table className="min-w-full text-left text-xs divide-y divide-slate-200">
-              <thead className="bg-[#f0f4f9] text-[#0d2238] font-bold">
+              <thead className="bg-slate-50 text-ink-900 font-bold">
                 <tr>
                   <th className="px-4 py-3">Opportunity</th>
                   <th className="px-4 py-3">Stage</th>
@@ -326,9 +328,9 @@ export const SpecOpportunities = () => {
                 {opportunities.length === 0 && (
                   <tr>
                     <td colSpan={5} className="px-4 py-10 text-center">
-                      <div className="text-sm font-extrabold text-[#0d2238]">No deals yet</div>
+                      <div className="text-sm font-extrabold text-ink-900">No deals yet</div>
                       <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Deals come from qualified leads. Open a lead and press Convert to Opportunity, or add a deal here.</p>
-                      <button type="button" onClick={() => setActiveNav('leads')} className="mt-3 px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Go to Leads</button>
+                      <button type="button" onClick={() => setActiveNav('leads')} className="mt-3 px-4 py-2 rounded-xl bg-hyra-700 text-white text-xs font-bold">Go to Leads</button>
                     </td>
                   </tr>
                 )}
@@ -336,13 +338,13 @@ export const SpecOpportunities = () => {
                   <tr
                     key={opp.id}
                     onClick={() => handleSelectRow(opp)}
-                    className={`cursor-pointer hover:bg-blue-50/50 transition-colors ${
-                      selectedOppId === opp.id ? 'bg-blue-50/80 font-semibold' : ''
+                    className={`cursor-pointer hover:bg-hyra-50/50 transition-colors ${
+                      selectedOppId === opp.id ? 'bg-hyra-50/80 font-semibold' : ''
                     }`}
                   >
                     <td className="px-4 py-3.5 font-bold text-slate-900">
                       <div>{opp.title}</div>
-                      <span className="text-[10px] text-blue-700 font-mono font-bold">{opp.id}</span>
+                      <span className="text-[10px] text-hyra-700 font-mono font-bold">{opp.id}</span>
                       <span className="text-[10px] text-slate-400"> &bull; {opp.companyName}</span>
                     </td>
                     <td className="px-4 py-3.5">
@@ -352,7 +354,7 @@ export const SpecOpportunities = () => {
                           : opp.stage === 'Lost'
                           ? 'bg-rose-100 text-rose-800'
                           : opp.stage === 'Proposal'
-                          ? 'bg-blue-100 text-blue-800'
+                          ? 'bg-hyra-100 text-hyra-800'
                           : 'bg-amber-100 text-amber-800'
                       }`}>
                         {opp.stage}

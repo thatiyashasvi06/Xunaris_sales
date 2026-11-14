@@ -11,17 +11,17 @@ export const SpecCompaniesContacts = () => {
   const [recordsTab, setRecordsTab] = useState('contacts'); // 'contacts' | 'companies'
 
   // Form inputs
-  const [companyName, setCompanyName] = useState(companies[0]?.name || 'Example Technologies');
+  const [companyName, setCompanyName] = useState(companies[0]?.name || '');
   const [industry, setIndustry] = useState(companies[0]?.industry || 'IT Services');
-  const [website, setWebsite] = useState(companies[0]?.website || 'example.com');
-  const [cityCountry, setCityCountry] = useState(`${companies[0]?.city || 'Bengaluru'}, ${companies[0]?.country || 'India'}`);
+  const [website, setWebsite] = useState(companies[0]?.website || '');
+  const [cityCountry, setCityCountry] = useState(companies[0] ? [companies[0].city, companies[0].country].filter(Boolean).join(', ') : '');
   const [businessUnit, setBusinessUnit] = useState(companies[0]?.businessUnit || 'Both');
   const [accountOwner, setAccountOwner] = useState(companies[0]?.accountOwner || currentUser.name);
 
-  const [contactName, setContactName] = useState(contacts[0]?.name || 'Priya Kumar');
-  const [designation, setDesignation] = useState(contacts[0]?.role || 'HR Director');
-  const [email, setEmail] = useState(contacts[0]?.email || 'priya@example.com');
-  const [phone, setPhone] = useState(contacts[0]?.phone || '+91 90000 00000');
+  const [contactName, setContactName] = useState(contacts[0]?.name || '');
+  const [designation, setDesignation] = useState(contacts[0]?.role || '');
+  const [email, setEmail] = useState(contacts[0]?.email || '');
+  const [phone, setPhone] = useState(contacts[0]?.phone || '');
   const [relationship, setRelationship] = useState(contacts[0]?.relationship || 'Decision maker');
 
   const [notice, setNotice] = useState('');
@@ -33,7 +33,7 @@ export const SpecCompaniesContacts = () => {
     setCompanyName(comp.name);
     setIndustry(comp.industry);
     setWebsite(comp.website);
-    setCityCountry(`${comp.city || 'Bengaluru'}, ${comp.country || 'India'}`);
+    setCityCountry([comp.city, comp.country].filter(Boolean).join(', '));
     setBusinessUnit(comp.businessUnit || 'Both');
     setAccountOwner(comp.accountOwner || currentUser.name);
 
@@ -61,7 +61,7 @@ export const SpecCompaniesContacts = () => {
     setCompanyName('');
     setIndustry('IT Services');
     setWebsite('');
-    setCityCountry('Bengaluru, India');
+    setCityCountry('');
     setBusinessUnit('Both');
     setAccountOwner(currentUser.name);
     setNotice('Company form cleared. Enter details to register a new company.');
@@ -92,7 +92,7 @@ export const SpecCompaniesContacts = () => {
         name: companyName.trim(),
         industry,
         website,
-        city: city || 'Bengaluru',
+        city: city || '',
         country: country || 'India',
         businessUnit,
         accountOwner
@@ -103,7 +103,7 @@ export const SpecCompaniesContacts = () => {
         name: companyName.trim(),
         industry,
         website,
-        city: city || 'Bengaluru',
+        city: city || '',
         country: country || 'India',
         businessUnit,
         accountOwner
@@ -191,12 +191,12 @@ export const SpecCompaniesContacts = () => {
         {/* DETAILS / FILTERS Section */}
         <div className="p-6 border-b border-slate-100 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+            <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
               DETAILS / FILTERS
             </h2>
             <div className="flex items-center gap-2 text-xs">
               {selectedCompId && (
-                <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 font-mono text-[11px]">
+                <span className="font-bold text-hyra-700 bg-hyra-50 px-2 py-0.5 rounded border border-hyra-200 font-mono text-[11px]">
                   Company: {selectedCompId}
                 </span>
               )}
@@ -220,7 +220,7 @@ export const SpecCompaniesContacts = () => {
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 placeholder="Example Technologies"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -233,7 +233,7 @@ export const SpecCompaniesContacts = () => {
                 value={industry}
                 onChange={(e) => setIndustry(e.target.value)}
                 placeholder="IT Services"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -246,7 +246,7 @@ export const SpecCompaniesContacts = () => {
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
                 placeholder="example.com"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -260,7 +260,7 @@ export const SpecCompaniesContacts = () => {
                 value={cityCountry}
                 onChange={(e) => setCityCountry(e.target.value)}
                 placeholder="Bengaluru, India"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -271,7 +271,7 @@ export const SpecCompaniesContacts = () => {
               <select
                 value={businessUnit}
                 onChange={(e) => setBusinessUnit(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="Both">Both (Xunaris + HYRA Connect)</option>
                 <option value="Xunaris">Xunaris (XUN)</option>
@@ -286,7 +286,7 @@ export const SpecCompaniesContacts = () => {
               <select
                 value={accountOwner}
                 onChange={(e) => setAccountOwner(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 {users.map(u => (
                   <option key={u.id} value={u.name}>{u.name} ({u.role})</option>
@@ -304,7 +304,7 @@ export const SpecCompaniesContacts = () => {
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
                 placeholder="Priya Kumar"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -317,7 +317,7 @@ export const SpecCompaniesContacts = () => {
                 value={designation}
                 onChange={(e) => setDesignation(e.target.value)}
                 placeholder="HR Director"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -330,7 +330,7 @@ export const SpecCompaniesContacts = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="priya@example.com"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
           </div>
@@ -340,7 +340,7 @@ export const SpecCompaniesContacts = () => {
         <div className="p-6 space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+              <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
                 RECORDS / ACTIVITY
               </h2>
               {/* Tab Selector */}
@@ -350,7 +350,7 @@ export const SpecCompaniesContacts = () => {
                   onClick={() => setRecordsTab('contacts')}
                   className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${
                     recordsTab === 'contacts'
-                      ? 'bg-white text-blue-700 shadow-xs'
+                      ? 'bg-white text-hyra-700 shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -361,7 +361,7 @@ export const SpecCompaniesContacts = () => {
                   onClick={() => setRecordsTab('companies')}
                   className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${
                     recordsTab === 'companies'
-                      ? 'bg-white text-blue-700 shadow-xs'
+                      ? 'bg-white text-hyra-700 shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -380,7 +380,7 @@ export const SpecCompaniesContacts = () => {
           <div className="border border-slate-200 rounded-xl overflow-hidden">
             {recordsTab === 'contacts' ? (
               <table className="min-w-full text-left text-xs divide-y divide-slate-200">
-                <thead className="bg-[#f0f4f9] text-[#0d2238] font-bold">
+                <thead className="bg-slate-50 text-ink-900 font-bold">
                   <tr>
                     <th className="px-4 py-3">Contact</th>
                     <th className="px-4 py-3">Company</th>
@@ -393,10 +393,10 @@ export const SpecCompaniesContacts = () => {
                   {displayedContacts.length === 0 && (
                     <tr>
                       <td colSpan={5} className="px-4 py-10 text-center">
-                        <div className="text-sm font-extrabold text-[#0d2238]">No contacts yet</div>
+                        <div className="text-sm font-extrabold text-ink-900">No contacts yet</div>
                         <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">Contacts are added automatically when you add a lead. You can also add one with the form above.</p>
                         <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-                          <button type="button" onClick={() => setActiveNav('leads')} className="px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Go to Leads</button>
+                          <button type="button" onClick={() => setActiveNav('leads')} className="px-4 py-2 rounded-xl bg-hyra-700 text-white text-xs font-bold">Go to Leads</button>
                           <button type="button" onClick={handleClearContactForm} className="px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold">+ New Contact</button>
                         </div>
                       </td>
@@ -406,8 +406,8 @@ export const SpecCompaniesContacts = () => {
                     <tr
                       key={contact.id}
                       onClick={() => handleSelectContact(contact)}
-                      className={`cursor-pointer hover:bg-blue-50/50 transition-colors ${
-                        selectedContactId === contact.id ? 'bg-blue-50/80 font-semibold' : ''
+                      className={`cursor-pointer hover:bg-hyra-50/50 transition-colors ${
+                        selectedContactId === contact.id ? 'bg-hyra-50/80 font-semibold' : ''
                       }`}
                     >
                       <td className="px-4 py-3.5 font-bold text-slate-900">
@@ -420,7 +420,7 @@ export const SpecCompaniesContacts = () => {
                       <td className="px-4 py-3.5 text-slate-600 font-medium">
                         {contact.role || contact.designation}
                       </td>
-                      <td className="px-4 py-3.5 text-blue-600 font-medium">
+                      <td className="px-4 py-3.5 text-hyra-700 font-medium">
                         {contact.email}
                       </td>
                       <td className="px-4 py-3.5 text-slate-700 font-medium">
@@ -434,7 +434,7 @@ export const SpecCompaniesContacts = () => {
               </table>
             ) : (
               <table className="min-w-full text-left text-xs divide-y divide-slate-200">
-                <thead className="bg-[#f0f4f9] text-[#0d2238] font-bold">
+                <thead className="bg-slate-50 text-ink-900 font-bold">
                   <tr>
                     <th className="px-4 py-3">Company</th>
                     <th className="px-4 py-3">Industry</th>
@@ -448,10 +448,10 @@ export const SpecCompaniesContacts = () => {
                   {companies.length === 0 && (
                     <tr>
                       <td colSpan={6} className="px-4 py-10 text-center">
-                        <div className="text-sm font-extrabold text-[#0d2238]">No companies yet</div>
+                        <div className="text-sm font-extrabold text-ink-900">No companies yet</div>
                         <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">Companies are created automatically from your leads, so each one appears once with all its contacts. You can also add one with the form above.</p>
                         <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-                          <button type="button" onClick={() => setActiveNav('leads')} className="px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Go to Leads</button>
+                          <button type="button" onClick={() => setActiveNav('leads')} className="px-4 py-2 rounded-xl bg-hyra-700 text-white text-xs font-bold">Go to Leads</button>
                           <button type="button" onClick={handleClearCompanyForm} className="px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold">+ New Company</button>
                         </div>
                       </td>
@@ -461,8 +461,8 @@ export const SpecCompaniesContacts = () => {
                     <tr
                       key={comp.id}
                       onClick={() => handleSelectCompany(comp)}
-                      className={`cursor-pointer hover:bg-blue-50/50 transition-colors ${
-                        selectedCompId === comp.id ? 'bg-blue-50/80 font-semibold' : ''
+                      className={`cursor-pointer hover:bg-hyra-50/50 transition-colors ${
+                        selectedCompId === comp.id ? 'bg-hyra-50/80 font-semibold' : ''
                       }`}
                     >
                       <td className="px-4 py-3.5 font-bold text-slate-900">
@@ -472,14 +472,14 @@ export const SpecCompaniesContacts = () => {
                       <td className="px-4 py-3.5 text-slate-700 font-medium">
                         {comp.industry || 'IT Services'}
                       </td>
-                      <td className="px-4 py-3.5 text-blue-600 font-medium">
+                      <td className="px-4 py-3.5 text-hyra-700 font-medium">
                         {comp.website || '-'}
                       </td>
                       <td className="px-4 py-3.5 text-slate-600 font-medium">
                         {comp.city ? `${comp.city}, ${comp.country || 'India'}` : comp.country || 'India'}
                       </td>
                       <td className="px-4 py-3.5 text-slate-700 font-medium">
-                        <span className="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full font-semibold text-[10px]">
+                        <span className="bg-hyra-50 text-hyra-700 border border-hyra-200 px-2 py-0.5 rounded-full font-semibold text-[10px]">
                           {comp.businessUnit || 'Both'}
                         </span>
                       </td>

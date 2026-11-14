@@ -192,7 +192,7 @@ export const SpecReports = () => {
         {/* DETAILS / FILTERS Section */}
         <div className="p-6 border-b border-slate-100 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+            <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
               DETAILS / FILTERS
             </h2>
             <button
@@ -205,7 +205,7 @@ export const SpecReports = () => {
                 setNotice('Filters reset to default.');
                 setTimeout(() => setNotice(''), 2500);
               }}
-              className="text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline"
+              className="text-xs font-semibold text-hyra-700 hover:text-hyra-800 hover:underline"
             >
               Reset Filters
             </button>
@@ -220,7 +220,7 @@ export const SpecReports = () => {
               <select
                 value={reportType}
                 onChange={(e) => setReportType(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="All Reports">All Reports</option>
                 <option value="Lead funnel">Lead funnel</option>
@@ -238,7 +238,7 @@ export const SpecReports = () => {
               <select
                 value={businessUnit}
                 onChange={(e) => setBusinessUnit(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="Both">Both (Xunaris + HYRA Connect)</option>
                 <option value="Xunaris">Xunaris (XUN)</option>
@@ -255,7 +255,7 @@ export const SpecReports = () => {
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
                 placeholder="01-31 Oct 2026"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -267,7 +267,7 @@ export const SpecReports = () => {
               <select
                 value={owner}
                 onChange={(e) => setOwner(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="All permitted users">All permitted users</option>
                 {users.map((u) => (
@@ -285,7 +285,7 @@ export const SpecReports = () => {
               <select
                 value={leadSource}
                 onChange={(e) => setLeadSource(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="All">All</option>
                 <option value="LinkedIn">LinkedIn</option>
@@ -304,7 +304,7 @@ export const SpecReports = () => {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="All">All</option>
                 <option value="New">New</option>
@@ -321,27 +321,27 @@ export const SpecReports = () => {
         <div className="p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+              <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
                 RECORDS / ACTIVITY
               </h2>
               <span className="text-xs text-slate-400">
                 Aggregated KPI performance metrics &bull; Real-time recalculated values
               </span>
             </div>
-            <span className="text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg">
+            <span className="text-[11px] font-bold text-hyra-700 bg-hyra-50 border border-hyra-200 px-2.5 py-1 rounded-lg">
               Showing {visibleRows.length} report line{visibleRows.length !== 1 ? 's' : ''}
             </span>
           </div>
 
           {leads.length === 0 && opportunities.length === 0 && (
-            <div className="mb-3 rounded-xl border border-blue-100 bg-blue-50/60 px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+            <div className="mb-3 rounded-xl border border-hyra-100 bg-hyra-50/60 px-4 py-3 flex flex-wrap items-center justify-between gap-2">
               <p className="text-xs text-slate-600">Reports fill in as you add leads, send campaigns and win deals. Right now there is nothing to measure.</p>
-              <button type="button" onClick={() => setActiveNav('leads')} className="px-3 py-1.5 rounded-lg bg-[#0063f2] text-white text-xs font-bold shrink-0">Add leads</button>
+              <button type="button" onClick={() => setActiveNav('leads')} className="px-3 py-1.5 rounded-lg bg-hyra-700 text-white text-xs font-bold shrink-0">Add leads</button>
             </div>
           )}
           <div className="border border-slate-200 rounded-xl overflow-hidden">
             <table className="min-w-full text-left text-xs divide-y divide-slate-200">
-              <thead className="bg-[#f0f4f9] text-[#0d2238] font-bold">
+              <thead className="bg-slate-50 text-ink-900 font-bold">
                 <tr>
                   <th className="px-4 py-3">Report</th>
                   <th className="px-4 py-3">Metric</th>
@@ -353,7 +353,7 @@ export const SpecReports = () => {
                 {visibleRows.map((rep) => (
                   <tr
                     key={rep.id}
-                    className="hover:bg-blue-50/50 transition-colors"
+                    className="hover:bg-hyra-50/50 transition-colors"
                   >
                     <td className="px-4 py-3.5 font-bold text-slate-900">
                       <div>{rep.report}</div>
@@ -362,7 +362,7 @@ export const SpecReports = () => {
                     <td className="px-4 py-3.5 text-slate-600 font-medium">
                       {rep.metric}
                     </td>
-                    <td className="px-4 py-3.5 font-extrabold text-blue-700 text-sm">
+                    <td className="px-4 py-3.5 font-extrabold text-hyra-700 text-sm">
                       {rep.value}
                     </td>
                     <td className="px-4 py-3.5 text-right">
@@ -370,8 +370,8 @@ export const SpecReports = () => {
                         onClick={rep.onClick}
                         className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                           rep.action === 'Export'
-                            ? 'text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-600 hover:text-white'
-                            : 'text-slate-700 bg-slate-100 border border-slate-200 hover:bg-[#0d2238] hover:text-white'
+                            ? 'text-hyra-700 bg-hyra-50 border border-hyra-200 hover:bg-hyra-700 hover:text-white'
+                            : 'text-slate-700 bg-slate-100 border border-slate-200 hover:bg-ink-900 hover:text-white'
                         }`}
                       >
                         {rep.action === 'Export' ? (

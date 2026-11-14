@@ -87,6 +87,10 @@ router.post('/login', (req, res) => {
 
 // Self-Service Sign Up / Registration
 router.post('/register', (req, res) => {
+  // Accounts are created by an administrator. Public sign-up is off unless ALLOW_SIGNUP=true.
+  if (process.env.ALLOW_SIGNUP !== 'true') {
+    return res.status(403).json({ error: 'Sign-up is turned off. Ask your administrator to create your account.' });
+  }
   const { name, email, password, department, functionAccess } = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({ error: 'Name, work email, and password are required.' });

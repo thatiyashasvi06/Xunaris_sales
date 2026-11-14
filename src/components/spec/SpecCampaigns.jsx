@@ -129,7 +129,7 @@ export const SpecCampaigns = () => {
   const [selectedCampaignId, setSelectedCampaignId] = useState(campaigns[0]?.id || null);
 
   // Campaign Meta Info
-  const [campaignName, setCampaignName] = useState('October Outreach - Enterprise Technical Services');
+  const [campaignName, setCampaignName] = useState('');
   const [businessUnit, setBusinessUnit] = useState('HYRA Connect');
   const [senderAccount, setSenderAccount] = useState('sales@hyraconnect.com');
   const [senderAccounts, setSenderAccounts] = useState([
@@ -168,7 +168,7 @@ export const SpecCampaigns = () => {
     }
   ]);
   const [channel, setChannel] = useState('Email');
-  const [audience, setAudience] = useState('Enterprise CTOs & VPs of Engineering');
+  const [audience, setAudience] = useState('');
   const [startDate, setStartDate] = useState(new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }));
   const [owner, setOwner] = useState(currentUser?.name || 'Sales User');
   const [status, setStatus] = useState('Draft');
@@ -1586,7 +1586,7 @@ export const SpecCampaigns = () => {
           onClick={() => setActiveTab('builder')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'builder'
-              ? 'bg-[#0063f2] text-white shadow-md shadow-blue-600/20'
+              ? 'bg-hyra-700 text-white shadow-md'
               : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
           }`}
         >
@@ -1598,7 +1598,7 @@ export const SpecCampaigns = () => {
           onClick={() => setActiveTab('delivery')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'delivery'
-              ? 'bg-[#0063f2] text-white shadow-md shadow-blue-600/20'
+              ? 'bg-hyra-700 text-white shadow-md'
               : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
           }`}
         >
@@ -1610,7 +1610,7 @@ export const SpecCampaigns = () => {
           onClick={() => setActiveTab('pipeline')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'pipeline'
-              ? 'bg-[#0063f2] text-white shadow-md shadow-blue-600/20'
+              ? 'bg-hyra-700 text-white shadow-md'
               : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
           }`}
         >
@@ -1622,7 +1622,7 @@ export const SpecCampaigns = () => {
           onClick={() => setActiveTab('templates')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'templates'
-              ? 'bg-[#0063f2] text-white shadow-md shadow-blue-600/20'
+              ? 'bg-hyra-700 text-white shadow-md'
               : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
           }`}
         >
@@ -1643,7 +1643,7 @@ export const SpecCampaigns = () => {
             <div className="p-6 border-b border-slate-100 space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+                  <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
                     CAMPAIGN IDENTITY & SENDER ACCOUNT
                   </h2>
                   <span className="text-xs text-slate-400">
@@ -1651,7 +1651,7 @@ export const SpecCampaigns = () => {
                   </span>
                 </div>
                 {selectedCampaignId && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 font-mono">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-hyra-100 text-hyra-800 font-mono">
                     ID: {selectedCampaignId}
                   </span>
                 )}
@@ -1668,7 +1668,7 @@ export const SpecCampaigns = () => {
                     value={campaignName}
                     onChange={(e) => setCampaignName(e.target.value)}
                     placeholder="e.g. October Outreach - Enterprise Solutions"
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
                   />
                 </div>
 
@@ -1680,7 +1680,7 @@ export const SpecCampaigns = () => {
                   <select
                     value={businessUnit}
                     onChange={(e) => handleBusinessUnitChange(e.target.value)}
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
                   >
                     <option value="Xunaris">Xunaris (Technology & Cloud Services)</option>
                     <option value="HYRA Connect">HYRA Connect (Staffing & Workforce)</option>
@@ -1708,7 +1708,7 @@ export const SpecCampaigns = () => {
                         setCfgSuccess('');
                         setIsConfigModalOpen(true);
                       }}
-                      className="text-[10px] text-blue-600 hover:text-blue-800 font-bold hover:underline cursor-pointer flex items-center gap-1"
+                      className="text-[10px] text-hyra-700 hover:text-hyra-800 font-bold hover:underline cursor-pointer flex items-center gap-1"
                     >
                       <Key className="w-3 h-3" />
                       <span>Configure SMTP</span>
@@ -1718,7 +1718,7 @@ export const SpecCampaigns = () => {
                   <select
                     value={senderAccount}
                     onChange={(e) => setSenderAccount(e.target.value)}
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
                   >
                     {senderAccounts.map(acc => (
                       <option key={acc.id} value={acc.email}>
@@ -1759,7 +1759,7 @@ export const SpecCampaigns = () => {
                     value={audience}
                     onChange={(e) => setAudience(e.target.value)}
                     placeholder="e.g. Enterprise CTOs, VPs of Engineering"
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
                   />
                 </div>
 
@@ -1772,7 +1772,7 @@ export const SpecCampaigns = () => {
                     type="text"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
                   />
                 </div>
 
@@ -1784,7 +1784,7 @@ export const SpecCampaigns = () => {
                   <select
                     value={owner}
                     onChange={(e) => setOwner(e.target.value)}
-                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                    className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
                   >
                     {users.map((u) => (
                       <option key={u.id} value={u.name}>
@@ -1803,11 +1803,11 @@ export const SpecCampaigns = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase flex items-center gap-1.5">
-                      <Users className="w-4 h-4 text-blue-600" />
+                    <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase flex items-center gap-1.5">
+                      <Users className="w-4 h-4 text-hyra-700" />
                       <span>UNIFIED RECIPIENT MANAGEMENT (CRM LEADS + MANUAL + EXCEL)</span>
                     </h2>
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-100 text-blue-800 border border-blue-200">
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-hyra-100 text-hyra-800 border border-hyra-200">
                       {combinedRecipientPool.totalValid} Valid Recipients
                     </span>
                   </div>
@@ -1820,10 +1820,10 @@ export const SpecCampaigns = () => {
                   <button
                     type="button"
                     onClick={handleLoad500SampleRecipients}
-                    className="px-3 py-1.5 text-xs font-bold text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
+                    className="px-3 py-1.5 text-xs font-bold text-hyra-700 bg-hyra-100 hover:bg-hyra-200 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
                     title="Preload 500 validated sample recipients for testing batch delivery"
                   >
-                    <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                    <Sparkles className="w-3.5 h-3.5 text-hyra-700" />
                     <span>Load 500 Test Recipients</span>
                   </button>
 
@@ -1845,10 +1845,10 @@ export const SpecCampaigns = () => {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
                       <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                        <Users className="w-3.5 h-3.5 text-blue-600" />
+                        <Users className="w-3.5 h-3.5 text-hyra-700" />
                         CRM Leads Picker
                       </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-hyra-50 text-hyra-700 border border-hyra-200">
                         {crmSelectedLeadIds.length} Selected
                       </span>
                     </div>
@@ -1857,7 +1857,7 @@ export const SpecCampaigns = () => {
                       <button
                         type="button"
                         onClick={() => setCrmSelectedLeadIds(leads.map(l => l.id))}
-                        className="text-blue-600 hover:text-blue-800 font-bold underline cursor-pointer"
+                        className="text-hyra-700 hover:text-hyra-800 font-bold underline cursor-pointer"
                       >
                         Select All ({leads.length})
                       </button>
@@ -1877,7 +1877,7 @@ export const SpecCampaigns = () => {
                         value={crmLeadSearch}
                         onChange={(e) => setCrmLeadSearch(e.target.value)}
                         placeholder="Search leads..."
-                        className="w-full pl-7 pr-2 py-1 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:ring-1 focus:ring-blue-500"
+                        className="w-full pl-7 pr-2 py-1 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:ring-1 focus:ring-hyra-600"
                       />
                     </div>
 
@@ -1894,7 +1894,7 @@ export const SpecCampaigns = () => {
                                   if (e.target.checked) setCrmSelectedLeadIds(prev => [...prev, lead.id]);
                                   else setCrmSelectedLeadIds(prev => prev.filter(id => id !== lead.id));
                                 }}
-                                className="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5 cursor-pointer"
+                                className="rounded text-hyra-700 focus:ring-hyra-600 w-3.5 h-3.5 cursor-pointer"
                               />
                               <span className="font-semibold text-slate-800 truncate">{lead.contactName}</span>
                               <span className="text-[10px] text-slate-400 truncate">({lead.companyName})</span>
@@ -1924,7 +1924,7 @@ export const SpecCampaigns = () => {
                       value={manualRecipientsText}
                       onChange={(e) => setManualRecipientsText(e.target.value)}
                       placeholder="Paste emails separated by commas, semicolons, spaces, or newlines (e.g. priya@tcs.com, rahul@capgemini.com)..."
-                      className="w-full text-xs font-mono p-2.5 rounded-lg border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-500 resize-none"
+                      className="w-full text-xs font-mono p-2.5 rounded-lg border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-hyra-600 resize-none"
                     />
                   </div>
 
@@ -2011,7 +2011,7 @@ export const SpecCampaigns = () => {
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="text-blue-600 hover:text-blue-800 font-bold cursor-pointer"
+                        className="text-hyra-700 hover:text-hyra-800 font-bold cursor-pointer"
                       >
                         Change File
                       </button>
@@ -2024,13 +2024,13 @@ export const SpecCampaigns = () => {
               <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="flex items-center gap-1.5 font-bold text-slate-800">
-                    <UserCheck className="w-4 h-4 text-blue-600" />
+                    <UserCheck className="w-4 h-4 text-hyra-700" />
                     <span>Combined Pool:</span>
-                    <span className="text-blue-600 font-mono text-sm">{combinedRecipientPool.totalValid} Total Valid Recipients</span>
+                    <span className="text-hyra-700 font-mono text-sm">{combinedRecipientPool.totalValid} Total Valid Recipients</span>
                   </div>
 
                   <div className="flex items-center gap-2 text-[11px] text-slate-500">
-                    <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold border border-blue-200">
+                    <span className="px-2 py-0.5 rounded bg-hyra-50 text-hyra-700 font-semibold border border-hyra-200">
                       CRM Leads: {combinedRecipientPool.crmCount}
                     </span>
                     <span className="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200">
@@ -2072,7 +2072,7 @@ export const SpecCampaigns = () => {
                         value={recipientReviewSearch}
                         onChange={(e) => setRecipientReviewSearch(e.target.value)}
                         placeholder="Filter recipients..."
-                        className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:ring-1 focus:ring-blue-500"
+                        className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:ring-1 focus:ring-hyra-600"
                       />
                     </div>
                   </div>
@@ -2132,8 +2132,8 @@ export const SpecCampaigns = () => {
             <div className="p-6 space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                 <div>
-                  <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                  <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-hyra-700" />
                     <span>OFFICIAL HTML EMAIL TEMPLATE & PERSONALIZATION</span>
                   </h2>
                   <span className="text-xs text-slate-400">
@@ -2164,7 +2164,7 @@ export const SpecCampaigns = () => {
                       onClick={() => setTemplateMode('preset')}
                       className={`px-3 py-1.5 rounded-md font-bold transition-all cursor-pointer ${
                         templateMode === 'preset'
-                          ? 'bg-white text-blue-700 shadow-xs'
+                          ? 'bg-white text-hyra-700 shadow-xs'
                           : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
@@ -2182,7 +2182,7 @@ export const SpecCampaigns = () => {
                       }}
                       className={`px-3 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1 ${
                         templateMode === 'custom'
-                          ? 'bg-white text-blue-700 shadow-xs'
+                          ? 'bg-white text-hyra-700 shadow-xs'
                           : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
@@ -2282,38 +2282,38 @@ export const SpecCampaigns = () => {
                 <button
                   type="button"
                   onClick={() => handleInsertTag('{{contact_name}}')}
-                  className="px-2 py-1 rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 font-mono font-semibold text-[11px] border border-blue-200 cursor-pointer"
+                  className="px-2 py-1 rounded-md bg-hyra-50 text-hyra-700 hover:bg-hyra-100 font-mono font-semibold text-[11px] border border-hyra-200 cursor-pointer"
                 >
                   {'{{contact_name}}'}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleInsertTag('{{company_name}}')}
-                  className="px-2 py-1 rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 font-mono font-semibold text-[11px] border border-blue-200 cursor-pointer"
+                  className="px-2 py-1 rounded-md bg-hyra-50 text-hyra-700 hover:bg-hyra-100 font-mono font-semibold text-[11px] border border-hyra-200 cursor-pointer"
                 >
                   {'{{company_name}}'}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleInsertTag('{{owner_name}}')}
-                  className="px-2 py-1 rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 font-mono font-semibold text-[11px] border border-blue-200 cursor-pointer"
+                  className="px-2 py-1 rounded-md bg-hyra-50 text-hyra-700 hover:bg-hyra-100 font-mono font-semibold text-[11px] border border-hyra-200 cursor-pointer"
                 >
                   {'{{owner_name}}'}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleInsertTag('{{sender_email}}')}
-                  className="px-2 py-1 rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 font-mono font-semibold text-[11px] border border-blue-200 cursor-pointer"
+                  className="px-2 py-1 rounded-md bg-hyra-50 text-hyra-700 hover:bg-hyra-100 font-mono font-semibold text-[11px] border border-hyra-200 cursor-pointer"
                 >
                   {'{{sender_email}}'}
                 </button>
               </div>
 
               {/* Live Sender & Recipient Route Badge */}
-              <div className="bg-[#f8fafc] border border-slate-200 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="bg-canvas border border-slate-200 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
                 <div className="flex items-center gap-2">
                   <span className="text-slate-500 font-semibold uppercase text-[10px]">From (Authorized Sender):</span>
-                  <span className="px-2.5 py-0.5 rounded-lg bg-blue-100 text-blue-800 font-mono font-bold border border-blue-200">
+                  <span className="px-2.5 py-0.5 rounded-lg bg-hyra-100 text-hyra-800 font-mono font-bold border border-hyra-200">
                     {senderAccount}
                   </span>
                 </div>
@@ -2335,7 +2335,7 @@ export const SpecCampaigns = () => {
                   type="text"
                   value={emailSubject}
                   onChange={(e) => setEmailSubject(e.target.value)}
-                  className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                  className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
                 />
               </div>
 
@@ -2356,7 +2356,7 @@ export const SpecCampaigns = () => {
                         onClick={() => setTemplateEditorTab('visual')}
                         className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                           templateEditorTab === 'visual'
-                            ? 'bg-blue-600 text-white shadow-xs'
+                            ? 'bg-hyra-700 text-white shadow-xs'
                             : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                         }`}
                       >
@@ -2499,7 +2499,7 @@ export const SpecCampaigns = () => {
                       value={emailBody}
                       onChange={(e) => setEmailBody(e.target.value)}
                       placeholder={templateMode === 'plaintext' ? "Type your plain text email message here (e.g. Hi {{contact_name}}, I am reaching out from {{company_name}}...)" : "Enter email message paragraphs..."}
-                      className="w-full text-xs sm:text-sm font-sans p-4 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 leading-relaxed bg-white text-slate-800"
+                      className="w-full text-xs sm:text-sm font-sans p-4 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 leading-relaxed bg-white text-slate-800"
                     />
                     {templateMode === 'plaintext' && (
                       <p className="text-[11px] text-emerald-700 font-medium mt-1">
@@ -2546,7 +2546,7 @@ export const SpecCampaigns = () => {
                     onClick={() => setIsPreviewOpen(true)}
                     className="px-3.5 py-2.5 bg-white text-slate-700 hover:bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
                   >
-                    <Eye className="w-3.5 h-3.5 text-blue-600" />
+                    <Eye className="w-3.5 h-3.5 text-hyra-700" />
                     <span>Preview HTML</span>
                   </button>
 
@@ -2563,7 +2563,7 @@ export const SpecCampaigns = () => {
                   <button
                     type="button"
                     onClick={() => handleLaunchCampaignCompose(null, null, null, false, 'outlook')}
-                    className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+                    className="px-4 py-2.5 bg-hyra-700 hover:bg-hyra-700 text-white rounded-xl text-xs font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
                     title="1-Click Open in Microsoft Outlook (HTML template copied to clipboard)"
                   >
                     <Mail className="w-3.5 h-3.5 text-white" />
@@ -2616,7 +2616,7 @@ export const SpecCampaigns = () => {
                     type="button"
                     disabled={isSendingBatch || parsedRecipients.length === 0}
                     onClick={handleDispatchCampaign}
-                    className="px-5 py-2.5 bg-[#0063f2] hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-500/25 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    className="px-5 py-2.5 bg-hyra-700 hover:bg-hyra-700 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Launch Campaign ({parsedRecipients.length} Recipients)</span>
@@ -2650,9 +2650,9 @@ export const SpecCampaigns = () => {
             </div>
 
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-1">
-              <span className="text-[11px] font-bold text-blue-700 uppercase">Delivery Success Rate</span>
-              <div className="text-2xl font-black text-blue-600 font-mono">{deliveryStats.deliveryRate}%</div>
-              <div className="text-[11px] text-blue-700">SPF & DMARC aligned</div>
+              <span className="text-[11px] font-bold text-hyra-700 uppercase">Delivery Success Rate</span>
+              <div className="text-2xl font-black text-hyra-700 font-mono">{deliveryStats.deliveryRate}%</div>
+              <div className="text-[11px] text-hyra-700">SPF & DMARC aligned</div>
             </div>
 
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-1">
@@ -2666,8 +2666,8 @@ export const SpecCampaigns = () => {
           <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden p-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase flex items-center gap-1.5">
-                  <BarChart3 className="w-4 h-4 text-blue-600" />
+                <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase flex items-center gap-1.5">
+                  <BarChart3 className="w-4 h-4 text-hyra-700" />
                   <span>PER-RECIPIENT DELIVERY LOGS & PROVIDER CONFIRMATIONS</span>
                 </h2>
                 <span className="text-xs text-slate-400">
@@ -2682,7 +2682,7 @@ export const SpecCampaigns = () => {
                   disabled={isLoadingLogs}
                   className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
-                  <RefreshCw className={`w-3.5 h-3.5 ${isLoadingLogs ? 'animate-spin text-blue-600' : 'text-slate-600'}`} />
+                  <RefreshCw className={`w-3.5 h-3.5 ${isLoadingLogs ? 'animate-spin text-hyra-700' : 'text-slate-600'}`} />
                   <span>Refresh</span>
                 </button>
 
@@ -2741,7 +2741,7 @@ export const SpecCampaigns = () => {
                   onChange={(e) => setLogSearchQuery(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') fetchDeliveryLogs(); }}
                   placeholder="Search recipient email, name, or company..."
-                  className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-500"
+                  className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white focus:outline-hidden focus:ring-1 focus:ring-hyra-600"
                 />
               </div>
             </div>
@@ -2768,9 +2768,9 @@ export const SpecCampaigns = () => {
                           <span className="text-slate-400">Loading delivery logs...</span>
                         ) : deliveryStats.total === 0 ? (
                           <>
-                            <div className="text-sm font-extrabold text-[#0d2238]">Nothing sent yet</div>
+                            <div className="text-sm font-extrabold text-ink-900">Nothing sent yet</div>
                             <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">Every email you send from a campaign appears here with its delivery status.</p>
-                            <button type="button" onClick={() => setActiveTab('builder')} className="mt-3 px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Build a campaign</button>
+                            <button type="button" onClick={() => setActiveTab('builder')} className="mt-3 px-4 py-2 rounded-xl bg-hyra-700 text-white text-xs font-bold">Build a campaign</button>
                           </>
                         ) : (
                           <span className="text-slate-400">No delivery logs found for selected filters.</span>
@@ -2788,7 +2788,7 @@ export const SpecCampaigns = () => {
                         </td>
                         <td className="py-2.5 px-3.5 font-mono text-[11px] text-slate-700 whitespace-nowrap">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            log.sender_email?.includes('xunaris') ? 'bg-blue-50 text-blue-800 border border-blue-200' : 'bg-purple-50 text-purple-800 border border-purple-200'
+                            log.sender_email?.includes('xunaris') ? 'bg-hyra-50 text-hyra-800 border border-hyra-200' : 'bg-purple-50 text-purple-800 border border-purple-200'
                           }`}>
                             {log.sender_email}
                           </span>
@@ -2847,7 +2847,7 @@ export const SpecCampaigns = () => {
         <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+              <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
                 CAMPAIGN RECORDS & STATUS
               </h2>
               <span className="text-xs text-slate-400">
@@ -2860,7 +2860,7 @@ export const SpecCampaigns = () => {
                 setCampaignName('');
                 setActiveTab('builder');
               }}
-              className="px-3 py-1.5 bg-[#0063f2] text-white rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer"
+              className="px-3 py-1.5 bg-hyra-700 text-white rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>New Campaign</span>
@@ -2884,9 +2884,9 @@ export const SpecCampaigns = () => {
                 {campaigns.length === 0 && (
                   <tr>
                     <td colSpan={7} className="px-4 py-10 text-center">
-                      <div className="text-sm font-extrabold text-[#0d2238]">No campaigns yet</div>
+                      <div className="text-sm font-extrabold text-ink-900">No campaigns yet</div>
                       <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">A campaign sends one email to a list of people, such as your CRM leads or an Excel list. Build your first one in the Campaign Builder.</p>
-                      <button type="button" onClick={() => setActiveTab('builder')} className="mt-3 px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Open Campaign Builder</button>
+                      <button type="button" onClick={() => setActiveTab('builder')} className="mt-3 px-4 py-2 rounded-xl bg-hyra-700 text-white text-xs font-bold">Open Campaign Builder</button>
                     </td>
                   </tr>
                 )}
@@ -2899,7 +2899,7 @@ export const SpecCampaigns = () => {
                     <td className="py-3 px-3.5 font-bold text-slate-900">{camp.name || camp.campaign_name}</td>
                     <td className="py-3 px-3.5">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        (camp.businessUnit || camp.business_vertical_name)?.includes('HYRA') ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
+                        (camp.businessUnit || camp.business_vertical_name)?.includes('HYRA') ? 'bg-purple-100 text-purple-800' : 'bg-hyra-100 text-hyra-800'
                       }`}>
                         {camp.businessUnit || camp.business_vertical_name || 'Xunaris'}
                       </span>
@@ -2912,7 +2912,7 @@ export const SpecCampaigns = () => {
                         camp.status === 'Sent' || camp.status === 'Active'
                           ? 'bg-emerald-100 text-emerald-800'
                           : camp.status === 'Sending'
-                          ? 'bg-blue-100 text-blue-800 animate-pulse'
+                          ? 'bg-hyra-100 text-hyra-800 animate-pulse'
                           : camp.status === 'Partially Failed'
                           ? 'bg-amber-100 text-amber-800'
                           : 'bg-slate-100 text-slate-700'
@@ -2952,7 +2952,7 @@ export const SpecCampaigns = () => {
             <div key={tmpl.id} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between space-y-4">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-hyra-100 text-hyra-800">
                     {tmpl.businessVertical}
                   </span>
                   <FileText className="w-4 h-4 text-slate-400" />
@@ -2971,7 +2971,7 @@ export const SpecCampaigns = () => {
                     handleTemplateSelect(tmpl.id);
                     setActiveTab('builder');
                   }}
-                  className="w-full py-2 bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white rounded-xl text-xs font-bold transition-all text-center cursor-pointer"
+                  className="w-full py-2 bg-hyra-50 text-hyra-700 hover:bg-hyra-700 hover:text-white rounded-xl text-xs font-bold transition-all text-center cursor-pointer"
                 >
                   Use Template in Campaign Builder &rarr;
                 </button>
@@ -2989,9 +2989,9 @@ export const SpecCampaigns = () => {
           <div className="bg-white rounded-3xl max-w-4xl w-full p-6 shadow-2xl space-y-4 border border-slate-200 max-h-[92vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3 border-slate-100">
               <div className="flex items-center gap-2">
-                <Eye className="w-5 h-5 text-blue-600" />
+                <Eye className="w-5 h-5 text-hyra-700" />
                 <div>
-                  <h3 className="font-extrabold text-[#0d2238] text-sm">Official HTML Email Preview</h3>
+                  <h3 className="font-extrabold text-ink-900 text-sm">Official HTML Email Preview</h3>
                   <p className="text-[11px] text-slate-400">Rendering bulletproof responsive HTML with dynamic tags</p>
                 </div>
               </div>
@@ -3051,7 +3051,7 @@ export const SpecCampaigns = () => {
               </span>
               <button
                 onClick={() => setIsPreviewOpen(false)}
-                className="px-4 py-2 bg-[#0063f2] text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition-colors cursor-pointer"
+                className="px-4 py-2 bg-hyra-700 text-white rounded-xl text-xs font-bold hover:bg-hyra-700 transition-colors cursor-pointer"
               >
                 Close Preview
               </button>
@@ -3069,7 +3069,7 @@ export const SpecCampaigns = () => {
             <div className="flex items-center justify-between border-b pb-3 border-slate-100">
               <div className="flex items-center gap-2">
                 <Send className="w-5 h-5 text-amber-600" />
-                <h3 className="font-extrabold text-[#0d2238] text-sm">Send Official Test Email</h3>
+                <h3 className="font-extrabold text-ink-900 text-sm">Send Official Test Email</h3>
               </div>
               <button
                 onClick={() => {
@@ -3128,7 +3128,7 @@ export const SpecCampaigns = () => {
                           setCfgSuccess('');
                           setIsConfigModalOpen(true);
                         }}
-                        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+                        className="px-3 py-1.5 bg-hyra-700 hover:bg-hyra-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
                       >
                         <Key className="w-3.5 h-3.5" />
                         <span>Configure SMTP Credentials for {senderAccount.split('@')[0]}</span>
@@ -3195,7 +3195,7 @@ export const SpecCampaigns = () => {
                             href={testResult.previewUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 px-3.5 py-1.5 rounded-lg shadow-2xs transition-colors"
+                            className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-hyra-700 hover:bg-hyra-700 px-3.5 py-1.5 rounded-lg shadow-2xs transition-colors"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
                             <span>View Delivered Email in Online Sandbox &rarr;</span>
@@ -3262,7 +3262,7 @@ export const SpecCampaigns = () => {
                   }}
                   className={`flex-1 py-1.5 px-3 rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                     testRecipientMode === 'all'
-                      ? 'bg-blue-600 text-white shadow-xs'
+                      ? 'bg-hyra-700 text-white shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -3277,7 +3277,7 @@ export const SpecCampaigns = () => {
                   }}
                   className={`flex-1 py-1.5 px-3 rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                     testRecipientMode === 'single'
-                      ? 'bg-blue-600 text-white shadow-xs'
+                      ? 'bg-hyra-700 text-white shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -3320,10 +3320,10 @@ export const SpecCampaigns = () => {
                 <div className="p-3.5 bg-white space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                      <Users className="w-3.5 h-3.5 text-blue-600" />
+                      <Users className="w-3.5 h-3.5 text-hyra-700" />
                       <span>To: All {parsedRecipients.length} Selected Recipients</span>
                     </span>
-                    <span className="text-[10px] bg-blue-50 text-blue-700 font-mono font-bold px-2 py-0.5 rounded-full border border-blue-200">
+                    <span className="text-[10px] bg-hyra-50 text-hyra-700 font-mono font-bold px-2 py-0.5 rounded-full border border-hyra-200">
                       {parsedRecipients.length} Active Targets
                     </span>
                   </div>
@@ -3349,7 +3349,7 @@ export const SpecCampaigns = () => {
                     ))}
                   </div>
 
-                  <div className="p-2.5 bg-blue-50/70 rounded-lg border border-blue-100 text-[11px] text-blue-900 flex items-center gap-1.5">
+                  <div className="p-2.5 bg-hyra-50/70 rounded-lg border border-hyra-100 text-[11px] text-hyra-900 flex items-center gap-1.5">
                     <span>✨</span>
                     <span><strong>Personalized Preview:</strong> Each of the {parsedRecipients.length} recipients will receive an individualized email addressed to their contact name (e.g. <em>Dear Yashasvi</em>, <em>Dear Manasa</em>).</span>
                   </div>
@@ -3489,10 +3489,10 @@ export const SpecCampaigns = () => {
                     <button
                       type="button"
                       onClick={() => handleLaunchCampaignCompose(null, null, null, true, 'outlook')}
-                      className="px-3.5 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+                      className="px-3.5 py-2.5 bg-hyra-50 hover:bg-hyra-100 text-hyra-900 border border-hyra-200 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
                       title="Open in Microsoft Outlook desktop client with all recipients"
                     >
-                      <Mail className="w-3.5 h-3.5 text-blue-700" />
+                      <Mail className="w-3.5 h-3.5 text-hyra-700" />
                       <span>Send via Outlook ({parsedRecipients.length})</span>
                     </button>
 
@@ -3510,7 +3510,7 @@ export const SpecCampaigns = () => {
                       type="button"
                       disabled={isSendingTest}
                       onClick={() => handleSendTestEmail()}
-                      className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                      className="px-4 py-2.5 bg-hyra-700 hover:bg-hyra-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       <ShieldCheck className="w-3.5 h-3.5" />
                       <span>{isSendingTest ? 'Sending via SMTP...' : `Direct SMTP (${parsedRecipients.length})`}</span>
@@ -3551,10 +3551,10 @@ export const SpecCampaigns = () => {
                         const compToUse = testEmailRecipientCompany.trim() || derived.company || 'Enterprise Client';
                         handleLaunchCampaignCompose(target, nameToUse, compToUse, false, 'outlook');
                       }}
-                      className="px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-300 rounded-xl text-xs font-extrabold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-2.5 bg-hyra-50 hover:bg-hyra-100 text-hyra-900 border border-hyra-300 rounded-xl text-xs font-extrabold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
                       title="Open directly in Microsoft Outlook desktop client with 100% full graphical HTML rendered (0 manual actions)"
                     >
-                      <Mail className="w-3.5 h-3.5 text-blue-700" />
+                      <Mail className="w-3.5 h-3.5 text-hyra-700" />
                       <span>Send via Outlook (HTML)</span>
                     </button>
 
@@ -3589,7 +3589,7 @@ export const SpecCampaigns = () => {
                         }
                         handleSendTestEmail(target);
                       }}
-                      className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                      className="px-4 py-2.5 bg-hyra-700 hover:bg-hyra-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       <ShieldCheck className="w-3.5 h-3.5" />
                       <span>{isSendingTest ? 'Sending via SMTP...' : `Direct SMTP Send`}</span>
@@ -3610,8 +3610,8 @@ export const SpecCampaigns = () => {
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200">
             <div className="flex items-center justify-between border-b pb-3 border-slate-100">
               <div className="flex items-center gap-2">
-                <Send className="w-5 h-5 text-blue-600" />
-                <h3 className="font-extrabold text-[#0d2238] text-sm">Campaign Dispatch Progress</h3>
+                <Send className="w-5 h-5 text-hyra-700" />
+                <h3 className="font-extrabold text-ink-900 text-sm">Campaign Dispatch Progress</h3>
               </div>
               {!isSendingBatch && (
                 <button
@@ -3628,7 +3628,7 @@ export const SpecCampaigns = () => {
               <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
                 <div
                   className={`h-full transition-all duration-300 ${
-                    dispatchProgress.failed > 0 && dispatchProgress.delivered === 0 ? 'bg-rose-500' : 'bg-blue-600'
+                    dispatchProgress.failed > 0 && dispatchProgress.delivered === 0 ? 'bg-rose-500' : 'bg-hyra-700'
                   }`}
                   style={{ width: `${dispatchProgress.percent}%` }}
                 />
@@ -3636,7 +3636,7 @@ export const SpecCampaigns = () => {
 
               <div className="flex items-center justify-between text-xs font-mono">
                 <span className="text-slate-600">Total: {dispatchProgress.total} Recipients</span>
-                <span className="font-bold text-blue-600">{dispatchProgress.percent}%</span>
+                <span className="font-bold text-hyra-700">{dispatchProgress.percent}%</span>
               </div>
 
               {/* Status Message */}
@@ -3664,7 +3664,7 @@ export const SpecCampaigns = () => {
                     setActiveTab('delivery');
                     fetchDeliveryLogs();
                   }}
-                  className="w-full py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition-colors cursor-pointer text-center"
+                  className="w-full py-2.5 bg-hyra-700 text-white rounded-xl text-xs font-bold hover:bg-hyra-700 transition-colors cursor-pointer text-center"
                 >
                   View Delivery Logs & Tracking &rarr;
                 </button>
@@ -3682,9 +3682,9 @@ export const SpecCampaigns = () => {
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-200 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3 border-slate-100">
               <div className="flex items-center gap-2">
-                <Key className="w-5 h-5 text-blue-600" />
+                <Key className="w-5 h-5 text-hyra-700" />
                 <div>
-                  <h3 className="font-extrabold text-[#0d2238] text-sm">Configure Sender Account</h3>
+                  <h3 className="font-extrabold text-ink-900 text-sm">Configure Sender Account</h3>
                   <p className="text-[11px] text-slate-400">SMTP credentials & authorization for {targetConfigAccount.email}</p>
                 </div>
               </div>
@@ -3780,7 +3780,7 @@ export const SpecCampaigns = () => {
                   value={cfgName}
                   onChange={(e) => setCfgName(e.target.value)}
                   placeholder="e.g. Xunaris Sales"
-                  className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                  className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
                 />
               </div>
 
@@ -3811,7 +3811,7 @@ export const SpecCampaigns = () => {
                     }
                   }}
                   defaultValue="godaddy"
-                  className="w-full text-xs px-3.5 py-2 rounded-xl border border-blue-200 bg-blue-50/50 text-blue-900 font-bold focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                  className="w-full text-xs px-3.5 py-2 rounded-xl border border-hyra-200 bg-hyra-50/50 text-hyra-900 font-bold focus:ring-2 focus:ring-hyra-700 cursor-pointer"
                 >
                   <option value="godaddy">GoDaddy Official Email (smtpout.secureserver.net) [Recommended: Passes SPF]</option>
                   <option value="gmail">Google Workspace / Gmail Relay (smtp.gmail.com)</option>
@@ -3832,7 +3832,7 @@ export const SpecCampaigns = () => {
                     value={cfgHost}
                     onChange={(e) => setCfgHost(e.target.value)}
                     placeholder="smtpout.secureserver.net"
-                    className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-mono"
+                    className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-mono"
                   />
                 </div>
                 <div>
@@ -3845,7 +3845,7 @@ export const SpecCampaigns = () => {
                     value={cfgPort}
                     onChange={(e) => setCfgPort(Number(e.target.value))}
                     placeholder="465 or 587"
-                    className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-mono"
+                    className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-mono"
                   />
                 </div>
               </div>
@@ -3868,7 +3868,7 @@ export const SpecCampaigns = () => {
                     }
                   }}
                   placeholder="sales@company.com or your.email@gmail.com"
-                  className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                  className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
                 />
               </div>
 
@@ -3882,7 +3882,7 @@ export const SpecCampaigns = () => {
                       href="https://myaccount.google.com/apppasswords"
                       target="_blank"
                       rel="noreferrer"
-                      className="text-[10px] text-blue-600 hover:text-blue-800 font-bold underline flex items-center gap-0.5"
+                      className="text-[10px] text-hyra-700 hover:text-hyra-800 font-bold underline flex items-center gap-0.5"
                     >
                       <ExternalLink className="w-3 h-3" />
                       <span>Get Google App Password</span>
@@ -3902,7 +3902,7 @@ export const SpecCampaigns = () => {
                         ? '••••••••  (Saved in DB — enter new to update)'
                         : 'Mailbox password or App Password'
                     }
-                    className="w-full text-xs pl-3.5 pr-10 py-2 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-mono tracking-wider"
+                    className="w-full text-xs pl-3.5 pr-10 py-2 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-mono tracking-wider"
                   />
                   <button
                     type="button"
@@ -3914,10 +3914,10 @@ export const SpecCampaigns = () => {
                   </button>
                 </div>
                 {cfgUser.toLowerCase().includes('gmail') ? (
-                  <div className="mt-1.5 p-2 bg-blue-50 border border-blue-200 rounded-lg text-[11px] text-blue-900 leading-relaxed">
+                  <div className="mt-1.5 p-2 bg-hyra-50 border border-hyra-200 rounded-lg text-[11px] text-hyra-900 leading-relaxed">
                     <strong>🔑 Gmail Setup:</strong> Google requires a <strong>16-letter App Password</strong> (not your regular Gmail login password).
-                    <ol className="list-decimal list-inside mt-1 space-y-0.5 text-[10px] text-blue-800">
-                      <li>Go to <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noreferrer" className="underline font-bold text-blue-950">myaccount.google.com/apppasswords</a></li>
+                    <ol className="list-decimal list-inside mt-1 space-y-0.5 text-[10px] text-hyra-800">
+                      <li>Go to <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noreferrer" className="underline font-bold text-hyra-900">myaccount.google.com/apppasswords</a></li>
                       <li>Name it <strong>CRM</strong> and click <strong>Create</strong></li>
                       <li>Copy the generated 16-letter code (without spaces) and paste it above</li>
                     </ol>
@@ -3949,7 +3949,7 @@ export const SpecCampaigns = () => {
                   disabled={isTestingConnection}
                   className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
-                  <RefreshCw className={`w-3.5 h-3.5 ${isTestingConnection ? 'animate-spin text-blue-600' : 'text-slate-600'}`} />
+                  <RefreshCw className={`w-3.5 h-3.5 ${isTestingConnection ? 'animate-spin text-hyra-700' : 'text-slate-600'}`} />
                   {isTestingConnection ? 'Testing...' : 'Test Connection'}
                 </button>
 
@@ -3964,7 +3964,7 @@ export const SpecCampaigns = () => {
                   <button
                     type="submit"
                     disabled={isConfiguringAccount}
-                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    className="px-5 py-2.5 bg-hyra-700 hover:bg-hyra-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                   >
                     <ShieldCheck className="w-3.5 h-3.5" />
                     {isConfiguringAccount ? 'Verifying...' : 'Verify & Authorize Account'}

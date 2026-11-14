@@ -15,17 +15,13 @@ import { SpecAdminSettings } from './components/spec/SpecAdminSettings';
 import { SpecSwaggerBackend } from './components/spec/SpecSwaggerBackend';
 import { SpecLoginModal } from './components/spec/SpecLoginModal';
 import { AuthProvider } from './context/AuthContext';
-import { AISettingsModal } from './components/common/AISettingsModal';
 import { XunarisLogo } from './components/common/XunarisLogo';
-import { aiService } from './services/aiService';
-import { Sparkles, Menu, X, ExternalLink } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 const MainLayout = () => {
   const { activeNav, setActiveNav, isLoggedIn, currentUser, setIsLoggedIn } = useCRM();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
 
-  const engineStatus = aiService.getEngineLabel();
 
   // On phones the menu covers the screen: close it as soon as a screen is chosen
   React.useEffect(() => {
@@ -104,23 +100,8 @@ const MainLayout = () => {
         )}
 
         {/* Main Workspace Area */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-full">
-          {/* Top Floating AI Engine Indicator Pill */}
-          <div className="flex justify-end mb-4">
-            <button
-              onClick={() => setIsAiModalOpen(true)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full border shadow-2xs transition-colors ${
-                engineStatus.isDemo
-                  ? 'bg-amber-100 text-amber-800 border-amber-300'
-                  : 'bg-emerald-100 text-emerald-800 border-emerald-300'
-              }`}
-              title="Configure Live Gemini API or Demo Mode"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              <span>{engineStatus.label}</span>
-            </button>
-          </div>
-
+        <main className="flex-1 p-4 sm:p-6 lg:p-10 overflow-y-auto max-w-full">
+          <div className="max-w-[1400px] mx-auto w-full">
           {/* Active Screen Rendered Exactly As Mockup */}
           {renderActiveScreen()}
 
@@ -135,14 +116,10 @@ const MainLayout = () => {
               </button>
             </span>
           </footer>
+          </div>
         </main>
       </div>
 
-      {/* AI Settings Modal */}
-      <AISettingsModal
-        isOpen={isAiModalOpen}
-        onClose={() => setIsAiModalOpen(false)}
-      />
     </div>
   );
 };

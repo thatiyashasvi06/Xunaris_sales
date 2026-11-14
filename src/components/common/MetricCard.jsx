@@ -3,8 +3,8 @@ import React from 'react';
 export const MetricCard = ({ title, value, subtitle, icon: Icon, color = 'blue', trend, onClick }) => {
   const colorThemes = {
     blue: {
-      bg: 'bg-blue-50 text-blue-600',
-      border: 'hover:border-blue-300'
+      bg: 'bg-hyra-50 text-hyra-700',
+      border: 'hover:border-hyra-300'
     },
     emerald: {
       bg: 'bg-emerald-50 text-emerald-600',

@@ -71,7 +71,7 @@ export const SpecSwaggerBackend = () => {
       <div className="bg-[#0f172a] text-white p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-md">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+            <div className="w-10 h-10 rounded-xl bg-hyra-700/20 border border-hyra-600/30 flex items-center justify-center text-hyra-400">
               <Server className="w-5 h-5" />
             </div>
             <div>
@@ -104,7 +104,7 @@ export const SpecSwaggerBackend = () => {
             onClick={() => setActiveTab('swagger')}
             className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'swagger'
-                ? 'bg-[#0063f2] text-white shadow-md shadow-blue-600/30'
+                ? 'bg-hyra-700 text-white shadow-md'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
@@ -116,7 +116,7 @@ export const SpecSwaggerBackend = () => {
             onClick={() => setActiveTab('endpoints')}
             className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'endpoints'
-                ? 'bg-[#0063f2] text-white shadow-md shadow-blue-600/30'
+                ? 'bg-hyra-700 text-white shadow-md'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
@@ -128,7 +128,7 @@ export const SpecSwaggerBackend = () => {
             onClick={() => setActiveTab('schema')}
             className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'schema'
-                ? 'bg-[#0063f2] text-white shadow-md shadow-blue-600/30'
+                ? 'bg-hyra-700 text-white shadow-md'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
@@ -152,7 +152,7 @@ export const SpecSwaggerBackend = () => {
               href="http://localhost:5000/api-docs"
               target="_blank"
               rel="noreferrer"
-              className="text-[#0063f2] hover:underline font-bold flex items-center gap-1"
+              className="text-hyra-700 hover:underline font-bold flex items-center gap-1"
             >
               <span>Launch Separate Window</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -180,7 +180,7 @@ export const SpecSwaggerBackend = () => {
               <div key={idx} className="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-slate-50/80 transition-colors gap-2 text-xs">
                 <div className="flex items-center gap-3">
                   <span className={`px-2 py-0.5 rounded-md font-mono font-bold text-[10px] w-14 text-center ${
-                    ep.method === 'GET' ? 'bg-blue-100 text-blue-700' :
+                    ep.method === 'GET' ? 'bg-hyra-100 text-hyra-700' :
                     ep.method === 'POST' ? 'bg-emerald-100 text-emerald-700' :
                     ep.method === 'PATCH' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
                   }`}>
@@ -214,7 +214,7 @@ export const SpecSwaggerBackend = () => {
               {schemaTables.slice(0, 7).map((t, idx) => (
                 <div key={idx} className="p-3.5 hover:bg-slate-50 transition-colors text-xs">
                   <div className="flex items-center justify-between mb-1">
-                    <code className="font-mono font-extrabold text-[#0063f2]">{t.name}</code>
+                    <code className="font-mono font-extrabold text-hyra-700">{t.name}</code>
                     <span className="text-[10px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.2 rounded">{t.rows}</span>
                   </div>
                   <p className="text-slate-600 text-[11px]">{t.desc}</p>
@@ -226,7 +226,7 @@ export const SpecSwaggerBackend = () => {
               {schemaTables.slice(7).map((t, idx) => (
                 <div key={idx} className="p-3.5 hover:bg-slate-50 transition-colors text-xs">
                   <div className="flex items-center justify-between mb-1">
-                    <code className="font-mono font-extrabold text-[#0063f2]">{t.name}</code>
+                    <code className="font-mono font-extrabold text-hyra-700">{t.name}</code>
                     <span className="text-[10px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.2 rounded">{t.rows}</span>
                   </div>
                   <p className="text-slate-600 text-[11px]">{t.desc}</p>

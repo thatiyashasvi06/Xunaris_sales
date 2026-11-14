@@ -454,7 +454,7 @@ export const SpecAdminSettings = () => {
         {/* DETAILS / FILTERS Section */}
         <div className="p-6 border-b border-slate-100 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+            <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
               DETAILS / FILTERS
             </h2>
             <span className="text-xs text-slate-400">
@@ -473,7 +473,7 @@ export const SpecAdminSettings = () => {
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
                 placeholder="e.g. Sumanth Varma"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -486,7 +486,7 @@ export const SpecAdminSettings = () => {
                 value={workEmail}
                 onChange={(e) => setWorkEmail(e.target.value)}
                 placeholder="sumanth@xunaris.com"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -497,7 +497,7 @@ export const SpecAdminSettings = () => {
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="User">User</option>
                 <option value="Admin">Admin</option>
@@ -516,7 +516,7 @@ export const SpecAdminSettings = () => {
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
                 placeholder="Marketing / Sales / Staffing"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -527,7 +527,7 @@ export const SpecAdminSettings = () => {
               <select
                 value={businessUnitAccess}
                 onChange={(e) => setBusinessUnitAccess(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="Both">Both (Xunaris + HYRA Connect)</option>
                 <option value="Xunaris">Xunaris Only</option>
@@ -542,7 +542,7 @@ export const SpecAdminSettings = () => {
               <select
                 value={accountStatus}
                 onChange={(e) => setAccountStatus(e.target.value)}
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium cursor-pointer"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium cursor-pointer"
               >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
@@ -559,7 +559,7 @@ export const SpecAdminSettings = () => {
                 value={emailSender}
                 onChange={(e) => setEmailSender(e.target.value)}
                 placeholder="CRM notifications <crm@xunaris.com>"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -572,7 +572,7 @@ export const SpecAdminSettings = () => {
                 value={dailyDigestTime}
                 onChange={(e) => setDailyDigestTime(e.target.value)}
                 placeholder="09:00 IST"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
 
@@ -585,7 +585,7 @@ export const SpecAdminSettings = () => {
                 value={escalationDelay}
                 onChange={(e) => setEscalationDelay(e.target.value)}
                 placeholder="2 days"
-                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium"
+                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-hyra-700 font-medium"
               />
             </div>
           </div>
@@ -595,7 +595,7 @@ export const SpecAdminSettings = () => {
         <div className="p-6 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
             <div>
-              <h2 className="text-xs font-extrabold tracking-wider text-[#0d2238] uppercase">
+              <h2 className="text-xs font-extrabold tracking-wider text-ink-900 uppercase">
                 RECORDS / ACTIVITY
               </h2>
               <span className="text-xs text-slate-400">
@@ -647,14 +647,14 @@ export const SpecAdminSettings = () => {
 
           {activeTab === 'senders' ? (
             <div className="space-y-6">
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 text-xs flex items-start justify-between gap-3">
+              <div className="p-4 bg-hyra-50 border border-hyra-200 rounded-xl text-hyra-900 text-xs flex items-start justify-between gap-3">
                 <div className="flex items-start gap-2.5">
-                  <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                  <ShieldCheck className="w-5 h-5 text-hyra-700 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-extrabold text-blue-950 text-xs uppercase tracking-wide">
+                    <h4 className="font-extrabold text-hyra-900 text-xs uppercase tracking-wide">
                       Official Brand Outbound Email Authentication
                     </h4>
-                    <p className="text-[11px] text-blue-800 mt-0.5 leading-relaxed">
+                    <p className="text-[11px] text-hyra-800 mt-0.5 leading-relaxed">
                       Emails dispatched by Xunaris CRM are sent strictly through each brand's authenticated company account. 
                       Credentials are encrypted and stored in environment variables (<code>.env</code>) and the database.
                       Passphrases are never leaked to the client.
@@ -664,7 +664,7 @@ export const SpecAdminSettings = () => {
                 <button
                   type="button"
                   onClick={fetchSenderAccounts}
-                  className="px-2.5 py-1 text-[11px] font-bold bg-white text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-1 cursor-pointer shrink-0"
+                  className="px-2.5 py-1 text-[11px] font-bold bg-white text-hyra-700 border border-hyra-200 rounded-lg hover:bg-hyra-100 transition-colors flex items-center gap-1 cursor-pointer shrink-0"
                   title="Refresh live status from server"
                 >
                   <RefreshCw className={`w-3 h-3 ${loadingAccounts ? 'animate-spin' : ''}`} />
@@ -700,7 +700,7 @@ export const SpecAdminSettings = () => {
                   {/* Xunaris Domain DNS */}
                   <div className="bg-slate-800/80 rounded-xl p-3.5 space-y-2 border border-slate-700/60 font-mono text-[11px]">
                     <div className="flex items-center justify-between font-sans">
-                      <span className="font-extrabold text-blue-300">xunaris.com</span>
+                      <span className="font-extrabold text-hyra-300">xunaris.com</span>
                       <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-md">
                         SPF & MX Active
                       </span>
@@ -746,13 +746,13 @@ export const SpecAdminSettings = () => {
                   {/* Header */}
                   <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-[#0d2238] flex items-center justify-center text-white font-extrabold text-xs shadow-xs">
+                      <div className="w-8 h-8 rounded-xl bg-ink-900 flex items-center justify-center text-white font-extrabold text-xs shadow-xs">
                         XU
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="font-extrabold text-slate-900 text-sm">Xunaris Official Email</h3>
-                          <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full">
+                          <span className="text-[10px] font-bold px-2 py-0.5 bg-hyra-100 text-hyra-800 rounded-full">
                             Xunaris Services
                           </span>
                         </div>
@@ -789,7 +789,7 @@ export const SpecAdminSettings = () => {
                       <select
                         onChange={(e) => applyPresetXun(e.target.value)}
                         defaultValue="godaddy"
-                        className="w-full text-xs px-3 py-2 rounded-xl border border-blue-200 bg-blue-50/40 font-bold text-blue-900 focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                        className="w-full text-xs px-3 py-2 rounded-xl border border-hyra-200 bg-hyra-50/40 font-bold text-hyra-900 focus:ring-2 focus:ring-hyra-700 cursor-pointer"
                       >
                         <option value="godaddy">GoDaddy Official Email (smtpout.secureserver.net) [Recommended: Passes SPF]</option>
                         <option value="gmail">Google Workspace / Gmail Relay (smtp.gmail.com)</option>
@@ -809,7 +809,7 @@ export const SpecAdminSettings = () => {
                         value={xunName}
                         onChange={(e) => setXunName(e.target.value)}
                         placeholder="Xunaris Sales"
-                        className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-600"
+                        className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-hyra-700"
                       />
                     </div>
 
@@ -824,7 +824,7 @@ export const SpecAdminSettings = () => {
                           value={xunHost}
                           onChange={(e) => setXunHost(e.target.value)}
                           placeholder="smtp.gmail.com"
-                          className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 bg-white font-mono focus:ring-2 focus:ring-blue-600"
+                          className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 bg-white font-mono focus:ring-2 focus:ring-hyra-700"
                         />
                       </div>
                       <div>
@@ -838,7 +838,7 @@ export const SpecAdminSettings = () => {
                             value={xunPort}
                             onChange={(e) => setXunPort(Number(e.target.value))}
                             placeholder="465"
-                            className="w-20 text-xs px-3 py-2 rounded-xl border border-slate-300 bg-white font-mono focus:ring-2 focus:ring-blue-600"
+                            className="w-20 text-xs px-3 py-2 rounded-xl border border-slate-300 bg-white font-mono focus:ring-2 focus:ring-hyra-700"
                           />
                           <label className="text-[11px] text-slate-600 flex items-center gap-1 font-semibold cursor-pointer">
                             <input
@@ -863,7 +863,7 @@ export const SpecAdminSettings = () => {
                         value={xunUser}
                         onChange={(e) => setXunUser(e.target.value)}
                         placeholder="e.g. corporate@company.com or personal Gmail"
-                        className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-600"
+                        className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-hyra-700"
                       />
                     </div>
 
@@ -877,7 +877,7 @@ export const SpecAdminSettings = () => {
                         value={xunPass}
                         onChange={(e) => setXunPass(e.target.value)}
                         placeholder={senderAccounts.find(a => a.id === 'acc_xunaris')?.has_credentials ? '••••••••  (Saved in .env / DB — enter new to change)' : 'App Password or SMTP password'}
-                        className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 bg-white font-mono tracking-wider focus:ring-2 focus:ring-blue-600"
+                        className="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 bg-white font-mono tracking-wider focus:ring-2 focus:ring-hyra-700"
                       />
                       <span className="text-[10px] text-slate-400 mt-1 block">
                         Stored securely in environment variables (XUNARIS_SMTP_PASS). Never exposed to browser.
@@ -913,7 +913,7 @@ export const SpecAdminSettings = () => {
                       <button
                         type="submit"
                         disabled={xunVerifying}
-                        className="flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                        className="flex-1 py-2 px-3 bg-hyra-700 hover:bg-hyra-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                       >
                         <ShieldCheck className="w-3.5 h-3.5" />
                         <span>{xunVerifying ? 'Verifying Handshake...' : 'Authenticate Xunaris Account'}</span>
@@ -925,7 +925,7 @@ export const SpecAdminSettings = () => {
                         className="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50"
                         title="Test live handshake with current credentials without re-entering password"
                       >
-                        <RefreshCw className={`w-3 h-3 ${testingConn['acc_xunaris'] ? 'animate-spin text-blue-600' : 'text-slate-600'}`} />
+                        <RefreshCw className={`w-3 h-3 ${testingConn['acc_xunaris'] ? 'animate-spin text-hyra-700' : 'text-slate-600'}`} />
                         <span>{testingConn['acc_xunaris'] ? 'Testing...' : 'Test Connection'}</span>
                       </button>
                       <button
@@ -937,7 +937,7 @@ export const SpecAdminSettings = () => {
                         className="py-2 px-3 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
                         title="Send diagnostic email to test real inbox delivery"
                       >
-                        <Send className="w-3 h-3 text-blue-600" />
+                        <Send className="w-3 h-3 text-hyra-700" />
                         <span>Test Send</span>
                       </button>
                     </div>
@@ -1151,7 +1151,7 @@ export const SpecAdminSettings = () => {
           ) : activeTab === 'rules' ? (
             <div className="border border-slate-200 rounded-xl overflow-hidden">
               <table className="min-w-full text-left text-xs divide-y divide-slate-200">
-                <thead className="bg-[#f0f4f9] text-[#0d2238] font-bold">
+                <thead className="bg-slate-50 text-ink-900 font-bold">
                   <tr>
                     <th className="px-4 py-3">Rule</th>
                     <th className="px-4 py-3">Trigger</th>
@@ -1166,7 +1166,7 @@ export const SpecAdminSettings = () => {
                       <tr
                         key={rule.id}
                         onClick={() => toggleRuleEnabled(rule.id)}
-                        className="cursor-pointer hover:bg-blue-50/50 transition-colors"
+                        className="cursor-pointer hover:bg-hyra-50/50 transition-colors"
                       >
                         <td className="px-4 py-3.5 font-bold text-slate-900">
                           {rule.rule}
@@ -1201,7 +1201,7 @@ export const SpecAdminSettings = () => {
           ) : (
             <div className="border border-slate-200 rounded-xl overflow-hidden">
               <table className="min-w-full text-left text-xs divide-y divide-slate-200">
-                <thead className="bg-[#f0f4f9] text-[#0d2238] font-bold">
+                <thead className="bg-slate-50 text-ink-900 font-bold">
                   <tr>
                     <th className="px-4 py-3">User Name</th>
                     <th className="px-4 py-3">Email</th>
@@ -1217,12 +1217,12 @@ export const SpecAdminSettings = () => {
                   {users.map((u) => {
                     const isCurrent = currentUser?.id === u.id;
                     return (
-                      <tr key={u.id} className="hover:bg-blue-50/50 transition-colors">
+                      <tr key={u.id} className="hover:bg-hyra-50/50 transition-colors">
                         <td className="px-4 py-3.5 font-bold text-slate-900">
                           <div className="flex items-center gap-2">
                             <span>{u.name}</span>
                             {isCurrent && (
-                              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">
+                              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-hyra-100 text-hyra-800">
                                 Current
                               </span>
                             )}
@@ -1268,7 +1268,7 @@ export const SpecAdminSettings = () => {
                             {!isCurrent && (
                               <button
                                 onClick={() => switchUser(u.id)}
-                                className="px-2.5 py-1 text-[11px] font-bold text-blue-700 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-md border border-blue-200 transition-colors"
+                                className="px-2.5 py-1 text-[11px] font-bold text-hyra-700 bg-hyra-50 hover:bg-hyra-700 hover:text-white rounded-md border border-hyra-200 transition-colors"
                               >
                                 Switch
                               </button>
@@ -1312,7 +1312,7 @@ export const SpecAdminSettings = () => {
             {pwMsg.text && <p className={`text-xs font-semibold ${pwMsg.type === 'ok' ? 'text-emerald-700' : 'text-rose-700'}`}>{pwMsg.text}</p>}
             <div className="flex justify-end gap-2">
               <button type="button" onClick={() => setPwTarget(null)} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700">Close</button>
-              <button type="submit" disabled={pwBusy} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-[#0063f2] text-white disabled:opacity-60">{pwBusy ? 'Saving...' : 'Save password'}</button>
+              <button type="submit" disabled={pwBusy} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-hyra-700 text-white disabled:opacity-60">{pwBusy ? 'Saving...' : 'Save password'}</button>
             </div>
           </form>
         </div>
@@ -1323,7 +1323,7 @@ export const SpecAdminSettings = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <Database className="w-4 h-4 text-blue-600" />
+              <Database className="w-4 h-4 text-hyra-700" />
               <span>Real-Time Testing & Sample Data Controls</span>
             </h3>
             <p className="text-xs text-slate-500 max-w-xl">
@@ -1349,9 +1349,9 @@ export const SpecAdminSettings = () => {
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3 border-slate-100">
               <div className="flex items-center gap-2">
-                <Send className="w-5 h-5 text-blue-600" />
+                <Send className="w-5 h-5 text-hyra-700" />
                 <div>
-                  <h3 className="font-extrabold text-[#0d2238] text-sm">Send Diagnostic Email</h3>
+                  <h3 className="font-extrabold text-ink-900 text-sm">Send Diagnostic Email</h3>
                   <p className="text-[11px] text-slate-400">Test live inbox delivery from authorized company accounts</p>
                 </div>
               </div>
@@ -1435,7 +1435,7 @@ export const SpecAdminSettings = () => {
                   type="button"
                   disabled={diagSending}
                   onClick={handleSendDiagnosticEmail}
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="px-5 py-2.5 bg-hyra-700 hover:bg-hyra-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>{diagSending ? 'Dispatching Live...' : 'Send Live Test Email'}</span>

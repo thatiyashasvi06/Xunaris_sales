@@ -69,7 +69,7 @@ export const AISettingsModal = ({ isOpen, onClose, onSave }) => {
               type="checkbox"
               checked={useDemoMode}
               onChange={(e) => setUseDemoMode(e.target.checked)}
-              className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+              className="w-5 h-5 rounded border-slate-300 text-hyra-700 focus:ring-hyra-600 cursor-pointer"
             />
           </label>
         </div>
@@ -78,7 +78,7 @@ export const AISettingsModal = ({ isOpen, onClose, onSave }) => {
         <div className={`space-y-3 transition-opacity ${useDemoMode ? 'opacity-60' : 'opacity-100'}`}>
           <div className="flex items-center justify-between">
             <label className="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
-              <Key className="w-4 h-4 text-blue-600" />
+              <Key className="w-4 h-4 text-hyra-700" />
               Google Gemini API Key
             </label>
             <span className="text-[11px] text-slate-400">Optional</span>
@@ -90,7 +90,7 @@ export const AISettingsModal = ({ isOpen, onClose, onSave }) => {
             onChange={(e) => setApiKey(e.target.value)}
             placeholder="AIzaSy..."
             disabled={useDemoMode}
-            className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono disabled:bg-slate-100 disabled:cursor-not-allowed"
+            className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-hyra-600 focus:border-hyra-600 font-mono disabled:bg-slate-100 disabled:cursor-not-allowed"
           />
           <p className="text-xs text-slate-500">
             Used directly from your browser to call Google Gemini 1.5 Flash for live contextual reasoning. Your key is saved locally in browser storage only.
@@ -118,7 +118,7 @@ export const AISettingsModal = ({ isOpen, onClose, onSave }) => {
           </button>
           <button
             type="submit"
-            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-hyra-700 hover:bg-hyra-700 rounded-lg shadow-sm transition-colors"
           >
             {saveSuccess ? (
               <>
