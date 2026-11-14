@@ -119,7 +119,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // API Routes (everything except /auth, /catalog reads, /public booking and /health requires a signed-in user)
-if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+if (!process.env.JWT_SECRET) {
   console.error('[SECURITY] JWT_SECRET is not set. Set a long random value in the environment now: tokens are signed with a public default.');
 }
 app.use('/api/auth', authRoutes);

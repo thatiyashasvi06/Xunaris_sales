@@ -3,13 +3,16 @@ import db from '../db/database.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'xunaris_super_secret_jwt_key_2026';
 
+// Insecure shortcuts (x-user-id header, anonymous admin) are OFF unless explicitly enabled. Never set this on a hosted server.
+const DEV_AUTH = process.env.ALLOW_DEV_AUTH === 'true';
+
 export const authMiddleware = (req, res, next) => {
   try {
     // 1. Check Authorization Bearer Header or custom x-user-id for easy dev/testing
     const authHeader = req.headers.authorization;
     const directUserId = req.headers['x-user-id'];
 
-    if (directUserId && process.env.NODE_ENV !== 'production') {
+    if (directUserId && DEV_AUTH) {
       const user = db.prepare('SELECT id, name, email, role, department, function_access, status FROM users WHERE id = ?').get(directUserId);
       if (user && user.status === 'Active') {
         req.user = user;
@@ -28,8 +31,8 @@ export const authMiddleware = (req, res, next) => {
       }
     }
 
-    // Local development only: unauthenticated calls fall back to Admin. Never in production.
-    if (process.env.NODE_ENV === 'production') {
+    // Opt-in local development only (ALLOW_DEV_AUTH=true): unauthenticated calls fall back to Admin.
+    if (!DEV_AUTH) {
       return res.status(401).json({ error: 'Authentication required' });
     }
     const defaultUser = db.prepare('SELECT id, name, email, role, department, function_access, status FROM users WHERE role = ? LIMIT 1').get('ADMIN');
