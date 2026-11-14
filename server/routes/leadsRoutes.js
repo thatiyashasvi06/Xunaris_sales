@@ -303,15 +303,25 @@ router.patch('/:id', (req, res) => {
   const lead = db.prepare('SELECT * FROM leads WHERE id = ?').get(req.params.id);
   if (!lead) return res.status(404).json({ error: 'Lead not found' });
 
-  const fields = ['lead_status', 'priority', 'owner_name', 'owner_email', 'next_followup_date', 'notes', 'requirement_summary'];
+  const fields = ['lead_status', 'priority', 'owner_name', 'owner_email', 'next_followup_date', 'notes', 'requirement_summary',
+    'contact_name', 'company_name', 'work_email', 'phone', 'job_title', 'lead_source', 'industry', 'city'];
+  // The web app uses short names (status, nextFollowup); accept both spellings.
+  const aliases = { lead_status: 'status', next_followup_date: 'nextFollowup' };
   const updates = [];
   const params = [];
 
   for (const field of fields) {
     const camel = field.replace(/_([a-z])/g, g => g[1].toUpperCase());
-    if (req.body[camel] !== undefined) {
+    const value = req.body[camel] !== undefined ? req.body[camel] : (aliases[field] ? req.body[aliases[field]] : undefined);
+    if (value !== undefined) {
+      if (field === 'lead_status' && !['New', 'Contacted', 'Qualified', 'Nurture', 'Disqualified'].includes(value)) {
+        return res.status(400).json({ error: `Invalid status "${value}".` });
+      }
+      if (field === 'priority' && !['Low', 'Medium', 'High'].includes(value)) {
+        return res.status(400).json({ error: `Invalid priority "${value}".` });
+      }
       updates.push(`${field} = ?`);
-      params.push(req.body[camel]);
+      params.push(value);
     }
   }
 

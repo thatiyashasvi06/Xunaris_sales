@@ -27,6 +27,11 @@ const MainLayout = () => {
 
   const engineStatus = aiService.getEngineLabel();
 
+  // On phones the menu covers the screen: close it as soon as a screen is chosen
+  React.useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [activeNav]);
+
   // Enforce rule: Settings Admin only
   React.useEffect(() => {
     if (activeNav === 'admin' && currentUser?.role !== 'ADMIN') {

@@ -144,14 +144,14 @@ export const SpecSalesAgent = () => {
           >
             {busy ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />} Run now
           </button>
-          <label className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600">
+          <label className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 max-w-full">
             <ShieldCheck className="w-4 h-4 text-slate-400" /> Sending
             <select
               value={settings.mode}
               onChange={(e) => saveSettings({ mode: e.target.value })}
-              className="border border-slate-200 rounded-lg px-2 py-1.5 text-sm bg-white"
+              className="border border-slate-200 rounded-lg px-2 py-1.5 text-sm bg-white min-w-0 max-w-[200px]"
             >
-              <option value="approval">Needs my approval (recommended)</option>
+              <option value="approval">Needs my approval</option>
               <option value="auto">Automatic</option>
             </select>
           </label>

@@ -253,42 +253,42 @@ export const SpecDashboard = () => {
   const funnelStages = [
     {
       stage: 'New',
-      count: Math.max(funnelNewIds.length, 1),
+      count: funnelNewIds.length,
       leadIds: funnelNewIds,
       color: '#0063f2',
-      pct: 100,
+      pct: Math.min(100, Math.round((funnelNewIds.length / Math.max(filteredLeads.length, 1)) * 100)),
       desc: 'Captured inquiries'
     },
     {
       stage: 'Contacted',
-      count: Math.max(funnelContactedIds.length, 1),
+      count: funnelContactedIds.length,
       leadIds: funnelContactedIds,
       color: '#1d4ed8',
-      pct: Math.round((Math.max(funnelContactedIds.length, 1) / Math.max(funnelNewIds.length, 1)) * 100) || 75,
+      pct: Math.min(100, Math.round((funnelContactedIds.length / Math.max(filteredLeads.length, 1)) * 100)),
       desc: 'Outreach & discovery'
     },
     {
       stage: 'Qualified',
-      count: Math.max(funnelQualifiedIds.length, 1),
+      count: funnelQualifiedIds.length,
       leadIds: funnelQualifiedIds,
       color: '#4f46e5',
-      pct: Math.round((Math.max(funnelQualifiedIds.length, 1) / Math.max(funnelNewIds.length, 1)) * 100) || 50,
+      pct: Math.min(100, Math.round((funnelQualifiedIds.length / Math.max(filteredLeads.length, 1)) * 100)),
       desc: 'Validated budget/authority'
     },
     {
       stage: 'Opportunity',
-      count: Math.max(funnelOpportunityIds.length, 1),
+      count: funnelOpportunityIds.length,
       leadIds: funnelOpportunityIds,
       color: '#06b6d4',
-      pct: Math.round((Math.max(funnelOpportunityIds.length, 1) / Math.max(funnelNewIds.length, 1)) * 100) || 40,
+      pct: Math.min(100, Math.round((funnelOpportunityIds.length / Math.max(filteredLeads.length, 1)) * 100)),
       desc: 'Active proposal pipeline'
     },
     {
       stage: 'Won',
-      count: Math.max(funnelWonIds.length, 1),
+      count: funnelWonIds.length,
       leadIds: funnelWonIds,
       color: '#10b981',
-      pct: Math.round((Math.max(funnelWonIds.length, 1) / Math.max(funnelNewIds.length, 1)) * 100) || 25,
+      pct: Math.min(100, Math.round((funnelWonIds.length / Math.max(filteredLeads.length, 1)) * 100)),
       desc: 'Closed & contracted'
     }
   ];
@@ -514,7 +514,7 @@ export const SpecDashboard = () => {
               className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
             >
               <option value="All">All Time</option>
-              <option value="Today">Today (17 Oct 2026)</option>
+              <option value="Today">Today ({new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })})</option>
               <option value="Week">This Week</option>
               <option value="Month">This Month</option>
               <option value="Quarter">This Quarter</option>

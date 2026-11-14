@@ -336,7 +336,7 @@ export const SpecLoginModal = () => {
           </p>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[11px] font-semibold mt-1">
             <Shield className="w-3.5 h-3.5 text-blue-600" />
-            <span>Illustrative Login Screen — RBAC & Security Specification</span>
+            <span>Secure sign in</span>
           </div>
         </div>
 
@@ -494,7 +494,7 @@ export const SpecLoginModal = () => {
                 <div className="flex items-center gap-1.5">
                   <Shield className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                   <span>
-                    <strong className="text-slate-700">Server-side hash:</strong> Argon2id salted hash enforced
+                    <strong className="text-slate-700">Server-side hash:</strong> passwords are stored only as salted bcrypt hashes
                   </span>
                 </div>
                 <span className="text-[10px] text-slate-400 font-mono">cleartext never stored</span>

@@ -38,7 +38,9 @@ const setIsLoggedIn = (status) => {
   const [dashboardPeriodFilter, setDashboardPeriodFilter] = useState('Month');
 
   // Initial Sync from Backend REST API
+  // Runs after sign-in (the API needs a login) and again on every page load while signed in.
   useEffect(() => {
+    if (!isLoggedIn) return;
     const syncFromBackend = async () => {
       try {
         const [bLeads, bOpps, bComps, bContacts, bActs, bUsers, bRules] = await Promise.allSettled([
@@ -55,9 +57,12 @@ const setIsLoggedIn = (status) => {
           setLeads(bLeads.value.map(l => ({
             ...l,
             serviceLine: l.business_vertical_name || (l.business_vertical_code === 'XUN' ? 'Xunaris Services' : 'HYRA Connect'),
+            businessVertical: l.business_vertical_code === 'XUN' ? 'Xunaris' : 'HYRA Connect',
+            leadSource: l.lead_source,
             verticalCode: l.business_vertical_code,
             companyName: l.company_name,
             contactName: l.contact_name,
+            jobTitle: l.job_title,
             workEmail: l.work_email,
             status: l.lead_status,
             priority: l.priority,
@@ -135,7 +140,7 @@ const setIsLoggedIn = (status) => {
     };
 
     syncFromBackend();
-  }, []);
+  }, [isLoggedIn]);
 
   // Persistence Effects
   useEffect(() => {
@@ -282,7 +287,12 @@ const setIsLoggedIn = (status) => {
       ownerEmail: leadData.ownerEmail || currentUser.email,
       nextFollowupDate: leadData.nextFollowup,
       notes: leadData.notes
-    }).catch(err => console.log('[API Sync] Lead sync note:', err.message));
+    }).then(saved => {
+      // Use the server's id from now on so later edits and deletes find the same record
+      if (saved?.id && saved.id !== formattedId) {
+        setLeads(prev => prev.map(l => (l.id === formattedId ? { ...l, id: saved.id } : l)));
+      }
+    }).catch(err => console.warn('[API Sync] Lead was NOT saved to the server:', err.message));
 
     return newLead;
   };
@@ -298,7 +308,7 @@ const setIsLoggedIn = (status) => {
 
   const updateLead = (id, updatedFields) => {
     setLeads(prev => prev.map(l => (l.id === id ? { ...l, ...updatedFields } : l)));
-    apiClient.updateLead(id, updatedFields).catch(() => {});
+    apiClient.updateLead(id, updatedFields).catch(err => console.warn('[API Sync] Lead update was NOT saved to the server:', err.message));
   };
 
   const deleteLead = (id) => {

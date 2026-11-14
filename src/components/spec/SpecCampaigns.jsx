@@ -215,9 +215,7 @@ export const SpecCampaigns = () => {
   const [crmLeadSearch, setCrmLeadSearch] = useState('');
 
   // 2. Manual / Paste entry
-  const [manualRecipientsText, setManualRecipientsText] = useState(
-    'john.doe@capgemini.com, sarah.smith@wipro.com, priya.kumar@tcs.com, michael.chen@infosys.com, dev.lead@techcorp.com'
-  );
+  const [manualRecipientsText, setManualRecipientsText] = useState('');
 
   // 3. Uploaded Excel / CSV file
   const [uploadedRecipients, setUploadedRecipients] = useState([]);
