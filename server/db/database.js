@@ -62,7 +62,6 @@ try {
           is_verified = 1,
           verification_status = 'Authorized',
           verification_error = NULL
-      WHERE id = 'acc_xunaris'
       WHERE id IN ('acc_xunaris', 'acc_xunaris_info')
     `).run(
       process.env.XUNARIS_SMTP_HOST || 'smtpout.secureserver.net',
