@@ -302,7 +302,11 @@ export const validateLeadData = (leadData, options = {}) => {
 
   // 16. Owner Email (Active Sales user email; Fallback to Admin assignment rule)
   const owner = (leadData.ownerEmail || '').trim();
-  if (owner && isValidEmail(owner)) {
+  if (owner.toLowerCase() === 'auto') {
+    normalized.ownerEmail = 'auto';
+    normalized.ownerName = 'Auto-assign';
+    normalized.autoAssign = true;
+  } else if (owner && isValidEmail(owner)) {
     normalized.ownerEmail = owner.toLowerCase();
   } else {
     normalized.ownerEmail = adminFallbackEmail;

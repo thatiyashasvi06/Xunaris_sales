@@ -190,11 +190,13 @@ router.post('/reset-confirm', (req, res) => {
   res.json({ message: 'Password updated successfully. Token burned.' });
 });
 
-router.get('/users', (req, res) => {
+router.get('/users', authMiddleware, (req, res) => {
   const users = db.prepare(`
     SELECT id, name, email, role, department, function_access as functionAccess, 
-           scope_enforcement as scopeEnforcement, status 
-    FROM users 
+           scope_enforcement as scopeEnforcement, status,
+           COALESCE(team_role, CASE WHEN role = 'ADMIN' THEN 'Admin' WHEN function_access = 'Marketing' THEN 'Marketing' ELSE 'Sales Executive' END) as teamRole,
+           COALESCE(availability, 'Available') as availability
+        FROM users 
     WHERE status = 'Active'
     ORDER BY name ASC
   `).all();

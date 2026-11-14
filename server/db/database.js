@@ -28,6 +28,17 @@ const schemaPath = path.join(__dirname, 'schema.sql');
 const schemaSql = fs.readFileSync(schemaPath, 'utf8');
 db.exec(schemaSql);
 
+// Team roles and availability (added after the first release, so existing databases get the columns here)
+const userCols = db.prepare('PRAGMA table_info(users)').all().map((c) => c.name);
+for (const [col, ddl] of [
+  ['team_role', 'TEXT'],
+  ['availability', "TEXT NOT NULL DEFAULT 'Available'"],
+  ['away_until', 'TEXT'],
+  ['availability_note', 'TEXT']
+]) {
+  if (!userCols.includes(col)) db.exec(`ALTER TABLE users ADD COLUMN ${col} ${ddl}`);
+}
+
 // Ensure default company sender accounts exist (Xunaris & HYRA Connect)
 try {
   const insertSenderAccount = db.prepare(`

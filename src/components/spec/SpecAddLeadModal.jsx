@@ -57,8 +57,8 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
     requirementSummary: '',
     priority: 'Medium',
     status: 'New',
-    ownerEmail: currentUser?.email || 'sales@xunaris.com',
-    ownerName: currentUser?.name || 'Sales User',
+    ownerEmail: 'auto',
+    ownerName: 'Auto-assign',
     nextFollowup: '',
     notes: ''
   };
@@ -87,8 +87,8 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
     if (isOpen) {
       setFormData({
         ...initialFormState,
-        ownerEmail: currentUser?.email || 'sales@xunaris.com',
-        ownerName: currentUser?.name || 'Sales User'
+        ownerEmail: 'auto',
+        ownerName: 'Auto-assign'
       });
       setInlineErrors({});
       setSuccessLink(null);
@@ -205,8 +205,8 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
             ...initialFormState,
             businessVertical: formData.businessVertical,
             service: SERVICE_CATALOG[formData.businessVertical === 'Xunaris' ? 'XUN' : 'HYRA'][0],
-            ownerEmail: currentUser?.email || 'sales@xunaris.com',
-            ownerName: currentUser?.name || 'Sales User'
+            ownerEmail: 'auto',
+            ownerName: 'Auto-assign'
           });
           setInlineErrors({});
           setIsSubmitting(false);
@@ -769,12 +769,16 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     <label className="text-xs font-bold text-slate-800 uppercase">
                       Owner Email Lookup
                     </label>
-                    <span className="text-[10px] text-slate-400 font-mono">Admin fallback</span>
+                    <span className="text-[10px] text-slate-400">Recommended</span>
                   </div>
                   <select
                     value={formData.ownerEmail}
                     onChange={(e) => {
                       const sel = users.find(u => u.email === e.target.value);
+                      if (e.target.value === 'auto') {
+                        setFormData(prev => ({ ...prev, ownerEmail: 'auto', ownerName: 'Auto-assign' }));
+                        return;
+                      }
                       setFormData(prev => ({
                         ...prev,
                         ownerEmail: e.target.value,
@@ -783,6 +787,7 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
                     }}
                     className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-600"
                   >
+                    <option value="auto">Auto-assign (best available person)</option>
                     {users.map((u) => (
                       <option key={u.id} value={u.email}>
                         {u.name} ({u.email})

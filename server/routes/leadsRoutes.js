@@ -5,6 +5,7 @@ import { generateLeadId, generateOpportunityId, generateCompanyId, generateConta
 import { validateLeadPayload, checkPossibleDuplicate } from '../services/leadValidator.js';
 import { queueEmailAlert, createNotification } from '../services/backgroundWorker.js';
 import { logAuditEvent } from '../middleware/auditMiddleware.js';
+import { routeNewLead, logRouting } from '../services/routing.js';
 
 const router = express.Router();
 const upload = multer({ limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
@@ -116,8 +117,24 @@ router.post('/', (req, res) => {
     );
   }
 
-  const ownerName = req.body.ownerName || (req.user?.name || 'Sales User');
-  const ownerEmail = req.body.ownerEmail || (req.user?.email || 'sales@xunaris.com');
+  let ownerName;
+  let ownerEmail;
+  let routedReason = null;
+  const wantsAuto = !req.body.ownerEmail || String(req.body.ownerEmail).toLowerCase() === 'auto';
+  if (wantsAuto) {
+    const r = routeNewLead({
+      job_title: req.body.jobTitle, industry: req.body.industry, requirement_summary: req.body.requirementSummary,
+      notes: req.body.notes, service, priority: req.body.priority || 'Medium', lead_source: req.body.leadSource,
+      lead_status: 'New', work_email: workEmail, phone, created_at: new Date().toISOString()
+    });
+    ownerName = r.ownerName;
+    ownerEmail = r.ownerEmail;
+    routedReason = r.reason;
+  } else {
+    ownerName = req.body.ownerName || (req.user?.name || 'Sales User');
+    ownerEmail = req.body.ownerEmail;
+  }
+  const ownerUserId = db.prepare('SELECT id FROM users WHERE LOWER(email) = LOWER(?)').get(ownerEmail || '')?.id || null;
   const nextFollowup = req.body.nextFollowupDate || new Date(Date.now() + 86400000).toISOString().split('T')[0];
 
   // 3. Insert Lead
@@ -156,7 +173,7 @@ router.post('/', (req, res) => {
     req.body.requirementSummary || null,
     req.body.priority || 'Medium',
     req.body.leadStatus || 'New',
-    req.body.ownerId || 'usr_sales',
+    ownerUserId || req.body.ownerId || null,
     ownerName,
     ownerEmail,
     nextFollowup,
@@ -185,20 +202,23 @@ router.post('/', (req, res) => {
 
   // 5. Owner Alert & Outbox
   const idempotencyKey = `lead_create_${leadId}`;
-  queueEmailAlert(
-    ownerEmail,
-    `New Lead Assigned: [${leadId}] ${companyName}`,
-    `You have been assigned as owner for lead ${leadId} (${companyName}) under ${verticalName}. Next action due: ${nextFollowup}.`,
-    idempotencyKey
-  );
+  if (ownerEmail) {
+    queueEmailAlert(
+      ownerEmail,
+      `New Lead Assigned: [${leadId}] ${companyName}`,
+      `You have been assigned as owner for lead ${leadId} (${companyName}) under ${verticalName}. Next action due: ${nextFollowup}.`,
+      idempotencyKey
+    );
 
-  createNotification(
-    ownerEmail,
-    `New Lead Assigned: ${leadId}`,
-    `${companyName} - ${service}`,
-    'info',
-    `/leads?id=${leadId}`
-  );
+    createNotification(
+      ownerEmail,
+      `New Lead Assigned: ${leadId}`,
+      `${companyName} - ${service}`,
+      'info',
+      `/leads?id=${leadId}`
+    );
+  }
+  if (routedReason) logRouting(leadId, '', ownerName, routedReason);
 
   logAuditEvent(req.user?.email, 'CREATE_LEAD', 'LEAD', leadId, { companyName, service, verticalCode });
 

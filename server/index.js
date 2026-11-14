@@ -22,6 +22,8 @@ import adminRoutes from './routes/adminRoutes.js';
 import notificationsRoutes from './routes/notificationsRoutes.js';
 import recruitmentRoutes from './routes/recruitmentRoutes.js';
 import salesAgentRoutes, { publicBookingRouter } from './routes/salesAgentRoutes.js';
+import teamRoutes from './routes/teamRoutes.js';
+import { ensureTeamDefaults, reassignStaleLeads } from './services/routing.js';
 import jwt from 'jsonwebtoken';
 import { authMiddleware, JWT_SECRET } from './middleware/authMiddleware.js';
 import { startBackupSchedule } from './services/dbBackup.js';
@@ -156,6 +158,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', authMiddleware, notificationsRoutes);
 app.use('/api/recruitment', authMiddleware, recruitmentRoutes);
 app.use('/api/sales-agent', salesAgentRoutes);
+app.use('/api/team', authMiddleware, teamRoutes);
 app.use('/api/public', publicBookingRouter);
 
 // Client-Side Routing Fallback (serves React frontend for all non-API paths, compatible with Express v5)
@@ -182,6 +185,7 @@ app.use((err, req, res, next) => {
 // Seed Initial Data
 seedDatabase();
 applyEnvPasswords();
+ensureTeamDefaults();
 
 // Start Background Worker
 startBackgroundWorker(15000);
@@ -189,6 +193,9 @@ startBackupSchedule(db);
 
 // Sales Agent runs every 5 minutes (it only acts when switched on in the Sales Agent screen)
 setInterval(() => runCycle().catch((e) => console.error('[SalesAgent] cycle error:', e.message)), 5 * 60 * 1000);
+
+// Every 5 minutes: move untouched or orphaned new leads to the next available person
+setInterval(() => { try { reassignStaleLeads(); } catch (e) { console.error('[Routing] error:', e.message); } }, 5 * 60 * 1000);
 
 // Start Server
 app.listen(PORT, () => {

@@ -3,6 +3,7 @@ import db from '../db/database.js';
 import { generateOpportunityId, generateActivityId } from '../services/idGenerator.js';
 import { queueEmailAlert, createNotification } from '../services/backgroundWorker.js';
 import { logAuditEvent } from '../middleware/auditMiddleware.js';
+import { notifyBigDeal } from '../services/routing.js';
 
 const router = express.Router();
 
@@ -62,6 +63,7 @@ router.post('/', (req, res) => {
 
   const created = db.prepare('SELECT * FROM opportunities WHERE id = ?').get(id);
   logAuditEvent(req.user?.email, 'CREATE_OPPORTUNITY', 'OPPORTUNITY', id, { title });
+  try { notifyBigDeal(created); } catch (e) { console.warn('[Routing] big deal alert:', e.message); }
   res.status(201).json(created);
 });
 

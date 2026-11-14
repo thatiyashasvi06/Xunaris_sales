@@ -152,6 +152,15 @@ export const SpecLeads = () => {
     setServiceInterest(SERVICE_CATALOG[code][0]);
   };
 
+  // Opened from the Today screen: select that lead
+  useEffect(() => {
+    let id = null;
+    try { id = sessionStorage.getItem('xun_open_lead'); sessionStorage.removeItem('xun_open_lead'); } catch {}
+    const lead = id && leads.find((l) => l.id === id);
+    if (lead) handleSelectLeadRow(lead);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Populate form when row is clicked
   const handleSelectLeadRow = (lead) => {
     setSelectedLeadId(lead.id);

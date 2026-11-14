@@ -41,7 +41,7 @@ export const PublicBooking = ({ token }) => {
   return (
     <div className="min-h-screen bg-slate-50 flex items-start justify-center p-4 sm:p-10">
       <div className="w-full max-w-xl bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-        <div className="text-xs font-bold tracking-wider text-orange-600 uppercase">HYRA Connect Staffing</div>
+        <div className="text-xs font-bold tracking-wider text-hyra-700 uppercase">HYRA Connect Staffing</div>
         <h1 className="text-2xl font-extrabold text-[#0d2238] mt-1">Book a 30-minute intro call</h1>
 
         {error && <p className="mt-4 text-sm font-semibold text-red-700 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
@@ -70,7 +70,7 @@ export const PublicBooking = ({ token }) => {
                   <div className="flex flex-wrap gap-2">
                     {slots.map((s) => (
                       <button key={s} onClick={() => setPicked(s)}
-                        className={`px-3 py-1.5 rounded-lg text-sm font-semibold border ${picked === s ? 'bg-[#0063f2] text-white border-[#0063f2]' : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'}`}>
+                        className={`px-3 py-1.5 rounded-lg text-sm font-semibold border ${picked === s ? 'bg-hyra-700 text-white border-[#0063f2]' : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'}`}>
                         {time(s)}
                       </button>
                     ))}
@@ -79,7 +79,7 @@ export const PublicBooking = ({ token }) => {
               ))}
             </div>
             <button disabled={!picked || saving} onClick={confirm}
-              className="mt-6 w-full py-3 rounded-xl bg-orange-600 text-white font-bold disabled:opacity-50">
+              className="mt-6 w-full py-3 rounded-xl bg-hyra-700 text-white font-bold disabled:opacity-50">
               {saving ? 'Booking...' : picked ? `Confirm ${time(picked)}` : 'Choose a time'}
             </button>
           </>

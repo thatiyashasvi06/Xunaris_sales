@@ -31,12 +31,12 @@ const Card = ({ n, title, accent, icon: Icon, children, right }) => (
   <section className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
     <header className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
       <div className="flex items-center gap-3">
-        <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-orange-50 text-orange-600 border border-orange-100">{n}/4</span>
+        <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-hyra-50 text-hyra-700 border border-hyra-100">{n}/4</span>
         <div>
           <h2 className="text-sm font-extrabold text-[#0d2238] flex items-center gap-2">
-            <Icon className="w-4 h-4 text-orange-500" /> {title}
+            <Icon className="w-4 h-4 text-hyra-500" /> {title}
           </h2>
-          <p className="text-xs font-semibold text-orange-600">{accent}</p>
+          <p className="text-xs font-semibold text-hyra-700">{accent}</p>
         </div>
       </div>
       {right}
@@ -142,7 +142,7 @@ export const SpecSalesAgent = () => {
           <button
             onClick={() => act(() => api('/run', { method: 'POST' }), (r) => `Run complete: ${r.scored ?? 0} leads scored, ${r.drafted ?? 0} sequences drafted, ${r.sent ?? 0} emails sent`)}
             disabled={busy}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-[#0063f2] text-white hover:bg-[#0050c7] disabled:opacity-60"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-hyra-700 text-white hover:bg-[#0050c7] disabled:opacity-60"
           >
             {busy ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />} Run now
           </button>
@@ -175,20 +175,20 @@ export const SpecSalesAgent = () => {
           </label>
         </div>
         {/* Website -> ideal customer */}
-        <div className="rounded-xl border border-orange-100 bg-orange-50/40 p-4 space-y-3">
-          <div className="text-xs font-bold text-orange-700 uppercase tracking-wide">Your website is the only input</div>
+        <div className="rounded-xl border border-hyra-100 bg-hyra-50/40 p-4 space-y-3">
+          <div className="text-xs font-bold text-hyra-800 uppercase tracking-wide">Your website is the only input</div>
           <div className="flex flex-wrap gap-2">
             <input value={site} onChange={(e) => setSite(e.target.value)} placeholder="hyraconnect.com"
               className="flex-1 min-w-[220px] border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white" />
             <button disabled={busy || !site.trim()}
               onClick={() => act(async () => { const r = await api('/icp/analyze', { method: 'POST', body: { website: site } }); setIcpDraft(r); return r; }, 'Ideal customer written. Review it below, then apply.')}
-              className="px-4 py-2 text-sm font-bold rounded-lg bg-orange-600 text-white disabled:opacity-50">Read website</button>
+              className="px-4 py-2 text-sm font-bold rounded-lg bg-hyra-700 text-white disabled:opacity-50">Read website</button>
           </div>
           {(icpDraft || data.icp) && (() => {
             const v = icpDraft || data.icp;
             return (
               <div className="bg-white rounded-lg border border-slate-200 p-3 space-y-1.5">
-                {v.summary.map((l, i) => <p key={i} className="text-sm text-slate-700"><span className="font-bold text-orange-600 mr-1">{i + 1}.</span>{l}</p>)}
+                {v.summary.map((l, i) => <p key={i} className="text-sm text-slate-700"><span className="font-bold text-hyra-700 mr-1">{i + 1}.</span>{l}</p>)}
                 <p className="text-[11px] text-slate-400">{icpDraft ? `Suggested by ${v.engine}. Nothing changes until you apply it.` : `Applied from ${v.website}`}</p>
                 {icpDraft && (
                   <div className="flex flex-wrap items-center gap-2 pt-1">
@@ -242,7 +242,7 @@ export const SpecSalesAgent = () => {
                 <div className="text-center py-6">
                   <div className="text-sm font-extrabold text-[#0d2238]">Start by adding leads</div>
                   <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">The agent ranks the leads in your CRM. Add HYRA leads with an email, job title and industry, then press Run now.</p>
-                  <button type="button" onClick={() => setActiveNav('leads')} className="mt-3 px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Add leads</button>
+                  <button type="button" onClick={() => setActiveNav('leads')} className="mt-3 px-4 py-2 rounded-xl bg-hyra-700 text-white text-xs font-bold">Add leads</button>
                 </div>
               ) : (
                 <p className="text-sm text-slate-500">No HYRA leads above the minimum score yet. Add HYRA leads or lower the minimum score, then press Run now.</p>
@@ -279,7 +279,7 @@ export const SpecSalesAgent = () => {
                   {p.steps === 0 && (
                     <button disabled={busy}
                       onClick={() => act(() => api(`/leads/${p.id}/draft`, { method: 'POST' }), 'Sequence drafted. Review it in step 3.')}
-                      className="text-[11px] font-bold px-2.5 py-1 rounded-md bg-orange-50 text-orange-700 border border-orange-100 hover:bg-orange-100">Draft outreach</button>
+                      className="text-[11px] font-bold px-2.5 py-1 rounded-md bg-hyra-50 text-hyra-800 border border-hyra-100 hover:bg-hyra-100">Draft outreach</button>
                   )}
                 </div>
               </div>
@@ -350,9 +350,9 @@ export const SpecSalesAgent = () => {
                 <div key={day}>
                   <div className="text-[11px] font-bold text-slate-400 mb-1">{day}</div>
                   {list.map((m) => (
-                    <div key={m.id} className="mb-1.5 rounded-lg bg-orange-50 border border-orange-100 px-3 py-2">
-                      <div className="text-xs font-bold text-orange-800">{new Date(m.slot_start).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })} · {m.contact_name}</div>
-                      <div className="text-[11px] text-orange-700/80">{m.company_name}</div>
+                    <div key={m.id} className="mb-1.5 rounded-lg bg-hyra-50 border border-hyra-100 px-3 py-2">
+                      <div className="text-xs font-bold text-hyra-900">{new Date(m.slot_start).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })} · {m.contact_name}</div>
+                      <div className="text-[11px] text-hyra-800/80">{m.company_name}</div>
                     </div>
                   ))}
                 </div>
@@ -394,7 +394,7 @@ export const SpecSalesAgent = () => {
                   <div className="flex items-end gap-1 h-32">
                     <div title={`${w.sent} sent`} className="w-3 rounded-t bg-slate-300" style={{ height: `${(w.sent / maxWeek) * 100}%`, minHeight: w.sent ? 3 : 0 }} />
                     <div title={`${w.replies} replies`} className="w-3 rounded-t bg-teal-400" style={{ height: `${(w.replies / maxWeek) * 100}%`, minHeight: w.replies ? 3 : 0 }} />
-                    <div title={`${w.meetings} meetings`} className="w-3 rounded-t bg-orange-500" style={{ height: `${(w.meetings / maxWeek) * 100}%`, minHeight: w.meetings ? 3 : 0 }} />
+                    <div title={`${w.meetings} meetings`} className="w-3 rounded-t bg-hyra-500" style={{ height: `${(w.meetings / maxWeek) * 100}%`, minHeight: w.meetings ? 3 : 0 }} />
                   </div>
                   <div className="text-[10px] font-semibold text-slate-500">{w.label}</div>
                   <div className="text-[10px] text-slate-400">{w.reply_rate}% reply</div>
@@ -404,7 +404,7 @@ export const SpecSalesAgent = () => {
             <div className="flex gap-4 mt-2 text-[11px] text-slate-500">
               <span><i className="inline-block w-2 h-2 bg-slate-300 rounded-sm mr-1" />Sent</span>
               <span><i className="inline-block w-2 h-2 bg-teal-400 rounded-sm mr-1" />Replies</span>
-              <span><i className="inline-block w-2 h-2 bg-orange-500 rounded-sm mr-1" />Meetings</span>
+              <span><i className="inline-block w-2 h-2 bg-hyra-500 rounded-sm mr-1" />Meetings</span>
             </div>
           </div>
           <div>
@@ -442,7 +442,7 @@ const EditBox = ({ o, onSave, onCancel }) => {
       {o.channel === 'Email' && <input value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full border border-slate-200 rounded-lg px-3 py-1.5 text-sm" />}
       <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={6} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs" />
       <div className="flex gap-2">
-        <button onClick={() => onSave(o.channel === 'Email' ? subject : null, body)} className="text-[11px] font-bold px-3 py-1 rounded-md bg-[#0063f2] text-white">Save</button>
+        <button onClick={() => onSave(o.channel === 'Email' ? subject : null, body)} className="text-[11px] font-bold px-3 py-1 rounded-md bg-hyra-700 text-white">Save</button>
         <button onClick={onCancel} className="text-[11px] font-bold px-3 py-1 rounded-md bg-slate-100 text-slate-700">Cancel</button>
       </div>
     </div>

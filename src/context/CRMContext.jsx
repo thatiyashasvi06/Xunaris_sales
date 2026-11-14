@@ -7,7 +7,7 @@ const CRMContext = createContext(null);
 
 export const CRMProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(() => storageService.getCurrentUser());
-  const [activeNav, setActiveNav] = useState('dashboard');
+  const [activeNav, setActiveNav] = useState('today');
   const [isLoggedIn, setIsLoggedInState] = useState(() => {
   return sessionStorage.getItem('xun_crm_logged_in') === 'true';
 });
@@ -290,14 +290,18 @@ const setIsLoggedIn = (status) => {
       leadSource: leadData.leadSource || 'Manual',
       priority: leadData.priority || 'Medium',
       leadStatus: leadData.status || 'New',
-      ownerName: leadData.ownerName || currentUser.name,
-      ownerEmail: leadData.ownerEmail || currentUser.email,
+      ownerName: leadData.autoAssign ? undefined : (leadData.ownerName || currentUser.name),
+      ownerEmail: leadData.autoAssign ? 'auto' : (leadData.ownerEmail || currentUser.email),
       nextFollowupDate: leadData.nextFollowup,
       notes: leadData.notes
     }).then(saved => {
       // Use the server's id from now on so later edits and deletes find the same record
       if (saved?.id && saved.id !== formattedId) {
         setLeads(prev => prev.map(l => (l.id === formattedId ? { ...l, id: saved.id } : l)));
+      }
+      // When the server picked the owner, show that person
+      if (saved?.id) {
+        setLeads(prev => prev.map(l => ((l.id === saved.id || l.id === formattedId) ? { ...l, ownerName: saved.owner_name, ownerEmail: saved.owner_email } : l)));
       }
     }).catch(err => console.warn('[API Sync] Lead was NOT saved to the server:', err.message));
 

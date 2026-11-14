@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 
 export const SpecAdminSettings = () => {
-  const { automationRules, toggleRuleEnabled, users, addUser, deleteUser, switchUser, currentUser, addActivity, clearAllTestData, resetToSpecification } = useCRM();
+  const { automationRules, toggleRuleEnabled, users, updateUser, addUser, deleteUser, switchUser, currentUser, addActivity, clearAllTestData, resetToSpecification } = useCRM();
 
   // Form states
   const [userName, setUserName] = useState('');
@@ -1206,6 +1206,7 @@ export const SpecAdminSettings = () => {
                     <th className="px-4 py-3">User Name</th>
                     <th className="px-4 py-3">Email</th>
                     <th className="px-4 py-3">Role</th>
+                    <th className="px-4 py-3">Team role</th>
                     <th className="px-4 py-3">Department</th>
                     <th className="px-4 py-3">Access</th>
                     <th className="px-4 py-3">Status</th>
@@ -1234,6 +1235,22 @@ export const SpecAdminSettings = () => {
                           <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">
                             {u.role}
                           </span>
+                        </td>
+                        <td className="px-4 py-3.5">
+                          <select
+                            value={u.teamRole || 'Sales Executive'}
+                            onChange={async (e) => {
+                              try {
+                                await apiClient.request(`/admin/users/${u.id}/team-role`, { method: 'PUT', body: { teamRole: e.target.value } });
+                                updateUser(u.id, { teamRole: e.target.value });
+                                setNotice(`${u.name} is now ${e.target.value}.`);
+                              } catch (err) { setNotice(`Could not change the team role: ${err.message}`); }
+                            }}
+                            className="border border-slate-200 rounded-lg px-2 py-1 text-xs font-semibold bg-white"
+                            aria-label={`Team role for ${u.name}`}
+                          >
+                            {['Admin', 'Sales Head', 'Sales Executive', 'Marketing'].map((r) => <option key={r}>{r}</option>)}
+                          </select>
                         </td>
                         <td className="px-4 py-3.5 text-slate-600 font-medium">
                           {u.department}

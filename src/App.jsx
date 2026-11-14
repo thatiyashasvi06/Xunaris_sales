@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CRMProvider, useCRM } from './context/CRMContext';
 import { SpecSidebar } from './components/spec/SpecSidebar';
+import { SpecToday } from './components/spec/SpecToday';
 import { SpecDashboard } from './components/spec/SpecDashboard';
 import { SpecLeads } from './components/spec/SpecLeads';
 import { SpecCompaniesContacts } from './components/spec/SpecCompaniesContacts';
@@ -15,7 +16,6 @@ import { SpecSwaggerBackend } from './components/spec/SpecSwaggerBackend';
 import { SpecLoginModal } from './components/spec/SpecLoginModal';
 import { AuthProvider } from './context/AuthContext';
 import { AISettingsModal } from './components/common/AISettingsModal';
-import { AnimatedBackground } from './components/common/AnimatedBackground';
 import { XunarisLogo } from './components/common/XunarisLogo';
 import { aiService } from './services/aiService';
 import { Sparkles, Menu, X, ExternalLink } from 'lucide-react';
@@ -35,7 +35,7 @@ const MainLayout = () => {
   // Enforce rule: Settings Admin only
   React.useEffect(() => {
     if (activeNav === 'admin' && currentUser?.role !== 'ADMIN') {
-      setActiveNav('dashboard');
+      setActiveNav('today');
     }
   }, [activeNav, currentUser?.role, setActiveNav]);
 
@@ -45,6 +45,8 @@ const MainLayout = () => {
 
   const renderActiveScreen = () => {
     switch (activeNav) {
+      case 'today':
+        return <SpecToday />;
       case 'dashboard':
         return <SpecDashboard />;
       case 'leads':
@@ -62,18 +64,17 @@ const MainLayout = () => {
       case 'reports':
         return <SpecReports />;
       case 'admin':
-        return currentUser?.role === 'ADMIN' ? <SpecAdminSettings /> : <SpecDashboard />;
+        return currentUser?.role === 'ADMIN' ? <SpecAdminSettings /> : <SpecToday />;
       case 'swagger':
         return <SpecSwaggerBackend />;
       default:
-        return <SpecDashboard />;
+        return <SpecToday />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans selection:bg-[#0063f2] selection:text-white relative">
+    <div className="min-h-screen bg-canvas flex flex-col font-sans selection:bg-hyra-700 selection:text-white relative">
       {/* Official Xunaris Animated Ambient Background */}
-      <AnimatedBackground />
 
       {/* Mobile Top Header */}
       <div className="lg:hidden bg-[#0a1120] text-white p-4 flex items-center justify-between border-b border-slate-800 relative z-20">

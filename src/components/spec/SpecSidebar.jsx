@@ -3,6 +3,7 @@ import { useCRM } from '../../context/CRMContext';
 import { XunarisLogo } from '../common/XunarisLogo';
 import {
   LayoutDashboard,
+  Sun,
   Users,
   Building2,
   Briefcase,
@@ -20,6 +21,7 @@ export const SpecSidebar = () => {
   const { activeNav, setActiveNav, currentUser, setIsLoggedIn } = useCRM();
 
   const allNavItems = [
+    { id: 'today', label: 'Today', icon: Sun },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'leads', label: 'Leads', icon: Users },
     { id: 'sales-agent', label: 'Sales Agent', icon: Bot, badge: 'AI' },
@@ -35,7 +37,7 @@ export const SpecSidebar = () => {
   const crmNavItems = allNavItems.filter(item => !item.adminOnly || currentUser?.role === 'ADMIN');
 
   return (
-    <aside className="w-64 bg-[#0a1120] text-white flex flex-col shrink-0 min-h-full h-full select-none border-r border-slate-800/80 font-sans">
+    <aside className="w-64 bg-ink-900 text-white flex flex-col shrink-0 min-h-full h-full select-none border-r border-slate-800/80 font-sans">
       <div className="sticky top-0 flex flex-col h-screen max-h-screen">
         {/* Official Xunaris Logo Brand Header */}
         <div className="p-5 border-b border-slate-800/80 bg-gradient-to-b from-slate-900/60 to-transparent shrink-0">
@@ -56,14 +58,14 @@ export const SpecSidebar = () => {
               onClick={() => setActiveNav(item.id)}
               className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-[#0063f2] text-white font-bold shadow-md shadow-blue-600/30'
+                  ? 'bg-hyra-700 text-white font-bold'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
               }`}
             >
               <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
               <span className="truncate">{item.label}</span>
               {item.badge && (
-                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-cyan-400/20 text-cyan-300 border border-cyan-400/30 font-mono ml-auto">
+                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-xun-500/20 text-xun-300 border border-xun-400/30 font-mono ml-auto">
                   {item.badge}
                 </span>
               )}

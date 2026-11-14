@@ -522,3 +522,25 @@ CREATE TABLE IF NOT EXISTS agent_suppressions (
     reason TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 21. Team routing: rules the CRM follows like a sales manager
+CREATE TABLE IF NOT EXISTS routing_settings (
+    id INTEGER PRIMARY KEY CHECK(id = 1),
+    hot_score INTEGER NOT NULL DEFAULT 80,
+    big_deal_value REAL NOT NULL DEFAULT 1000000,
+    sla_hours_hot INTEGER NOT NULL DEFAULT 4,
+    sla_hours_normal INTEGER NOT NULL DEFAULT 24,
+    max_reassignments INTEGER NOT NULL DEFAULT 2,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+INSERT OR IGNORE INTO routing_settings (id) VALUES (1);
+
+CREATE TABLE IF NOT EXISTS lead_routing_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lead_id TEXT NOT NULL,
+    from_owner TEXT,
+    to_owner TEXT,
+    reason TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_routing_log_lead ON lead_routing_log(lead_id);

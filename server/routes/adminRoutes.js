@@ -6,6 +6,7 @@ import { authMiddleware, requireRole, JWT_SECRET } from '../middleware/authMiddl
 import { generateActivityId } from '../services/idGenerator.js';
 import { queueEmailAlert } from '../services/backgroundWorker.js';
 import { logAuditEvent } from '../middleware/auditMiddleware.js';
+import { setTeamRole } from '../services/routing.js';
 
 const router = express.Router();
 
@@ -24,8 +25,9 @@ router.post('/docs-link', (req, res) => {
 router.get('/users', (req, res) => {
   const users = db.prepare(`
     SELECT id, name, email, role, department, function_access as functionAccess, 
-           scope_enforcement as scopeEnforcement, status, created_at 
-    FROM users 
+           scope_enforcement as scopeEnforcement, status, created_at,
+           COALESCE(team_role, CASE WHEN role = 'ADMIN' THEN 'Admin' WHEN function_access = 'Marketing' THEN 'Marketing' ELSE 'Sales Executive' END) as teamRole
+        FROM users 
     ORDER BY created_at DESC
   `).all();
   res.json(users);
@@ -68,6 +70,17 @@ router.post('/users', (req, res) => {
   logAuditEvent(req.user.email, 'ADD_USER', 'USER', id, { email: normalizedEmail, role });
   const created = db.prepare('SELECT id, name, email, role, department, function_access as functionAccess, status FROM users WHERE id = ?').get(id);
   res.status(201).json(created);
+});
+
+// PUT set a user's team role (Admin, Sales Head, Sales Executive, Marketing)
+router.put('/users/:id/team-role', (req, res) => {
+  try {
+    setTeamRole(req.params.id, req.body?.teamRole);
+    logAuditEvent(req.user.email, 'SET_TEAM_ROLE', 'USER', req.params.id, { teamRole: req.body?.teamRole });
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
 });
 
 // PUT set a user's password (admin only; stored as a bcrypt hash, never returned)

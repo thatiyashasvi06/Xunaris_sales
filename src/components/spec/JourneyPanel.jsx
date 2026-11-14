@@ -132,21 +132,21 @@ export const JourneyPanel = () => {
 
       {/* The one next step */}
       {next ? (
-        <div className="mx-4 sm:mx-6 mb-4 rounded-2xl border border-orange-200 bg-orange-50/70 p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="mx-4 sm:mx-6 mb-4 rounded-2xl border border-hyra-200 bg-hyra-50/70 p-4 flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="flex items-start gap-3 flex-1 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-hyra-500 text-white flex items-center justify-center shrink-0">
               <next.icon className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-orange-600">Next step · {nextIndex + 1} of {steps.length}</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-hyra-700">Next step · {nextIndex + 1} of {steps.length}</div>
               <div className="text-sm sm:text-base font-extrabold text-[#0d2238]">{next.title}</div>
               <p className="text-xs text-slate-600 mt-0.5">{next.why}</p>
-              <p className="text-[11px] font-semibold text-orange-700 mt-1">{next.hint}</p>
+              <p className="text-[11px] font-semibold text-hyra-800 mt-1">{next.hint}</p>
             </div>
           </div>
           <button
             onClick={() => setActiveNav(next.nav)}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#0063f2] hover:bg-[#0050c7] text-white text-sm font-bold shadow-sm shrink-0"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-hyra-700 hover:bg-hyra-800 text-white text-sm font-bold shadow-sm shrink-0"
           >
             {next.cta} <ArrowRight className="w-4 h-4" />
           </button>
@@ -195,11 +195,11 @@ export const JourneyPanel = () => {
                   <button
                     onClick={() => setActiveNav(s.nav)}
                     className={`w-full text-left flex items-start gap-3 rounded-xl border px-3 py-2.5 transition-colors ${
-                      s.done ? 'border-emerald-200 bg-emerald-50/50' : isNext ? 'border-orange-300 bg-orange-50/60' : 'border-slate-200 bg-white hover:bg-slate-50'
+                      s.done ? 'border-emerald-200 bg-emerald-50/50' : isNext ? 'border-hyra-300 bg-hyra-50/60' : 'border-slate-200 bg-white hover:bg-slate-50'
                     }`}
                   >
                     <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold shrink-0 mt-0.5 ${
-                      s.done ? 'bg-emerald-500 text-white' : isNext ? 'bg-orange-500 text-white' : 'bg-slate-200 text-slate-600'
+                      s.done ? 'bg-emerald-500 text-white' : isNext ? 'bg-hyra-500 text-white' : 'bg-slate-200 text-slate-600'
                     }`}>
                       {s.done ? <Check className="w-3.5 h-3.5" /> : i + 1}
                     </span>
