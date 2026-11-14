@@ -438,3 +438,79 @@ CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_email);
 CREATE INDEX IF NOT EXISTS idx_camp_logs_cid ON campaign_delivery_logs(campaign_id);
 CREATE INDEX IF NOT EXISTS idx_camp_logs_status ON campaign_delivery_logs(status);
 CREATE INDEX IF NOT EXISTS idx_camp_logs_recipient ON campaign_delivery_logs(recipient_email);
+
+-- 20. AI Sales Agent (HYRA Connect): settings, scoring, outreach sequences, bookings, learning
+CREATE TABLE IF NOT EXISTS agent_settings (
+    id INTEGER PRIMARY KEY CHECK(id = 1),
+    enabled INTEGER NOT NULL DEFAULT 0,
+    mode TEXT NOT NULL DEFAULT 'approval' CHECK(mode IN ('approval', 'auto')),
+    daily_send_limit INTEGER NOT NULL DEFAULT 20,
+    min_score INTEGER NOT NULL DEFAULT 60,
+    target_industries TEXT NOT NULL DEFAULT '[]',
+    target_titles TEXT NOT NULL DEFAULT '[]',
+    sender_email TEXT NOT NULL DEFAULT 'sales@hyraconnect.com',
+    last_run_at DATETIME,
+    last_learned_at DATETIME,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+INSERT OR IGNORE INTO agent_settings (id) VALUES (1);
+
+CREATE TABLE IF NOT EXISTS agent_lead_scores (
+    lead_id TEXT PRIMARY KEY,
+    score INTEGER NOT NULL,
+    tier TEXT NOT NULL,
+    reasons TEXT NOT NULL DEFAULT '[]',
+    features TEXT NOT NULL DEFAULT '[]',
+    scored_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS agent_outreach (
+    id TEXT PRIMARY KEY,
+    lead_id TEXT NOT NULL,
+    step_no INTEGER NOT NULL,
+    channel TEXT NOT NULL CHECK(channel IN ('Email', 'LinkedIn')),
+    subject TEXT,
+    body TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'Pending Approval' CHECK(status IN ('Pending Approval', 'Approved', 'Sent', 'Task Created', 'Replied', 'Skipped', 'Failed')),
+    scheduled_for DATETIME NOT NULL,
+    sent_at DATETIME,
+    replied_at DATETIME,
+    error TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS agent_meetings (
+    id TEXT PRIMARY KEY,
+    lead_id TEXT NOT NULL,
+    token TEXT NOT NULL UNIQUE,
+    status TEXT NOT NULL DEFAULT 'Link Sent' CHECK(status IN ('Link Sent', 'Booked', 'Cancelled')),
+    slot_start DATETIME,
+    slot_end DATETIME,
+    booked_at DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS agent_weights (
+    feature TEXT PRIMARY KEY,
+    adjustment INTEGER NOT NULL DEFAULT 0,
+    samples INTEGER NOT NULL DEFAULT 0,
+    success_rate REAL NOT NULL DEFAULT 0,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS agent_runs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ran_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    scored INTEGER DEFAULT 0,
+    drafted INTEGER DEFAULT 0,
+    sent INTEGER DEFAULT 0,
+    note TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_agent_outreach_lead ON agent_outreach(lead_id);
+CREATE INDEX IF NOT EXISTS idx_agent_outreach_status ON agent_outreach(status, scheduled_for);
+CREATE INDEX IF NOT EXISTS idx_agent_scores_score ON agent_lead_scores(score);

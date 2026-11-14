@@ -51,7 +51,7 @@ export const swaggerDocument = {
           required: true,
           content: {
             "application/json": {
-              example: { email: "admin@xunaris.com", password: "XunarisCRM2026!" }
+              example: { email: "admin@xunaris.com", password: "<your-password>" }
             }
           }
         },

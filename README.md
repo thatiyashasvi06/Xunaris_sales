@@ -49,7 +49,7 @@ npm run dev
 
 ## 3. Personas & RBAC Credentials
 
-- **Admin User:** `admin@xunaris.com` / `XunarisCRM2026!`
-- **Sales User:** `sales@xunaris.com` / `XunarisCRM2026!`
-- **Marketing User:** `marketing@xunaris.com` / `XunarisCRM2026!`
+- **Admin User:** `admin@xunaris.com` (password set via `SEED_ADMIN_PASSWORD`, see Environment)
+- **Sales User:** `sales@xunaris.com` (password set via `SEED_ADMIN_PASSWORD`, see Environment)
+- **Marketing User:** `marketing@xunaris.com` (password set via `SEED_ADMIN_PASSWORD`, see Environment)
 - **Self-Service Registration:** Sign Up option available on the login modal.

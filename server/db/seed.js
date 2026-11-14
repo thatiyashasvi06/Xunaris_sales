@@ -1,5 +1,6 @@
 import db from './database.js';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 export const seedDatabase = () => {
   console.log('[Seed] Checking if database needs initial seeding...');
@@ -12,7 +13,14 @@ export const seedDatabase = () => {
 
   console.log('[Seed] Seeding specification initial data...');
 
-  const passwordHash = bcrypt.hashSync('XunarisCRM2026!', 10);
+  // No password is stored in source code. Set SEED_ADMIN_PASSWORD (min 12 chars) before the first start;
+  // otherwise a random one is generated and printed once in the server log. Change it after first login.
+  let seedPassword = process.env.SEED_ADMIN_PASSWORD;
+  if (!seedPassword || seedPassword.length < 12) {
+    seedPassword = crypto.randomBytes(12).toString('base64url');
+    console.log('[Seed] Initial password for the seeded admin/sales/marketing users (shown once):', seedPassword);
+  }
+  const passwordHash = bcrypt.hashSync(seedPassword, 10);
 
   // 1. Seed Users
   const insertUser = db.prepare(`

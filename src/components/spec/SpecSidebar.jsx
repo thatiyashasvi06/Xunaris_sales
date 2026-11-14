@@ -12,7 +12,8 @@ import {
   Settings,
   LogOut,
   Terminal,
-  Database
+  Database,
+  Bot
 } from 'lucide-react';
 
 export const SpecSidebar = () => {
@@ -25,6 +26,7 @@ export const SpecSidebar = () => {
     { id: 'opportunities', label: 'Opportunities', icon: Briefcase },
     { id: 'activities', label: 'Activities', icon: CalendarCheck },
     { id: 'campaigns', label: 'Campaigns', icon: Send },
+    { id: 'sales-agent', label: 'Sales Agent', icon: Bot, badge: 'AI' },
     { id: 'reports', label: 'Reports', icon: BarChart3 },
     { id: 'admin', label: 'Admin Settings', icon: Settings, adminOnly: true }
   ];

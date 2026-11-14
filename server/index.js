@@ -21,6 +21,9 @@ import reportsRoutes from './routes/reportsRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import notificationsRoutes from './routes/notificationsRoutes.js';
 import recruitmentRoutes from './routes/recruitmentRoutes.js';
+import salesAgentRoutes, { publicBookingRouter } from './routes/salesAgentRoutes.js';
+import { authMiddleware } from './middleware/authMiddleware.js';
+import { runCycle } from './services/salesAgent.js';
 
 import swaggerUi from 'swagger-ui-express';
 import { swaggerDocument } from './swagger.js';
@@ -115,19 +118,24 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// API Routes
+// API Routes (everything except /auth, /catalog reads, /public booking and /health requires a signed-in user)
+if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+  console.error('[SECURITY] JWT_SECRET is not set. Set a long random value in the environment now: tokens are signed with a public default.');
+}
 app.use('/api/auth', authRoutes);
 app.use('/api/catalog', catalogRoutes);
-app.use('/api/companies', companiesRoutes);
-app.use('/api/leads', leadsRoutes);
-app.use('/api/opportunities', opportunitiesRoutes);
-app.use('/api/activities', activitiesRoutes);
-app.use('/api/campaigns', campaignsRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/reports', reportsRoutes);
+app.use('/api/companies', authMiddleware, companiesRoutes);
+app.use('/api/leads', authMiddleware, leadsRoutes);
+app.use('/api/opportunities', authMiddleware, opportunitiesRoutes);
+app.use('/api/activities', authMiddleware, activitiesRoutes);
+app.use('/api/campaigns', authMiddleware, campaignsRoutes);
+app.use('/api/dashboard', authMiddleware, dashboardRoutes);
+app.use('/api/reports', authMiddleware, reportsRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/notifications', notificationsRoutes);
-app.use('/api/recruitment', recruitmentRoutes);
+app.use('/api/notifications', authMiddleware, notificationsRoutes);
+app.use('/api/recruitment', authMiddleware, recruitmentRoutes);
+app.use('/api/sales-agent', salesAgentRoutes);
+app.use('/api/public', publicBookingRouter);
 
 // Client-Side Routing Fallback (serves React frontend for all non-API paths, compatible with Express v5)
 app.use((req, res, next) => {
@@ -155,6 +163,9 @@ seedDatabase();
 
 // Start Background Worker
 startBackgroundWorker(15000);
+
+// Sales Agent runs every 5 minutes (it only acts when switched on in the Sales Agent screen)
+setInterval(() => runCycle().catch((e) => console.error('[SalesAgent] cycle error:', e.message)), 5 * 60 * 1000);
 
 // Start Server
 app.listen(PORT, () => {

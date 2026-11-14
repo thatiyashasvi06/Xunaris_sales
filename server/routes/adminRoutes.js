@@ -36,8 +36,12 @@ router.post('/users', (req, res) => {
     return res.status(400).json({ error: 'A user with this email address already exists.' });
   }
 
+  if (!password || password.length < 12) {
+    return res.status(400).json({ error: 'A password of at least 12 characters is required.' });
+  }
+
   const id = `usr_${Date.now()}`;
-  const hash = bcrypt.hashSync(password || 'XunarisCRM2026!', 10);
+  const hash = bcrypt.hashSync(password, 10);
 
   db.prepare(`
     INSERT INTO users (id, name, email, role, department, function_access, scope_enforcement, password_hash, status)

@@ -29,8 +29,8 @@ export const SpecLoginModal = () => {
   const [authMode, setAuthMode] = useState('signin');
 
   // Sign In Form States
-  const [email, setEmail] = useState('sales@xunaris.com');
-  const [password, setPassword] = useState('XunarisCRM2026!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -170,7 +170,6 @@ export const SpecLoginModal = () => {
         department: signUpDepartment,
         functionAccess: signUpFunction,
         scopeEnforcement: `Owner / ${signUpFunction} Team Scope Enforced`,
-        password: signUpPassword,
         status: 'Active'
       };
 
@@ -215,41 +214,25 @@ export const SpecLoginModal = () => {
 
     setIsAuthenticating(true);
 
-    setTimeout(() => {
-      // Find user
-      const foundUser = users.find(
-        (u) => u.email.toLowerCase() === normalizedEmail
-      );
-
-      // Verify credentials (against stored user password or default spec password)
-      const expectedPassword = foundUser?.password || 'XunarisCRM2026!';
-      const passwordMatches = foundUser && (password === expectedPassword || password === 'XunarisCRM2026!');
-
-      if (foundUser && passwordMatches) {
-        // Successful login
+    // Credentials are verified by the server (bcrypt + rate limit); nothing is compared in the browser.
+    apiClient.login(normalizedEmail, password)
+      .then((res) => {
         setFailedAttempts(0);
-        setIsAuthenticating(false);
-        switchUser(foundUser.id);
+        setCurrentUser(res.user);
         setIsLoggedIn(true);
-      } else {
-        // Generic invalid login message (Security best practice: prevents user enumeration)
+      })
+      .catch((err) => {
         const newAttempts = failedAttempts + 1;
         setFailedAttempts(newAttempts);
-        setIsAuthenticating(false);
-
         if (newAttempts >= 5) {
           setIsLockedOut(true);
           setLockoutTimer(60);
-          setErrorMessage(
-            'Rate limiting triggered: 5 failed attempts. Account locked for 60 seconds.'
-          );
+          setErrorMessage('Too many failed attempts. Locked for 60 seconds.');
         } else {
-          setErrorMessage(
-            `Invalid email or password. Please verify your credentials and try again. (Attempt ${newAttempts} of 5)`
-          );
+          setErrorMessage(err.message || 'Invalid email or password.');
         }
-      }
-    }, 450);
+      })
+      .finally(() => setIsAuthenticating(false));
   };
 
   // Generate Single-Use Expiring Reset Token
@@ -342,21 +325,6 @@ export const SpecLoginModal = () => {
     }
   };
 
-  // Persona quick select
-  const handleSelectPersona = (targetEmail, role, functionAccess) => {
-    setErrorMessage('');
-    setSuccessMessage('');
-    const target = users.find((u) => u.email.toLowerCase() === targetEmail.toLowerCase()) || users[0];
-    setEmail(target.email.toLowerCase());
-    setPassword(target.password || 'XunarisCRM2026!');
-  };
-
-  // Instant quick login for testing
-  const handleQuickLogin = (targetEmail) => {
-    const target = users.find((u) => u.email.toLowerCase() === targetEmail.toLowerCase()) || users[0];
-    switchUser(target.id);
-    setIsLoggedIn(true);
-  };
 
   // Format time remaining as MM:SS
   const formatTime = (seconds) => {
@@ -1030,140 +998,6 @@ export const SpecLoginModal = () => {
           </div>
         )}
 
-        {/* ========================================================= */}
-        {/* ROLE & FUNCTION ACCESS: SERVER ASSIGNED PERSONAS          */}
-        {/* ========================================================= */}
-        <div className="pt-4 border-t border-slate-100 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-              <UserCheck className="w-3.5 h-3.5 text-blue-600" />
-              <span>Server-Assigned Roles & Personas</span>
-            </span>
-            <span className="text-[10px] text-slate-400 font-mono">Role: ADMIN or USER</span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-            {/* Persona 1: Sales User */}
-            <div className="p-3 rounded-2xl bg-blue-50/70 border border-blue-200/90 hover:border-blue-400 transition-all text-left flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-extrabold text-blue-900">Sales User</span>
-                  <span className="text-[9px] font-bold bg-blue-200/60 text-blue-800 px-1.5 py-0.5 rounded">
-                    USER
-                  </span>
-                </div>
-                <p className="text-[10px] text-slate-500 font-mono mt-0.5 truncate">
-                  sales@xunaris.com
-                </p>
-                <div className="mt-2 space-y-0.5 text-[9px] text-slate-600">
-                  <p>
-                    <strong>Function:</strong> Sales
-                  </p>
-                  <p className="text-emerald-700 font-medium">
-                    <strong>Scope:</strong> Owner / Team Enforced
-                  </p>
-                </div>
-              </div>
-              <div className="mt-3 pt-2 border-t border-blue-200/60 flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => handleSelectPersona('sales@xunaris.com', 'USER', 'Sales')}
-                  className="flex-1 py-1 text-[10px] font-bold text-[#0063f2] bg-white hover:bg-blue-100/50 rounded-lg border border-blue-200 transition-colors cursor-pointer"
-                >
-                  Fill Form
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('sales@xunaris.com')}
-                  className="py-1 px-2 text-[10px] font-bold text-white bg-[#0063f2] hover:bg-blue-700 rounded-lg transition-colors cursor-pointer"
-                  title="Instant Login as Sales User"
-                >
-                  Login
-                </button>
-              </div>
-            </div>
-
-            {/* Persona 2: Admin User */}
-            <div className="p-3 rounded-2xl bg-slate-100 border border-slate-300 hover:border-slate-400 transition-all text-left flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-extrabold text-slate-900">Admin User</span>
-                  <span className="text-[9px] font-bold bg-amber-200/60 text-amber-900 px-1.5 py-0.5 rounded">
-                    ADMIN
-                  </span>
-                </div>
-                <p className="text-[10px] text-slate-500 font-mono mt-0.5 truncate">
-                  admin@xunaris.com
-                </p>
-                <div className="mt-2 space-y-0.5 text-[9px] text-slate-600">
-                  <p>
-                    <strong>Function:</strong> Both (Sales + Mktg)
-                  </p>
-                  <p className="text-amber-800 font-medium">
-                    <strong>Scope:</strong> Global Organization
-                  </p>
-                </div>
-              </div>
-              <div className="mt-3 pt-2 border-t border-slate-200 flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => handleSelectPersona('admin@xunaris.com', 'ADMIN', 'Both')}
-                  className="flex-1 py-1 text-[10px] font-bold text-slate-800 bg-white hover:bg-slate-200 rounded-lg border border-slate-300 transition-colors cursor-pointer"
-                >
-                  Fill Form
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('admin@xunaris.com')}
-                  className="py-1 px-2 text-[10px] font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-lg transition-colors cursor-pointer"
-                  title="Instant Login as Admin User (Access to Settings)"
-                >
-                  Login
-                </button>
-              </div>
-            </div>
-
-            {/* Persona 3: Marketing User */}
-            <div className="p-3 rounded-2xl bg-amber-50/70 border border-amber-200/90 hover:border-amber-400 transition-all text-left flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-extrabold text-amber-950">Marketing User</span>
-                  <span className="text-[9px] font-bold bg-amber-200/60 text-amber-900 px-1.5 py-0.5 rounded">
-                    USER
-                  </span>
-                </div>
-                <p className="text-[10px] text-slate-500 font-mono mt-0.5 truncate">
-                  marketing@xunaris.com
-                </p>
-                <div className="mt-2 space-y-0.5 text-[9px] text-slate-600">
-                  <p>
-                    <strong>Function:</strong> Marketing
-                  </p>
-                  <p className="text-emerald-700 font-medium">
-                    <strong>Scope:</strong> Owner / Team Enforced
-                  </p>
-                </div>
-              </div>
-              <div className="mt-3 pt-2 border-t border-amber-200/60 flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => handleSelectPersona('marketing@xunaris.com', 'USER', 'Marketing')}
-                  className="flex-1 py-1 text-[10px] font-bold text-amber-800 bg-white hover:bg-amber-100/50 rounded-lg border border-amber-200 transition-colors cursor-pointer"
-                >
-                  Fill Form
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('marketing@xunaris.com')}
-                  className="py-1 px-2 text-[10px] font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors cursor-pointer"
-                  title="Instant Login as Marketing User"
-                >
-                  Login
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* ========================================================= */}
         {/* COLLAPSIBLE SPECIFICATION MATRIX VERIFICATION             */}

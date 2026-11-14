@@ -7,6 +7,8 @@ import { SpecCompaniesContacts } from './components/spec/SpecCompaniesContacts';
 import { SpecOpportunities } from './components/spec/SpecOpportunities';
 import { SpecActivities } from './components/spec/SpecActivities';
 import { SpecCampaigns } from './components/spec/SpecCampaigns';
+import { SpecSalesAgent } from './components/spec/SpecSalesAgent';
+import { PublicBooking } from './components/spec/PublicBooking';
 import { SpecReports } from './components/spec/SpecReports';
 import { SpecAdminSettings } from './components/spec/SpecAdminSettings';
 import { SpecSwaggerBackend } from './components/spec/SpecSwaggerBackend';
@@ -50,6 +52,8 @@ const MainLayout = () => {
         return <SpecActivities />;
       case 'campaigns':
         return <SpecCampaigns />;
+      case 'sales-agent':
+        return <SpecSalesAgent />;
       case 'reports':
         return <SpecReports />;
       case 'admin':
@@ -126,6 +130,10 @@ const MainLayout = () => {
 };
 
 export default function App() {
+  // Public booking link from outreach emails: no login needed
+  const bookMatch = window.location.pathname.match(/^\/book\/([A-Za-z0-9]+)\/?$/);
+  if (bookMatch) return <PublicBooking token={bookMatch[1]} />;
+
   return (
     <AuthProvider>
       <CRMProvider>

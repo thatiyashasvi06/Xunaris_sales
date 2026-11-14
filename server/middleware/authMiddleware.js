@@ -9,7 +9,7 @@ export const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
     const directUserId = req.headers['x-user-id'];
 
-    if (directUserId) {
+    if (directUserId && process.env.NODE_ENV !== 'production') {
       const user = db.prepare('SELECT id, name, email, role, department, function_access, status FROM users WHERE id = ?').get(directUserId);
       if (user && user.status === 'Active') {
         req.user = user;
@@ -28,7 +28,10 @@ export const authMiddleware = (req, res, next) => {
       }
     }
 
-    // Default fallback to Admin for internal development calls if unauthenticated
+    // Local development only: unauthenticated calls fall back to Admin. Never in production.
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
     const defaultUser = db.prepare('SELECT id, name, email, role, department, function_access, status FROM users WHERE role = ? LIMIT 1').get('ADMIN');
     if (defaultUser) {
       req.user = defaultUser;

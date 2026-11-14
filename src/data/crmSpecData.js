@@ -33,8 +33,6 @@ export const INITIAL_SPEC_USERS = [
     department: 'Management',
     functionAccess: 'Both', // Sales, Marketing, Both
     scopeEnforcement: 'Global Organization Scope',
-    password: 'XunarisCRM2026!',
-    passwordHash: '$argon2id$v=19$m=65536,t=3,p=4$c2FsdF94dW5hcmlz$admin_hash_9a8b7c6d5e4f',
     status: 'Active'
   },
   {
@@ -45,8 +43,6 @@ export const INITIAL_SPEC_USERS = [
     department: 'Sales',
     functionAccess: 'Sales',
     scopeEnforcement: 'Owner / Sales Team Scope Enforced',
-    password: 'XunarisCRM2026!',
-    passwordHash: '$argon2id$v=19$m=65536,t=3,p=4$c2FsdF94dW5hcmlz$sales_hash_1a2b3c4d5e6f',
     status: 'Active'
   },
   {
@@ -57,8 +53,6 @@ export const INITIAL_SPEC_USERS = [
     department: 'Marketing',
     functionAccess: 'Marketing',
     scopeEnforcement: 'Owner / Marketing Scope Enforced',
-    password: 'XunarisCRM2026!',
-    passwordHash: '$argon2id$v=19$m=65536,t=3,p=4$c2FsdF94dW5hcmlz$mktg_hash_4f5e6d7c8b9a',
     status: 'Active'
   }
 ];
