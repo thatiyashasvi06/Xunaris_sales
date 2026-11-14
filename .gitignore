@@ -5,3 +5,6 @@ data/*.sqlite*
 *.sqlite*
 scratch/
 .planning/
+
+# Local tooling
+.claude/
