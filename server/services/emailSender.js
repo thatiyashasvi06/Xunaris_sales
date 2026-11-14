@@ -763,60 +763,23 @@ export const sendRealEmail = async ({
   const useResendApi = hasResendApiKey();
   const onRender = isRenderEnvironment();
 
-  if (useBrevoApi || useResendApi || (onRender && !useResendApi && !useBrevoApi)) {
-    if (!useBrevoApi && !useResendApi && onRender) {
-      // On Render but no API key configured
-      console.warn(`[emailSender] Render Free Tier blocks SMTP ports (465/587). No API key configured.`);
-      return {
-        success: false,
-        mode: 'render_blocked',
-        sender: account.email,
-        senderDisplayName: account.display_name,
-        recipient: targetRecipient,
-        deliveryStatus: 'Halted',
-        error: 'Halted: Render Free Tier blocks outbound SMTP ports (465/587). To send directly from Render, add a BREVO_API_KEY (No DNS required) or RESEND_API_KEY in Render Environment Variables.',
-        message: 'Render Free Tier blocks SMTP. Add BREVO_API_KEY or RESEND_API_KEY to Environment Variables.'
-      };
-    }
-
-    // Sanitize HTML for API delivery (strip CSS comments, fix relative URLs, and inline base64 images)
+  if (useBrevoApi) {
+    // Sanitize HTML for API delivery
     let apiHtml = html;
-    // Prepare an attachments array – will be used if we fall back to SMTP or if Resend supports attachments
-    const attachments = [];
     if (apiHtml && typeof apiHtml === 'string') {
-      // 1️⃣ Strip CSS comment wrappers in <style> blocks
       apiHtml = apiHtml.replace(/<style\b([^>]*)>([\s\S]*?)<\/style>/gi, (match, attrs, css) => {
         const cleanedCss = css.replace(/<!--/g, '').replace(/-->/g, '').trim();
         return `<style${attrs}>\n${cleanedCss}\n</style>`;
       });
 
-      // 2️⃣ Convert relative image src URLs to absolute URLs so external mail clients can load them
       const appBaseUrl = process.env.RENDER_EXTERNAL_URL
         ? process.env.RENDER_EXTERNAL_URL.replace(/\/$/, '')
-        : (process.env.APP_BASE_URL || 'https://xunaris-sales.onrender.com');
+        : (process.env.APP_BASE_URL || 'https://sales.hyraconnect.com');
       apiHtml = apiHtml.replace(/(<img[^>]+src=["'])(\/)([^"']*["'])/gi, (match, prefix, slash, rest) => {
         return `${prefix}${appBaseUrl}/${rest}`;
       });
-
-      // 3️⃣ Inline any base64‑encoded images as CID attachments (for Gmail/Outlook where external images may be blocked)
-      //    Detect <img src="data:image/png;base64,...."> patterns
-      apiHtml = apiHtml.replace(/<img([^>]+)src=["']data:([^;]+);base64,([^"']+)["']([^>]*)>/gi,
-        (fullMatch, beforeAttrs, mime, b64Data, afterAttrs) => {
-          const cid = `img_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-          attachments.push({
-            filename: `inline_${cid}.${mime.split('/')[1]}`,
-            content: Buffer.from(b64Data, 'base64'),
-            cid,
-            contentType: mime
-          });
-          // rewrite src to cid reference
-          return `<img${beforeAttrs}src="cid:${cid}"${afterAttrs}>`;
-        }
-      );
     }
 
-
-    // Build clean plain text
     let cleanText = text;
     if (cleanText && (cleanText.includes('<!DOCTYPE') || cleanText.includes('<html') || cleanText.includes('<table') || cleanText.includes('<style'))) {
       cleanText = cleanText
@@ -840,52 +803,47 @@ export const sendRealEmail = async ({
         .trim();
     }
 
-    // ─── 1. BREVO HTTPS API (Zero DNS required, sends to ANY recipient!) ───
-    if (useBrevoApi) {
-      try {
-        const brevoResult = await sendViaBrevoApi({
-          fromEmail: account.email || 'sales@hyraconnect.com',
-          fromName: account.display_name || (account.email?.includes('xunaris') ? 'Xunaris' : 'HYRA Connect'),
-          to: targetRecipient,
-          subject: subject || (account.email?.includes('xunaris') ? 'Xunaris Update' : 'HYRA Connect Update'),
-          html: apiHtml || `<p>${cleanText || ''}</p>`,
-          text: cleanText || subject || (account.email?.includes('xunaris') ? 'Executive Message from Xunaris' : 'Executive Message from HYRA Connect'),
-          replyTo: account.email
-        });
+    try {
+      const brevoResult = await sendViaBrevoApi({
+        fromEmail: account.email || 'sales@hyraconnect.com',
+        fromName: account.display_name || (account.email?.includes('xunaris') ? 'Xunaris' : 'HYRA Connect'),
+        to: targetRecipient,
+        subject: subject || (account.email?.includes('xunaris') ? 'Xunaris Update' : 'HYRA Connect Update'),
+        html: apiHtml || `<p>${cleanText || ''}</p>`,
+        text: cleanText || subject || (account.email?.includes('xunaris') ? 'Executive Message from Xunaris' : 'Executive Message from HYRA Connect'),
+        replyTo: account.email
+      });
 
-        console.log(`[emailSender:Brevo Success] Dispatched email from ${account.email} to ${targetRecipient} via Brevo API!`);
-        return {
-          success: true,
-          mode: 'brevo_api',
-          messageId: brevoResult.messageId,
-          previewUrl: null,
-          sender: account.email,
-          senderDisplayName: account.display_name,
-          recipient: targetRecipient,
-          deliveryStatus: 'Delivered',
-          message: `Email successfully delivered to ${targetRecipient} via Brevo API from ${account.email}!`
-        };
-      } catch (brevoErr) {
-        console.error(`[emailSender:Brevo Failure] ${brevoErr.message}`);
-        if (!useResendApi && onRender) {
-          return {
-            success: false,
-            mode: 'brevo_failed',
-            sender: account.email,
-            senderDisplayName: account.display_name,
-            recipient: targetRecipient,
-            deliveryStatus: 'Failed',
-            error: `Brevo API delivery failed: ${brevoErr.message}`,
-            message: `Brevo API delivery failed: ${brevoErr.message}`
-          };
-        }
-      }
+      console.log(`[emailSender:Brevo Success] Dispatched email from ${account.email} to ${targetRecipient} via Brevo API!`);
+      return {
+        success: true,
+        mode: 'brevo_api',
+        messageId: brevoResult.messageId,
+        previewUrl: null,
+        sender: account.email,
+        senderDisplayName: account.display_name,
+        recipient: targetRecipient,
+        deliveryStatus: 'Delivered',
+        message: `Email successfully delivered to ${targetRecipient} via Brevo API from ${account.email}!`
+      };
+    } catch (brevoErr) {
+      console.error(`[emailSender:Brevo Failure] ${brevoErr.message}`);
+      return {
+        success: false,
+        mode: 'brevo_failed',
+        sender: account.email,
+        senderDisplayName: account.display_name,
+        recipient: targetRecipient,
+        deliveryStatus: 'Failed',
+        error: `Brevo Delivery Error: ${brevoErr.message}`,
+        message: `Brevo Delivery Error: ${brevoErr.message}`
+      };
     }
+  }
 
-    // ─── 2. RESEND HTTPS API ───
-    // Determine the "from" address for Resend
-    // If using Resend's free tier without a verified domain, must use: "Name <onboarding@resend.dev>"
-    // If you've verified your domain in Resend, use your real email
+  if (useResendApi) {
+    let apiHtml = html;
+    let cleanText = text || '';
     const resendFrom = process.env.RESEND_VERIFIED_DOMAIN
       ? `"${account.display_name}" <${account.email}>`
       : `"${account.display_name}" <onboarding@resend.dev>`;
@@ -900,7 +858,6 @@ export const sendRealEmail = async ({
         replyTo: account.email
       });
 
-      console.log(`[emailSender:Resend Success] Dispatched email from ${account.email} to ${targetRecipient} via Resend HTTPS API!`);
       return {
         success: true,
         mode: 'resend_api',
@@ -913,23 +870,30 @@ export const sendRealEmail = async ({
         message: `Email successfully delivered to ${targetRecipient} via Resend HTTPS API from ${account.email}!`
       };
     } catch (resendErr) {
-      console.error(`[emailSender:Resend Failure] ${resendErr.message}`);
-      // If on Render, don't fall back to SMTP (it will also fail)
-      if (onRender) {
-        return {
-          success: false,
-          mode: 'resend_failed',
-          sender: account.email,
-          senderDisplayName: account.display_name,
-          recipient: targetRecipient,
-          deliveryStatus: 'Failed',
-          error: `Resend API delivery failed: ${resendErr.message}`,
-          message: `Resend HTTPS API failed: ${resendErr.message}`
-        };
-      }
-      // Not on Render — fall through to SMTP below
-      console.log('[emailSender] Resend failed, falling back to SMTP...');
+      return {
+        success: false,
+        mode: 'resend_failed',
+        sender: account.email,
+        senderDisplayName: account.display_name,
+        recipient: targetRecipient,
+        deliveryStatus: 'Failed',
+        error: `Resend API delivery failed: ${resendErr.message}`,
+        message: `Resend HTTPS API failed: ${resendErr.message}`
+      };
     }
+  }
+
+  if (onRender && !useResendApi && !useBrevoApi) {
+    return {
+      success: false,
+      mode: 'render_blocked',
+      sender: account.email,
+      senderDisplayName: account.display_name,
+      recipient: targetRecipient,
+      deliveryStatus: 'Halted',
+      error: 'Render Free Tier blocks outbound SMTP ports (465/587). Please configure BREVO_API_KEY in Render Environment Variables.',
+      message: 'Render Free Tier blocks SMTP. Please configure BREVO_API_KEY in Render Environment Variables.'
+    };
   }
 
   // ─── STANDARD SMTP PATH (works on VPS, local, non-Render hosts) ───
