@@ -24,6 +24,7 @@ import recruitmentRoutes from './routes/recruitmentRoutes.js';
 import salesAgentRoutes, { publicBookingRouter } from './routes/salesAgentRoutes.js';
 import teamRoutes from './routes/teamRoutes.js';
 import leadAiRoutes from './routes/leadAiRoutes.js';
+import campaignAiRoutes from './routes/campaignAiRoutes.js';
 import { refreshStale } from './services/leadAi.js';
 import { ensureTeamDefaults, reassignStaleLeads } from './services/routing.js';
 import jwt from 'jsonwebtoken';
@@ -162,6 +163,7 @@ app.use('/api/recruitment', authMiddleware, recruitmentRoutes);
 app.use('/api/sales-agent', salesAgentRoutes);
 app.use('/api/team', authMiddleware, teamRoutes);
 app.use('/api/lead-ai', authMiddleware, leadAiRoutes);
+app.use('/api/campaign-ai', authMiddleware, campaignAiRoutes);
 app.use('/api/public', publicBookingRouter);
 
 // Client-Side Routing Fallback (serves React frontend for all non-API paths, compatible with Express v5)

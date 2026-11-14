@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useCRM } from '../../context/CRMContext';
 import { SpecHeader } from './SpecHeader';
+import { CampaignAiPanel, CampaignAiSummary } from './CampaignAi';
 import * as XLSX from 'xlsx';
 import {
   CheckCircle2,
@@ -742,6 +743,24 @@ export const SpecCampaigns = () => {
     setTemplateMode('custom');
     setNotice('✅ Loaded sample high-impact HTML template with responsive animations!');
     setTimeout(() => setNotice(''), 4000);
+  };
+
+  // Campaign AI: fill the builder from the plan. Nothing is sent until the user presses Launch.
+  const applyAiPlan = (plan, chosen) => {
+    const unit = plan.business === 'Xunaris' ? 'Xunaris' : 'HYRA Connect';
+    const preset = OFFICIAL_PRESET_TEMPLATES.find((t) => t.id === plan.templateId);
+    setTemplateMode('preset');
+    setSelectedTemplateId(plan.templateId);
+    handleBusinessUnitChange(unit);
+    setCampaignName(plan.name);
+    setEmailSubject(chosen.subject);
+    setEmailBody(chosen.body);
+    setCtaText(plan.ctaText);
+    if (preset) setCtaUrl(preset.ctaUrl);
+    setCrmSelectedLeadIds(plan.audience.leadIds);
+    setAudience(`${plan.audience.selected} best-fit ${unit} leads`);
+    setNotice(`Campaign AI filled in the builder: ${plan.audience.selected} recipients selected from your CRM, using the branded preset template. Review everything, then press Launch.`);
+    setTimeout(() => setNotice(''), 9000);
   };
 
   const handleBusinessUnitChange = (unit) => {
@@ -1617,6 +1636,8 @@ export const SpecCampaigns = () => {
       {/* ========================================================= */}
       {activeTab === 'builder' && (
         <div className="space-y-6">
+          <CampaignAiPanel businessUnit={businessUnit} onApply={applyAiPlan} />
+
           <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
             {/* Identity & Sender Row */}
             <div className="p-6 border-b border-slate-100 space-y-4">
@@ -2612,6 +2633,8 @@ export const SpecCampaigns = () => {
       {/* ========================================================= */}
       {activeTab === 'delivery' && (
         <div className="space-y-6">
+          <CampaignAiSummary />
+
           {/* KPI Analytics Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-1">
