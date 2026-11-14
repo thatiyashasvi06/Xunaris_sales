@@ -645,8 +645,14 @@ router.post('/send-live', async (req, res) => {
   }
 
   // Requirement 5 & 6: Verify sender account authorization BEFORE attempting batch
+  // When an HTTPS email API (Brevo / Resend) is configured, SMTP verification is
+  // not required — the API key itself authorises sending.
+  const hasApiRelay = Boolean(
+    (process.env.BREVO_API_KEY && process.env.BREVO_API_KEY.trim().length > 0) ||
+    (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim().length > 0)
+  );
   const account = getSenderAccount(senderAccount);
-  if (!account || account.is_verified !== 1) {
+  if (!account || (!hasApiRelay && account.is_verified !== 1)) {
     const accountEmail = account?.email || senderAccount || 'sales@hyraconnect.com';
     return res.status(403).json({
       success: false,
