@@ -28,6 +28,7 @@ export const LEAD_SOURCE_OPTIONS = [
   'Manual',
   'LinkedIn',
   'Referral',
+  'AI Search (ChatGPT)',
   'Website',
   'Campaign',
   'Event',

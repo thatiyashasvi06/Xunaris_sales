@@ -580,6 +580,7 @@ export const SpecLeads = () => {
                 <option value="LinkedIn">LinkedIn</option>
                 <option value="Manual">Manual</option>
                 <option value="Referral">Referral</option>
+                <option value="AI Search (ChatGPT)">AI Search (ChatGPT)</option>
                 <option value="Website">Website</option>
                 <option value="Campaign">Campaign</option>
                 <option value="Event">Event</option>

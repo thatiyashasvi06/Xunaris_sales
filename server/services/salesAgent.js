@@ -106,7 +106,7 @@ export const scoreLead = (lead, settings = getSettings(), adjustments = loadAdju
   if (source) {
     features.push(`source:${source}`);
     if (source.includes('referral')) { score += 8; reasons.push('Referral source'); }
-    else if (source.includes('website') || source.includes('inbound')) { score += 6; reasons.push('Inbound source'); }
+    else if (source.includes('website') || source.includes('inbound') || source.includes('ai search')) { score += 6; reasons.push('Inbound source'); }
   }
   if (lead.lead_status === 'Qualified') { score += 8; reasons.push('Already qualified'); }
   if (lead.lead_status === 'Nurture') score -= 8;

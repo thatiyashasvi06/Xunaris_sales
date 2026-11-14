@@ -335,6 +335,7 @@ export const SpecDashboard = () => {
     LinkedIn: { count: 0, icon: Share2, color: '#0077b5' },
     Website: { count: 0, icon: Globe, color: '#0063f2' },
     Referral: { count: 0, icon: Users, color: '#10b981' },
+    'AI Search (ChatGPT)': { count: 0, icon: Sparkles, color: '#06b6d4' },
     'Cold Outreach': { count: 0, icon: Mail, color: '#f59e0b' },
     'Partner Network': { count: 0, icon: Building2, color: '#8b5cf6' },
     Other: { count: 0, icon: Layers, color: '#64748b' }
@@ -345,6 +346,7 @@ export const SpecDashboard = () => {
     if (src.includes('LinkedIn')) leadSourceMap.LinkedIn.count += 1;
     else if (src.includes('Website')) leadSourceMap.Website.count += 1;
     else if (src.includes('Referral')) leadSourceMap.Referral.count += 1;
+    else if (src.includes('AI Search')) leadSourceMap['AI Search (ChatGPT)'].count += 1;
     else if (src.includes('Cold') || src.includes('Outreach')) leadSourceMap['Cold Outreach'].count += 1;
     else if (src.includes('Partner')) leadSourceMap['Partner Network'].count += 1;
     else leadSourceMap.Other.count += 1;
@@ -553,6 +555,7 @@ export const SpecDashboard = () => {
               <option value="LinkedIn">LinkedIn</option>
               <option value="Website">Website</option>
               <option value="Referral">Referral</option>
+              <option value="AI Search">AI Search (ChatGPT)</option>
               <option value="Cold Outreach">Cold Outreach</option>
               <option value="Partner">Partner Network</option>
             </select>
