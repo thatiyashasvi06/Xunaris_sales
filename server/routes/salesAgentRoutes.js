@@ -4,7 +4,7 @@ import { authMiddleware } from '../middleware/authMiddleware.js';
 import {
   getSettings, updateSettings, listProspects, runCycle, scoreAllLeads, draftSequenceForLead,
   markReplied, listMeetings, weeklyStats, getInsights, getOverview, availableSlots,
-  getBookingContext, bookSlot
+  getBookingContext, bookSlot, listSuppressions, addSuppressions, removeSuppression, markUnsubscribed
 } from '../services/salesAgent.js';
 
 const router = express.Router();
@@ -65,6 +65,11 @@ router.post('/leads/:leadId/draft', async (req, res) => {
 });
 
 router.post('/leads/:leadId/replied', (req, res) => { markReplied(req.params.leadId); res.json({ ok: true }); });
+
+router.get('/suppressions', (req, res) => res.json(listSuppressions()));
+router.post('/suppressions', (req, res) => res.json({ added: addSuppressions(req.body?.values) }));
+router.delete('/suppressions/:value', (req, res) => res.json({ removed: removeSuppression(decodeURIComponent(req.params.value)) }));
+router.post('/leads/:leadId/unsubscribed', (req, res) => { markUnsubscribed(req.params.leadId); res.json({ ok: true }); });
 
 // Edit a draft before approving
 router.put('/outreach/:id', (req, res) => {

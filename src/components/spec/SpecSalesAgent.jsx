@@ -62,11 +62,14 @@ export const SpecSalesAgent = () => {
   const [filter, setFilter] = useState('Pending Approval');
   const [industries, setIndustries] = useState('');
   const [titles, setTitles] = useState('');
+  const [suppressions, setSuppressions] = useState([]);
+  const [supText, setSupText] = useState('');
 
   const load = useCallback(async () => {
     try {
-      const [o, p, out] = await Promise.all([api('/overview'), api('/prospects?limit=30'), api('/outreach')]);
+      const [o, p, out, sup] = await Promise.all([api('/overview'), api('/prospects?limit=30'), api('/outreach'), api('/suppressions')]);
       setData(o);
+      setSuppressions(sup);
       setProspects(p);
       setOutreach(out);
       setIndustries((v) => v || o.settings.target_industries.join(', '));
@@ -280,6 +283,9 @@ export const SpecSalesAgent = () => {
                         </>
                       )}
                       {['Sent', 'Task Created'].includes(o.status) && (
+                        <button disabled={busy} onClick={() => act(() => api(`/leads/${o.lead_id}/unsubscribed`, { method: 'POST' }), 'Added to the suppression list. They will not be contacted again.')} className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-rose-50 text-rose-700 border border-rose-100">Unsubscribed</button>
+                      )}
+                      {['Sent', 'Task Created'].includes(o.status) && (
                         <button disabled={busy} onClick={() => act(() => api(`/leads/${o.lead_id}/replied`, { method: 'POST' }), 'Marked as replied. The rest of the sequence is stopped.')} className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-teal-50 text-teal-700 border border-teal-100"><Reply className="w-3 h-3" /> They replied</button>
                       )}
                       {o.status === 'Pending Approval' && o.step_no === 1 && (
@@ -312,6 +318,28 @@ export const SpecSalesAgent = () => {
           </div>
         </div>
       </Card>
+
+      {/* Suppression list */}
+      <section className="bg-white rounded-2xl border border-slate-200 p-5">
+        <h2 className="text-sm font-extrabold text-[#0d2238]">Never contact (suppression list)</h2>
+        <p className="text-xs text-slate-500 mt-1">Emails and domains here are skipped. Companies with a Won opportunity (existing clients) and anyone marked Unsubscribed are skipped automatically.</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <input value={supText} onChange={(e) => setSupText(e.target.value)} placeholder="name@company.com, clientdomain.com"
+            className="flex-1 min-w-[220px] border border-slate-200 rounded-lg px-3 py-2 text-sm" />
+          <button disabled={busy || !supText.trim()}
+            onClick={() => act(() => api('/suppressions', { method: 'POST', body: { values: supText } }).then((r) => { setSupText(''); return r; }), (r) => `${r.added} added`)}
+            className="px-3 py-2 text-sm font-bold rounded-lg bg-[#0d2238] text-white disabled:opacity-50">Add</button>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+          {suppressions.length === 0 && <span className="text-xs text-slate-400">Nothing listed yet.</span>}
+          {suppressions.map((s) => (
+            <span key={s.value} className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-md bg-slate-100 text-slate-700" title={s.reason}>
+              {s.value}
+              <button onClick={() => act(() => api(`/suppressions/${encodeURIComponent(s.value)}`, { method: 'DELETE' }))} className="text-slate-400 hover:text-rose-600"><X className="w-3 h-3" /></button>
+            </span>
+          ))}
+        </div>
+      </section>
 
       {/* 4/4 Gets better */}
       <Card n={4} title="Gets better every week" accent="Learns from replies, meetings and qualified leads" icon={TrendingUp}>

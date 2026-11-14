@@ -176,6 +176,51 @@ export const listProspects = ({ limit = 50, includeBelowMin = false } = {}) => {
   return rows.map((r) => ({ ...r, reasons: parseJson(r.reasons, []), features: parseJson(r.features, []) }));
 };
 
+
+// ------------------------------------------------------------- suppression
+
+/** Never contact: listed emails/domains, existing clients (a Won opportunity), unsubscribed or disqualified leads. */
+export const isSuppressed = (lead) => {
+  const email = (lead.work_email || '').trim().toLowerCase();
+  const domain = email.includes('@') ? email.split('@')[1] : '';
+  if (email && db.prepare(`SELECT 1 FROM agent_suppressions WHERE kind = 'email' AND value = ?`).get(email)) return 'On suppression list';
+  if (domain && db.prepare(`SELECT 1 FROM agent_suppressions WHERE kind = 'domain' AND value = ?`).get(domain)) return 'Domain on suppression list';
+  const client = db.prepare(`
+    SELECT 1 FROM opportunities WHERE stage = 'Won' AND (LOWER(company_name) = LOWER(?) OR (company_id IS NOT NULL AND company_id = ?)) LIMIT 1
+  `).get(lead.company_name || '', lead.company_id || '');
+  return client ? 'Existing client' : '';
+};
+
+export const listSuppressions = () => db.prepare(`SELECT value, kind, reason, created_at FROM agent_suppressions ORDER BY created_at DESC LIMIT 500`).all();
+
+export const addSuppressions = (text, reason = 'Added manually') => {
+  const ins = db.prepare(`INSERT OR IGNORE INTO agent_suppressions (value, kind, reason) VALUES (?, ?, ?)`);
+  let n = 0;
+  for (const raw of String(text || '').split(/[\s,;]+/)) {
+    const v = raw.trim().toLowerCase().replace(/^@/, '');
+    if (!v) continue;
+    const kind = v.includes('@') ? 'email' : (v.includes('.') ? 'domain' : null);
+    if (kind) n += ins.run(v, kind, reason).changes;
+  }
+  // stop anything already queued for suppressed leads
+  for (const o of db.prepare(`SELECT DISTINCT o.lead_id FROM agent_outreach o WHERE o.status IN ('Pending Approval','Approved')`).all()) {
+    const lead = db.prepare('SELECT * FROM leads WHERE id = ?').get(o.lead_id);
+    if (lead && isSuppressed(lead)) {
+      db.prepare(`UPDATE agent_outreach SET status = 'Skipped', error = 'Suppressed', updated_at = CURRENT_TIMESTAMP WHERE lead_id = ? AND status IN ('Pending Approval','Approved')`).run(o.lead_id);
+    }
+  }
+  return n;
+};
+
+export const removeSuppression = (value) => db.prepare(`DELETE FROM agent_suppressions WHERE value = ?`).run(String(value).toLowerCase()).changes;
+
+/** They asked to stop: suppress the address and cancel the rest of the sequence. */
+export const markUnsubscribed = (leadId) => {
+  const lead = db.prepare('SELECT work_email FROM leads WHERE id = ?').get(leadId);
+  if (lead?.work_email) addSuppressions(lead.work_email, 'Unsubscribed');
+  db.prepare(`UPDATE agent_outreach SET status = 'Skipped', updated_at = CURRENT_TIMESTAMP WHERE lead_id = ? AND status IN ('Pending Approval','Approved')`).run(leadId);
+};
+
 // ---------------------------------------------------------------- outreach
 
 const firstName = (full) => (full || '').trim().split(/\s+/)[0] || 'there';
@@ -204,12 +249,12 @@ const draftTemplates = (lead, bookingUrl) => {
       body: `Hi ${name},\n\n${hook}\n\nHYRA Connect Staffing places vetted contract and permanent talent, typically with first profiles in 48 hours. If useful, you can grab 20 minutes with us here: ${bookingUrl}\n\nRegards,\nHYRA Connect Staffing${OPT_OUT}`
     },
     {
-      step_no: 2, channel: 'LinkedIn', dayOffset: 2,
+      step_no: 2, channel: 'LinkedIn', dayOffset: 1,
       subject: null,
       body: `Hi ${name}, I emailed about hiring support for ${co}. We place vetted talent quickly and I thought it may be relevant to you as ${lead.job_title || 'a hiring leader'}. Happy to share a few profiles, no obligation.`
     },
     {
-      step_no: 3, channel: 'Email', dayOffset: 5,
+      step_no: 3, channel: 'Email', dayOffset: 3,
       subject: `Re: Faster hiring for ${co}`,
       body: `Hi ${name},\n\nFollowing up in case my note got buried. If you have open roles at ${co}, we can share matching profiles within 48 hours. Pick a time that suits you: ${bookingUrl}\n\nRegards,\nHYRA Connect Staffing${OPT_OUT}`
     }
@@ -241,6 +286,7 @@ export const draftSequenceForLead = async (leadId) => {
   const lead = db.prepare('SELECT * FROM leads WHERE id = ?').get(leadId);
   if (!lead) throw new Error('Lead not found');
   if (db.prepare('SELECT 1 FROM agent_outreach WHERE lead_id = ?').get(leadId)) return 0;
+  if (isSuppressed(lead)) return 0;
   const settings = getSettings();
   const bookingUrl = `${BASE_URL()}/book/${ensureMeetingToken(leadId)}`;
   const drafts = await personalise(lead, draftTemplates(lead, bookingUrl));
@@ -274,6 +320,7 @@ const sentToday = () => db.prepare(`
 const stopped = (leadId) => {
   const lead = db.prepare('SELECT lead_status FROM leads WHERE id = ?').get(leadId);
   if (!lead || lead.lead_status === 'Disqualified') return true;
+  if (isSuppressed(db.prepare('SELECT * FROM leads WHERE id = ?').get(leadId))) return true;
   if (db.prepare(`SELECT 1 FROM agent_outreach WHERE lead_id = ? AND status = 'Replied'`).get(leadId)) return true;
   return !!db.prepare(`SELECT 1 FROM agent_meetings WHERE lead_id = ? AND status = 'Booked'`).get(leadId);
 };
@@ -476,7 +523,8 @@ export const getOverview = () => {
     pending_approval: c(`SELECT COUNT(*) c FROM agent_outreach WHERE status = 'Pending Approval'`),
     sent_today: sentToday(),
     meetings_booked: c(`SELECT COUNT(*) c FROM agent_meetings WHERE status = 'Booked'`),
-    replies: c(`SELECT COUNT(*) c FROM agent_outreach WHERE status = 'Replied'`)
+    replies: c(`SELECT COUNT(*) c FROM agent_outreach WHERE status = 'Replied'`),
+    suppressed: c(`SELECT COUNT(*) c FROM agent_suppressions`)
   };
 };
 
@@ -498,9 +546,12 @@ export const runCycle = async ({ force = false } = {}) => {
       WHERE s.score >= ? AND l.work_email IS NOT NULL AND l.work_email != ''
         AND l.lead_status IN ('New','Contacted','Qualified')
         AND NOT EXISTS (SELECT 1 FROM agent_outreach o WHERE o.lead_id = s.lead_id)
-      ORDER BY s.score DESC LIMIT 15
+      ORDER BY s.score DESC LIMIT 60
     `).all(settings.min_score);
-    for (const c of candidates) drafted += await draftSequenceForLead(c.lead_id) ? 1 : 0;
+    for (const c of candidates) {
+      if (drafted >= 15) break;
+      drafted += await draftSequenceForLead(c.lead_id) ? 1 : 0; // suppressed leads draft nothing
+    }
 
     const sent = await sendDueSteps();
 

@@ -514,3 +514,11 @@ CREATE TABLE IF NOT EXISTS agent_runs (
 CREATE INDEX IF NOT EXISTS idx_agent_outreach_lead ON agent_outreach(lead_id);
 CREATE INDEX IF NOT EXISTS idx_agent_outreach_status ON agent_outreach(status, scheduled_for);
 CREATE INDEX IF NOT EXISTS idx_agent_scores_score ON agent_lead_scores(score);
+
+-- Sales Agent suppression list: these people / domains are never contacted
+CREATE TABLE IF NOT EXISTS agent_suppressions (
+    value TEXT PRIMARY KEY,
+    kind TEXT NOT NULL CHECK(kind IN ('email', 'domain')),
+    reason TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
