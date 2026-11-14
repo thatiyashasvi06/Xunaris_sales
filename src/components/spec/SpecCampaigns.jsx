@@ -2740,8 +2740,18 @@ export const SpecCampaigns = () => {
                 <tbody className="divide-y divide-slate-100">
                   {deliveryLogs.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-8 text-center text-slate-400">
-                        {isLoadingLogs ? 'Loading delivery logs...' : 'No delivery logs found for selected filters.'}
+                      <td colSpan={7} className="py-10 text-center">
+                        {isLoadingLogs ? (
+                          <span className="text-slate-400">Loading delivery logs...</span>
+                        ) : deliveryStats.total === 0 ? (
+                          <>
+                            <div className="text-sm font-extrabold text-[#0d2238]">Nothing sent yet</div>
+                            <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">Every email you send from a campaign appears here with its delivery status.</p>
+                            <button type="button" onClick={() => setActiveTab('builder')} className="mt-3 px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Build a campaign</button>
+                          </>
+                        ) : (
+                          <span className="text-slate-400">No delivery logs found for selected filters.</span>
+                        )}
                       </td>
                     </tr>
                   ) : (
@@ -2848,6 +2858,15 @@ export const SpecCampaigns = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
+                {campaigns.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="px-4 py-10 text-center">
+                      <div className="text-sm font-extrabold text-[#0d2238]">No campaigns yet</div>
+                      <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">A campaign sends one email to a list of people, such as your CRM leads or an Excel list. Build your first one in the Campaign Builder.</p>
+                      <button type="button" onClick={() => setActiveTab('builder')} className="mt-3 px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Open Campaign Builder</button>
+                    </td>
+                  </tr>
+                )}
                 {campaigns.map((camp) => (
                   <tr
                     key={camp.id}

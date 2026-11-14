@@ -5,7 +5,7 @@ import { CheckCircle2, Plus, Trash2, Calendar, Mail, Phone, Users, CheckSquare, 
 import { launchEmailCompose } from '../../utils/emailCompose';
 
 export const SpecActivities = () => {
-  const { activities, addActivity, updateActivity, deleteActivity, users, companies, leads, currentUser } = useCRM();
+  const { activities, addActivity, updateActivity, deleteActivity, users, companies, leads, currentUser, setActiveNav } = useCRM();
 
   const [selectedActivityId, setSelectedActivityId] = useState(activities[0]?.id || null);
 
@@ -409,8 +409,16 @@ export const SpecActivities = () => {
               <tbody className="divide-y divide-slate-100 bg-white">
                 {filteredActivities.length === 0 ? (
                   <tr>
-                    <td colSpan="7" className="px-4 py-8 text-center text-slate-400">
-                      No activities match the current filter.
+                    <td colSpan="7" className="px-4 py-10 text-center">
+                      {activities.length === 0 ? (
+                        <>
+                          <div className="text-sm font-extrabold text-[#0d2238]">No activities yet</div>
+                          <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">Calls, emails, meetings and tasks appear here. They are created automatically when you add a lead or when someone books a meeting, or you can log one with the form above.</p>
+                          <button type="button" onClick={() => setActiveNav('leads')} className="mt-3 px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Go to Leads</button>
+                        </>
+                      ) : (
+                        <span className="text-slate-400">No activities match the current filter.</span>
+                      )}
                     </td>
                   </tr>
                 ) : (

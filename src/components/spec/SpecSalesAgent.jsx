@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SpecHeader } from './SpecHeader';
 import { apiClient } from '../../services/apiClient';
+import { useCRM } from '../../context/CRMContext';
 import {
   Bot, Play, RefreshCw, Target, Users, Send, TrendingUp, Check, X, Mail, MessageSquare,
   CalendarCheck, Power, ShieldCheck, Pencil, Reply, Sparkles
@@ -52,6 +53,7 @@ const Stat = ({ label, value }) => (
 );
 
 export const SpecSalesAgent = () => {
+  const { leads, setActiveNav } = useCRM();
   const [data, setData] = useState(null);
   const [prospects, setProspects] = useState([]);
   const [outreach, setOutreach] = useState([]);
@@ -235,7 +237,17 @@ export const SpecSalesAgent = () => {
         {/* 1/4 Finds & scores */}
         <Card n={1} title="Finds & scores your best leads first" accent="Highest chance to convert at the top" icon={Target}>
           <div className="space-y-2 max-h-[420px] overflow-y-auto">
-            {prospects.length === 0 && <p className="text-sm text-slate-500">No HYRA leads above the minimum score yet. Add leads or lower the minimum score, then press Run now.</p>}
+            {prospects.length === 0 && (
+              leads.length === 0 ? (
+                <div className="text-center py-6">
+                  <div className="text-sm font-extrabold text-[#0d2238]">Start by adding leads</div>
+                  <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">The agent ranks the leads in your CRM. Add HYRA leads with an email, job title and industry, then press Run now.</p>
+                  <button type="button" onClick={() => setActiveNav('leads')} className="mt-3 px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Add leads</button>
+                </div>
+              ) : (
+                <p className="text-sm text-slate-500">No HYRA leads above the minimum score yet. Add HYRA leads or lower the minimum score, then press Run now.</p>
+              )
+            )}
             {prospects.map((p) => (
               <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl border border-slate-100 hover:border-slate-200">
                 <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center font-extrabold text-[#0d2238]">{p.score}</div>

@@ -333,6 +333,12 @@ export const SpecReports = () => {
             </span>
           </div>
 
+          {leads.length === 0 && opportunities.length === 0 && (
+            <div className="mb-3 rounded-xl border border-blue-100 bg-blue-50/60 px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-xs text-slate-600">Reports fill in as you add leads, send campaigns and win deals. Right now there is nothing to measure.</p>
+              <button type="button" onClick={() => setActiveNav('leads')} className="px-3 py-1.5 rounded-lg bg-[#0063f2] text-white text-xs font-bold shrink-0">Add leads</button>
+            </div>
+          )}
           <div className="border border-slate-200 rounded-xl overflow-hidden">
             <table className="min-w-full text-left text-xs divide-y divide-slate-200">
               <thead className="bg-[#f0f4f9] text-[#0d2238] font-bold">

@@ -4,7 +4,7 @@ import { SpecHeader } from './SpecHeader';
 import { CheckCircle2, AlertCircle, Building2, UserPlus, Trash2 } from 'lucide-react';
 
 export const SpecCompaniesContacts = () => {
-  const { companies, contacts, addCompany, updateCompany, addContact, updateContact, users, currentUser } = useCRM();
+  const { companies, contacts, addCompany, updateCompany, addContact, updateContact, users, currentUser, setActiveNav } = useCRM();
 
   const [selectedCompId, setSelectedCompId] = useState(companies[0]?.id || null);
   const [selectedContactId, setSelectedContactId] = useState(contacts[0]?.id || null);
@@ -390,6 +390,18 @@ export const SpecCompaniesContacts = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 bg-white">
+                  {displayedContacts.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="px-4 py-10 text-center">
+                        <div className="text-sm font-extrabold text-[#0d2238]">No contacts yet</div>
+                        <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">Contacts are added automatically when you add a lead. You can also add one with the form above.</p>
+                        <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                          <button type="button" onClick={() => setActiveNav('leads')} className="px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Go to Leads</button>
+                          <button type="button" onClick={handleClearContactForm} className="px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold">+ New Contact</button>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                   {displayedContacts.map((contact) => (
                     <tr
                       key={contact.id}
@@ -433,6 +445,18 @@ export const SpecCompaniesContacts = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 bg-white">
+                  {companies.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="px-4 py-10 text-center">
+                        <div className="text-sm font-extrabold text-[#0d2238]">No companies yet</div>
+                        <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">Companies are created automatically from your leads, so each one appears once with all its contacts. You can also add one with the form above.</p>
+                        <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                          <button type="button" onClick={() => setActiveNav('leads')} className="px-4 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold">Go to Leads</button>
+                          <button type="button" onClick={handleClearCompanyForm} className="px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold">+ New Company</button>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                   {companies.map((comp) => (
                     <tr
                       key={comp.id}
