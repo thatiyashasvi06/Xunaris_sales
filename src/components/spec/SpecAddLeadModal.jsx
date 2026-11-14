@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCRM } from '../../context/CRMContext';
+import { parseLinkedInPost } from '../../utils/parseLinkedInPost';
 import {
   SERVICE_CATALOG
 } from '../../data/crmSpecData';
@@ -67,6 +68,19 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successLink, setSuccessLink] = useState(null); // { id, name }
   const [notificationMsg, setNotificationMsg] = useState('');
+  const [pasteText, setPasteText] = useState('');
+  const [pasteResult, setPasteResult] = useState(null);
+
+  const applyPastedPost = () => {
+    const r = parseLinkedInPost(pasteText);
+    if (!pasteText.trim()) return;
+    const check = [...r.check];
+    const fields = { ...r.fields };
+    if (!fields.service) { fields.service = SERVICE_CATALOG.HYRA[0]; if (!check.includes('Service')) check.push('Service'); }
+    setFormData((prev) => ({ ...prev, ...fields }));
+    setInlineErrors({});
+    setPasteResult({ found: r.found, check, hints: r.hints });
+  };
 
   // Reset form when modal opens
   useEffect(() => {
@@ -274,6 +288,35 @@ export const SpecAddLeadModal = ({ isOpen, onClose, onLeadCreated }) => {
               <span>{inlineErrors.form}</span>
             </div>
           )}
+
+          {/* Paste a LinkedIn post: fills the form below, nothing is saved until you press Save */}
+          <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-100 space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700">Optional: paste a LinkedIn post</span>
+              {(pasteText || pasteResult) && (
+                <button type="button" onClick={() => { setPasteText(''); setPasteResult(null); }} className="text-[11px] font-bold text-slate-500 hover:text-slate-800">Clear</button>
+              )}
+            </div>
+            <textarea
+              value={pasteText}
+              onChange={(e) => setPasteText(e.target.value)}
+              rows={4}
+              placeholder="Copy the text of a post that has a hiring need or contact details, and paste it here. We fill in the company, contact, email, phone and requirement for you to check."
+              className="w-full text-xs px-3 py-2 rounded-xl border border-blue-200 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+            />
+            <div className="flex flex-wrap items-center gap-2">
+              <button type="button" onClick={applyPastedPost} disabled={!pasteText.trim()}
+                className="px-3.5 py-2 rounded-xl bg-[#0063f2] text-white text-xs font-bold disabled:opacity-50">Fill the form</button>
+              <span className="text-[11px] text-slate-500">Nothing is saved until you press Save Lead.</span>
+            </div>
+            {pasteResult && (
+              <div className="text-xs space-y-1 pt-1">
+                {pasteResult.found.length > 0 && <p className="text-emerald-700"><strong>Found in the post:</strong> {pasteResult.found.join(', ')}</p>}
+                {pasteResult.check.length > 0 && <p className="text-amber-700"><strong>Please check (guessed):</strong> {pasteResult.check.join(', ')}</p>}
+                {pasteResult.hints.map((h) => <p key={h} className="text-slate-600">{h}</p>)}
+              </div>
+            )}
+          </div>
 
           <form
             onSubmit={(e) => {

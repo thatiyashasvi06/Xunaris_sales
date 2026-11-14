@@ -156,8 +156,8 @@ export const validateLeadData = (leadData, options = {}) => {
   // 4. Company Website (Optional, normalized URL)
   if (leadData.companyWebsite) {
     normalized.companyWebsite = normalizeDomain(leadData.companyWebsite);
-  } else if (compName) {
-    normalized.companyWebsite = `https://${compName.toLowerCase().replace(/[^a-z0-9]/g, '')}.example.com`;
+  } else {
+    normalized.companyWebsite = '';
   }
 
   // 5. Industry (Optional, allowed list)
@@ -176,7 +176,7 @@ export const validateLeadData = (leadData, options = {}) => {
       normalized.city = city;
     }
   } else {
-    normalized.city = 'Bengaluru';
+    normalized.city = '';
   }
 
   // 7. Country (Optional, standardized list)
@@ -201,7 +201,7 @@ export const validateLeadData = (leadData, options = {}) => {
       normalized.jobTitle = title;
     }
   } else {
-    normalized.jobTitle = 'Decision Maker';
+    normalized.jobTitle = '';
   }
 
   // 10. Work Email OR Phone (Conditional: Email OR phone required!)
