@@ -96,7 +96,7 @@ export const AiTimeSaved = () => {
                 <tr key={r.type}>
                   <td className="py-2.5 pr-4">
                     <div className="font-semibold text-ink-900">{r.label}</div>
-                    <div className="text-[11px] text-slate-400">{r.hint}{r.byGemini > 0 ? ` · ${r.byGemini} written by Gemini AI` : ''}</div>
+                    <div className="text-[11px] text-slate-400">{r.hint}{r.byAi > 0 ? ` · ${r.byAi} written by AI` : ''}</div>
                   </td>
                   <td className="py-2.5 pr-4 text-right tabular-nums">{r.count}</td>
                   <td className="py-2.5 pr-4 text-right">

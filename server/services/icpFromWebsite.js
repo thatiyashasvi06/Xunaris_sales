@@ -1,7 +1,7 @@
 import dns from 'dns/promises';
 import net from 'net';
 import db from '../db/database.js';
-import { askGeminiJson, geminiConfigured } from './gemini.js';
+import { askAiJson, aiConfigured } from './ai.js';
 
 /**
  * Website -> ideal customer profile.
@@ -117,15 +117,17 @@ export const heuristicIcp = ({ title, desc, text }) => {
 };
 
 const geminiIcp = async (page) => {
-  if (!geminiConfigured()) return null;
-  const out = await askGeminiJson(
-    `You are a B2B sales strategist. From this company website text, write the ideal customer profile for a salesperson.\nReturn JSON: {"summary":[3 short lines: what the company sells, which companies buy it and why, which job titles to contact],"industries":[up to 5 industry names],"titles":[up to 6 job titles]}.\nUse only what the text supports.\n\nTITLE: ${page.title}\nDESCRIPTION: ${page.desc}\nTEXT: ${page.text.slice(0, 6000)}`
+  if (!aiConfigured()) return null;
+  const answer = await askAiJson(
+    `You are a B2B sales strategist. From this company website text, write the ideal customer profile for a salesperson.\nReturn JSON: {"summary":[3 short lines: what the company sells, which companies buy it and why, which job titles to contact],"industries":[up to 5 industry names],"titles":[up to 6 job titles]}.\nUse only what the text supports.\n\nTITLE: ${page.title}\nDESCRIPTION: ${page.desc}\nTEXT: ${page.text.slice(0, 6000)}`,
+    { effort: 'medium' }
   );
+  const out = answer?.data;
   if (!out) return null;
   const arr = (v, n) => (Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean).slice(0, n) : []);
   const summary = arr(out.summary, 3);
   if (summary.length < 2) return null;
-  return { engine: 'Gemini AI', summary, industries: arr(out.industries, 5), titles: arr(out.titles, 6) };
+  return { engine: answer.engine, summary, industries: arr(out.industries, 5), titles: arr(out.titles, 6) };
 };
 
 export const buildIcp = async (website) => {

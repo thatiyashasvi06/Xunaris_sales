@@ -1,5 +1,5 @@
 import db from '../db/database.js';
-import { askGeminiJson, geminiConfigured } from './gemini.js';
+import { askAiJson, aiConfigured } from './ai.js';
 import { logAiEvent } from './aiReport.js';
 import { scoreLead, getSettings as getAgentSettings, isSuppressed } from './salesAgent.js';
 
@@ -104,21 +104,23 @@ const ruleCopy = ({ goal, b }) => {
 
 const aiCopy = async ({ goal, b, audience }) => {
   const sample = audience.leads.slice(0, 6).map((l) => `${l.title || 'contact'} at ${l.company}`);
-  const out = await askGeminiJson(
+  const answer = await askAiJson(
     `You write B2B outreach for a sales team in India. Business: ${b.about}.\n` +
     `Goal of this campaign: ${goal}\nTypical recipients: ${sample.join('; ') || 'business decision makers'}\n\n` +
     `Rules: use only the facts above, never invent clients, numbers, awards or promises. Friendly, specific, no hype, no spammy words. ` +
     `The email must be under 110 words, use the tags {{contact_name}} and {{company_name}} exactly, have one clear ask (a 15 minute call), and end with a sign-off from "${b.sign}". ` +
     `Subject lines under 60 characters.\n` +
-    `Return JSON: {"name": "short campaign name", "subjects": ["subject 1", "subject 2", "subject 3"], "body": "the email", "ctaText": "button text under 5 words"}`
+    `Return JSON: {"name": "short campaign name", "subjects": ["subject 1", "subject 2", "subject 3"], "body": "the email", "ctaText": "button text under 5 words"}`,
+    { effort: 'medium' }
   );
+  const out = answer?.data;
   if (!out || typeof out.body !== 'string' || !Array.isArray(out.subjects)) return null;
   const subjects = out.subjects.map((s) => String(s).trim()).filter(Boolean).slice(0, 3);
   if (subjects.length < 2 || out.body.length < 40) return null;
   let body = out.body.trim().slice(0, 1500);
   if (!body.includes('{{contact_name}}')) body = `Hi {{contact_name}},\n\n${body}`;
   if (!/unsubscribe/i.test(body)) body += OPT_OUT;
-  return { engine: 'Gemini AI', name: String(out.name || '').trim().slice(0, 80) || `${b.label}: ${shortGoal(goal).slice(0, 50)}`, subjects, body, ctaText: String(out.ctaText || b.cta).trim().slice(0, 40) };
+  return { engine: answer.engine, name: String(out.name || '').trim().slice(0, 80) || `${b.label}: ${shortGoal(goal).slice(0, 50)}`, subjects, body, ctaText: String(out.ctaText || b.cta).trim().slice(0, 40) };
 };
 
 // ---------------------------------------------------------------------- plan
@@ -128,7 +130,7 @@ export const planCampaign = async ({ goal, business }) => {
   if (g.length < 8) throw new Error('Describe the campaign in a sentence, for example: "Introduce contract staffing to banks in Pune".');
   const b = pick(business);
   const audience = pickAudience({ business, goal: g });
-  const copy = (geminiConfigured() ? await aiCopy({ goal: g, b, audience }) : null) || ruleCopy({ goal: g, b });
+  const copy = (aiConfigured() ? await aiCopy({ goal: g, b, audience }) : null) || ruleCopy({ goal: g, b });
 
   const notes = [];
   if (audience.selected === 0) notes.push('No leads qualify yet. Add leads with an email address, then plan again.');

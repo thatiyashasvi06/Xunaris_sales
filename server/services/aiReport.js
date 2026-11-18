@@ -57,12 +57,12 @@ export const getAiReport = (days = 30) => {
   const since = sqlTime(Date.now() - span * DAY);
   const minutes = getMinutes();
 
-  const counts = db.prepare('SELECT type, COUNT(*) c, SUM(CASE WHEN engine = \'Gemini AI\' THEN 1 ELSE 0 END) ai FROM ai_events WHERE created_at >= ? GROUP BY type').all(since);
+  const counts = db.prepare('SELECT type, COUNT(*) c, SUM(CASE WHEN engine IN (\'Gemini AI\', \'Claude AI\') THEN 1 ELSE 0 END) ai FROM ai_events WHERE created_at >= ? GROUP BY type').all(since);
   const byType = Object.fromEntries(counts.map((r) => [r.type, r]));
 
   const rows = Object.entries(TASKS).map(([type, t]) => {
     const c = byType[type]?.c || 0;
-    return { type, label: t.label, hint: t.hint, count: c, byGemini: byType[type]?.ai || 0, minutesEach: minutes[type], minutes: Math.round(c * minutes[type]) };
+    return { type, label: t.label, hint: t.hint, count: c, byAi: byType[type]?.ai || 0, minutesEach: minutes[type], minutes: Math.round(c * minutes[type]) };
   });
   const totalMinutes = rows.reduce((n, r) => n + r.minutes, 0);
 

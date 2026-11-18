@@ -1,5 +1,5 @@
 import db from '../db/database.js';
-import { askGeminiJson, geminiConfigured, geminiStatus } from './gemini.js';
+import { askAiJson, aiConfigured, aiStatus } from './ai.js';
 import { scoreLead, getSettings as getAgentSettings } from './salesAgent.js';
 import { getRoutingSettings } from './routing.js';
 import { fetchPage, extractText } from './icpFromWebsite.js';
@@ -16,15 +16,7 @@ const FREE_MAIL = ['gmail.com', 'yahoo.com', 'yahoo.in', 'outlook.com', 'hotmail
 const firstName = (n) => (n || '').trim().split(/\s+/)[0] || 'there';
 const daysSince = (d) => (d ? Math.floor((Date.now() - new Date(String(d).replace(' ', 'T') + (String(d).includes('T') || String(d).includes('Z') ? '' : 'Z')).getTime()) / 86400000) : null);
 
-export const aiEngineStatus = () => {
-  const g = geminiStatus();
-  return {
-    engine: g.configured && !g.lastError ? 'Gemini AI' : g.configured ? 'Built-in rules (Gemini unavailable)' : 'Built-in rules',
-    configured: g.configured,
-    model: g.model,
-    note: g.lastError || (g.configured ? '' : 'Add GEMINI_API_KEY in the server settings for AI-written briefs.')
-  };
-};
+export const aiEngineStatus = () => aiStatus();
 
 // ----------------------------------------------------------------- context
 
@@ -93,13 +85,15 @@ const aiBrief = async (ctx, companySummary) => {
     daysSinceCreated: ctx.ageDays, recentActivities: ctx.activities, outreach: ctx.outreach, meeting: ctx.meeting, opportunity: ctx.opp,
     companyWebsiteSummary: companySummary || null, owner: lead.owner_name
   };
-  const out = await askGeminiJson(
+  const answer = await askAiJson(
     `You help a sales person in India decide what to do with one lead. Use ONLY the facts given. Never invent facts, numbers or promises.\n` +
     `Return JSON: {"summary": "2 short sentences: who they are and what they need", "nextAction": "one clear action for today, one sentence", "message": {"subject": "...", "body": "a friendly email under 90 words, signed by the owner, asking for a 15 minute call"}}.\n` +
-    `If email and phone are both missing, nextAction must be to find one. If status is Disqualified, say no action is needed.\n\nFACTS:\n${JSON.stringify(facts)}`
+    `If email and phone are both missing, nextAction must be to find one. If status is Disqualified, say no action is needed.\n\nFACTS:\n${JSON.stringify(facts)}`,
+    { effort: 'low' }
   );
+  const out = answer?.data;
   if (!out || typeof out.summary !== 'string' || typeof out.nextAction !== 'string' || typeof out.message?.body !== 'string') return null;
-  return { summary: out.summary.slice(0, 500), nextAction: out.nextAction.slice(0, 300), message: { subject: String(out.message.subject || '').slice(0, 150), body: out.message.body.slice(0, 1200) }, engine: 'Gemini AI' };
+  return { summary: out.summary.slice(0, 500), nextAction: out.nextAction.slice(0, 300), message: { subject: String(out.message.subject || '').slice(0, 150), body: out.message.body.slice(0, 1200) }, engine: answer.engine };
 };
 
 // -------------------------------------------------------- website lookup
@@ -136,7 +130,7 @@ export const refreshLead = async (leadId, { website = true } = {}) => {
   }
 
   const ctx = buildContext({ ...lead, company_website: site });
-  const brief = (geminiConfigured() ? await aiBrief(ctx, companySummary) : null) || ruleBrief(ctx);
+  const brief = (aiConfigured() ? await aiBrief(ctx, companySummary) : null) || ruleBrief(ctx);
   const message = typeof brief.message === 'string' ? { subject: '', body: brief.message } : brief.message;
 
   db.prepare(`

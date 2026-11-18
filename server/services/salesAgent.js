@@ -3,7 +3,7 @@ import db from '../db/database.js';
 import { sendRealEmail } from './emailSender.js';
 import { generateActivityId } from './idGenerator.js';
 import { createNotification } from './backgroundWorker.js';
-import { askGeminiJson, geminiConfigured } from './gemini.js';
+import { askAiJson, aiConfigured } from './ai.js';
 import { logAiEvent } from './aiReport.js';
 
 /**
@@ -263,12 +263,14 @@ const draftTemplates = (lead, bookingUrl) => {
   ];
 };
 
-/** Optional personalisation of step bodies with Gemini; silently falls back to templates. */
+/** Optional personalisation of step bodies with AI; silently falls back to templates. */
 const personalise = async (lead, drafts) => {
-  if (!geminiConfigured()) return drafts;
-  const out = await askGeminiJson(
-    `Rewrite these 3 B2B staffing outreach messages for ${lead.contact_name} (${lead.job_title}) at ${lead.company_name} (${lead.industry || 'unknown industry'}). Keep each under 90 words, friendly, no hype, keep any URL and the unsubscribe line exactly. Return a JSON array of 3 strings in the same order.\n\n${JSON.stringify(drafts.map((d) => d.body))}`
+  if (!aiConfigured()) return drafts;
+  const answer = await askAiJson(
+    `Rewrite these 3 B2B staffing outreach messages for ${lead.contact_name} (${lead.job_title}) at ${lead.company_name} (${lead.industry || 'unknown industry'}). Keep each under 90 words, friendly, no hype, keep any URL and the unsubscribe line exactly. Return a JSON array of 3 strings in the same order.\n\n${JSON.stringify(drafts.map((d) => d.body))}`,
+    { effort: 'medium' }
   );
+  const out = answer?.data;
   const arr = Array.isArray(out) ? out : out?.messages;
   if (!Array.isArray(arr) || arr.length !== 3) return drafts;
   return drafts.map((d, i) => (typeof arr[i] === 'string' && arr[i].length > 20 && (d.channel !== 'Email' || arr[i].includes(d.body.match(/https?:\/\/\S+/)?.[0] || '')) ? { ...d, body: arr[i] } : d));
