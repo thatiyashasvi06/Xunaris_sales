@@ -1,6 +1,7 @@
 import db from '../db/database.js';
 import { scoreLead, getSettings as getAgentSettings } from './salesAgent.js';
 import { createNotification } from './backgroundWorker.js';
+import { logAiEvent } from './aiReport.js';
 
 /**
  * Team routing: the CRM acts like a sales manager that knows who is free.
@@ -125,6 +126,7 @@ export const routeNewLead = (leadLike) => {
   const hot = isHotRow(leadLike);
   const person = pickOwner({ hot });
   if (!person) return { ownerName: 'Unassigned', ownerEmail: '', reason: 'No one is available. Waiting in the Sales Head queue.' };
+  logAiEvent('lead_routed');
   const reason = hot
     ? (person.teamRole === 'Sales Head' ? 'Hot lead, sent to the Sales Head' : 'Hot lead, no Sales Head free, sent to the least busy teammate')
     : (person.teamRole === 'Sales Head' ? 'No executive free, sent to the Sales Head' : 'Sent to the least busy available teammate');
@@ -170,6 +172,7 @@ export const reassignStaleLeads = () => {
     }
     db.prepare(`UPDATE leads SET owner_name = ?, owner_email = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`).run(next.name, next.email, lead.id);
     logRouting(lead.id, lead.owner_name, next.name, `Reassigned: ${why}.`);
+    logAiEvent('lead_reassigned', { ref: lead.id });
     if (owner) createNotification(owner.email, 'Lead moved', `${lead.company_name} was moved to ${next.name}. ${why}.`, 'info');
     createNotification(next.email, 'New lead for you', `${lead.company_name} (${lead.contact_name}) was assigned to you. ${why}.`, 'success');
     if (lead.owner_email !== next.email) notifyHeads('Lead reassigned', `${lead.company_name} moved from ${lead.owner_name || 'nobody'} to ${next.name}. ${why}.`);

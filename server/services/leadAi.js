@@ -3,6 +3,7 @@ import { askGeminiJson, geminiConfigured, geminiStatus } from './gemini.js';
 import { scoreLead, getSettings as getAgentSettings } from './salesAgent.js';
 import { getRoutingSettings } from './routing.js';
 import { fetchPage, extractText } from './icpFromWebsite.js';
+import { logAiEvent } from './aiReport.js';
 
 /**
  * Leads AI: for every open lead it writes a short brief, the single next best action and a
@@ -143,6 +144,11 @@ export const refreshLead = async (leadId, { website = true } = {}) => {
       company_website = CASE WHEN COALESCE(company_website, '') = '' THEN ? ELSE company_website END
     WHERE id = ?
   `).run(brief.summary, brief.nextAction, JSON.stringify(message), companySummary, brief.engine, site, leadId);
+  // Count the first brief for a lead (not every refresh) and the first website read
+  if (!lead.ai_updated_at) {
+    logAiEvent('lead_brief', { engine: brief.engine, ref: leadId });
+    if (companySummary) logAiEvent('website_lookup', { ref: leadId });
+  }
   return getBrief(leadId);
 };
 

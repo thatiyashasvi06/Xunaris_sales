@@ -4,6 +4,7 @@ import { sendRealEmail } from './emailSender.js';
 import { generateActivityId } from './idGenerator.js';
 import { createNotification } from './backgroundWorker.js';
 import { askGeminiJson, geminiConfigured } from './gemini.js';
+import { logAiEvent } from './aiReport.js';
 
 /**
  * HYRA Connect AI Sales Agent
@@ -290,6 +291,7 @@ export const draftSequenceForLead = async (leadId) => {
   db.transaction(() => {
     for (const d of drafts) ins.run(newId('out'), leadId, d.step_no, d.channel, d.subject, d.body, status, iso(now + d.dayOffset * DAY_MS));
   })();
+  logAiEvent('sequence_drafted', { ref: leadId });
   return drafts.length;
 };
 
@@ -360,6 +362,7 @@ export const sendDueSteps = async () => {
         db.prepare(`UPDATE agent_outreach SET status = 'Sent', sent_at = CURRENT_TIMESTAMP, error = NULL, updated_at = CURRENT_TIMESTAMP WHERE id = ?`).run(step.id);
         db.prepare(`UPDATE leads SET lead_status = CASE WHEN lead_status = 'New' THEN 'Contacted' ELSE lead_status END, updated_at = CURRENT_TIMESTAMP WHERE id = ?`).run(step.lead_id);
         sent++;
+        logAiEvent('message_sent', { ref: step.lead_id });
       } else {
         db.prepare(`UPDATE agent_outreach SET status = 'Failed', error = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`).run(r.error || r.message || 'Send failed', step.id);
       }

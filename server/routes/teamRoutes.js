@@ -1,6 +1,7 @@
 import express from 'express';
 import db from '../db/database.js';
 import { logAuditEvent } from '../middleware/auditMiddleware.js';
+import { getAiReport, updateMinutes } from '../services/aiReport.js';
 import {
   listTeam, setAvailability, getRoutingSettings, updateRoutingSettings, buildToday, teamRoleOf
 } from '../services/routing.js';
@@ -26,6 +27,15 @@ router.put('/me/availability', (req, res) => {
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
+});
+
+// Time saved by AI (an estimate: counted actions times minutes per task)
+router.get('/ai-report', (req, res) => res.json({ ...getAiReport(req.query.days), canEdit: Boolean(canManage(req.user)) }));
+router.put('/ai-report/minutes', (req, res) => {
+  if (!canManage(req.user)) return res.status(403).json({ error: 'Only the Sales Head or an admin can change the minutes per task.' });
+  updateMinutes(req.body || {});
+  logAuditEvent(req.user.email, 'UPDATE_AI_MINUTES', 'SYSTEM', null, req.body || {});
+  res.json({ ...getAiReport(req.query.days), canEdit: true });
 });
 
 // Routing rules: anyone can read, Sales Head and Admin can change

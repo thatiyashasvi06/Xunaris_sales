@@ -1,5 +1,6 @@
 import db from '../db/database.js';
 import { askGeminiJson, geminiConfigured } from './gemini.js';
+import { logAiEvent } from './aiReport.js';
 import { scoreLead, getSettings as getAgentSettings, isSuppressed } from './salesAgent.js';
 
 /**
@@ -139,6 +140,7 @@ export const planCampaign = async ({ goal, business }) => {
   if (l.recentlyEmailed) notes.push(`${l.recentlyEmailed} left out: emailed in the last 14 days.`);
   if (l.duplicate) notes.push(`${l.duplicate} left out: duplicate email.`);
 
+  logAiEvent('campaign_plan', { engine: copy.engine });
   return {
     ...copy,
     business: b.label,

@@ -1,6 +1,7 @@
 import express from 'express';
 import db from '../db/database.js';
 import { buildIcp, saveIcp, getIcp } from '../services/icpFromWebsite.js';
+import { logAiEvent } from '../services/aiReport.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import {
   getSettings, updateSettings, listProspects, runCycle, scoreAllLeads, draftSequenceForLead,
@@ -37,7 +38,11 @@ router.get('/overview', (req, res) => {
 
 // Website -> ideal customer. Analyse only suggests; nothing changes until the user applies it.
 router.post('/icp/analyze', async (req, res) => {
-  try { res.json(await buildIcp(String(req.body?.website || '').trim())); }
+  try {
+    const r = await buildIcp(String(req.body?.website || '').trim());
+    logAiEvent('icp_built', { engine: r.engine });
+    res.json(r);
+  }
   catch (e) { res.status(400).json({ error: e.message }); }
 });
 

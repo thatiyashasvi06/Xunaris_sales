@@ -544,3 +544,18 @@ CREATE TABLE IF NOT EXISTS lead_routing_log (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_routing_log_lead ON lead_routing_log(lead_id);
+
+-- 22. Time saved by AI: one event per piece of work the CRM does, and editable minutes per task
+CREATE TABLE IF NOT EXISTS ai_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type TEXT NOT NULL,
+    engine TEXT,
+    ref TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_ai_events_time ON ai_events(created_at, type);
+
+CREATE TABLE IF NOT EXISTS ai_time_settings (
+    type TEXT PRIMARY KEY,
+    minutes REAL NOT NULL
+);

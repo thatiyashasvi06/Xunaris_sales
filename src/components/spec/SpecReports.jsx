@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useCRM } from '../../context/CRMContext';
 import { SpecHeader } from './SpecHeader';
+import { AiTimeSaved } from './AiTimeSaved';
 import { excelService } from '../../services/excelService';
 import { CheckCircle2, Download, ArrowUpRight, Filter, RefreshCw } from 'lucide-react';
 
@@ -174,6 +175,8 @@ export const SpecReports = () => {
           { label: 'Export CSV', onClick: handleExportCSV }
         ]}
       />
+
+      <AiTimeSaved />
 
       {notice && (
         <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-semibold flex items-center justify-between shadow-2xs">
